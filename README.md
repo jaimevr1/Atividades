@@ -2,6 +2,12 @@
 
 Um aplicativo interativo de quiz para ajudar crianças a identificar operações matemáticas (soma, subtração, multiplicação) através de problemas contextualizados com temas do interesse infantil.
 
+## 🌐 Demonstração Online
+
+**Acesse o quiz online:** [https://jaimevr1.github.io/Atividades/](https://jaimevr1.github.io/Atividades/)
+
+> Hospedado gratuitamente no GitHub Pages - funciona em qualquer navegador!
+
 ## 📚 Sobre o Projeto
 
 Este quiz foi desenvolvido para crianças em idade escolar e apresenta problemas matemáticos contextualizados com:
@@ -29,9 +35,10 @@ Este quiz foi desenvolvido para crianças em idade escolar e apresenta problemas
 
 ## 🛠️ Tecnologias
 
-- React
-- TypeScript
-- CSS-in-JS
+### Versão Web (GitHub Pages)
+- **HTML5** com React via CDN  \n- **Tailwind CSS** para estilização\n- **Babel Standalone** para transpilação JSX\n- Totalmente funcional no navegador
+
+### Versão de Desenvolvimento  \n- React\n- TypeScript\n- CSS-in-JS
 
 ## 📖 Blocos de Conteúdo
 
@@ -49,6 +56,12 @@ Este quiz foi desenvolvido para crianças em idade escolar e apresenta problemas
 - Pontuação por acertos
 - Relatórios detalhados por bloco
 - Feedback educativo para cada resposta
+
+## 📦 Arquivos do Projeto
+
+- **`index.html`** - Versão web completa, hospedada no GitHub Pages
+- **`quiz_identificacao_operacoes.tsx`** - Código fonte React/TypeScript original
+- **`README.md`** - Documentaçãodo projeto
 
 ---
 
