@@ -69,6 +69,7 @@
           const [selectedBlock, setSelectedBlock] = useState(0);
           const [showCelebration, setShowCelebration] = useState(false);
           const [celebrationMessage, setCelebrationMessage] = useState('');
+          const [selectedOperationIndex, setSelectedOperationIndex] = useState(0);
 
           const problemBlocks = [
             // Bloco 1: Soma e Subtração (Fácil)
@@ -1005,6 +1006,66 @@
             { value: 'divisão', label: 'Divisão (÷)', emoji: '➗' }
           ];
 
+          // Keyboard navigation
+          React.useEffect(() => {
+            const handleKeyDown = (e) => {
+              // Navegação durante o quiz
+              if (quizStarted && !quizCompleted && !showFeedback) {
+                if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                  e.preventDefault();
+                  setSelectedOperationIndex((prev) => 
+                    prev < operations.length - 1 ? prev + 1 : 0
+                  );
+                }
+                if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                  e.preventDefault();
+                  setSelectedOperationIndex((prev) => 
+                    prev > 0 ? prev - 1 : operations.length - 1
+                  );
+                }
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAnswerClick(operations[selectedOperationIndex].value);
+                }
+                if (e.key >= '1' && e.key <= '4') {
+                  const index = parseInt(e.key) - 1;
+                  if (index < operations.length) {
+                    e.preventDefault();
+                    setSelectedOperationIndex(index);
+                    handleAnswerClick(operations[index].value);
+                  }
+                }
+              }
+              
+              // Navegação durante feedback
+              if (showFeedback && e.key === 'Enter') {
+                e.preventDefault();
+                handleNext();
+              }
+              
+              // Navegação na tela inicial
+              if (!quizStarted && !showBlockSelection && e.key === 'Enter' && studentName.trim()) {
+                e.preventDefault();
+                handleStartName();
+              }
+              
+              // Navegação na tela de resultados
+              if (quizCompleted && e.key === 'Enter') {
+                e.preventDefault();
+                setTimeout(saveResult, 100);
+                resetQuiz();
+              }
+            };
+
+            document.addEventListener('keydown', handleKeyDown);
+            return () => document.removeEventListener('keydown', handleKeyDown);
+          }, [quizStarted, showFeedback, quizCompleted, showBlockSelection, studentName, selectedOperationIndex]);
+
+          // Reset selected operation index when question changes
+          React.useEffect(() => {
+            setSelectedOperationIndex(0);
+          }, [currentQuestion]);
+
           const getFontStyle = () => ({
             fontSize: fontSize === 'large' ? '28px' : '20px',
             fontFamily: fontSize === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
@@ -1022,11 +1083,16 @@
             const header = 'Nome,BlocoID,Acertos,Total,Porcentagem,Data,Horario\n';
             const fullContent = header + csvContent;
             
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pt-BR').replace(/\//g, '-');
+            const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+            const filename = `resultados-quiz_de_operacoes-${dateStr}-${studentNameForFile}.csv`;
+            
             const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', 'resultados_quiz.csv');
+            link.setAttribute('download', filename);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
@@ -1040,7 +1106,13 @@
             setSessionActive(false);
             setStudentName('');
             setShowBlockSelection(false);
-            resetQuiz();
+            setQuizStarted(false);
+            setQuizCompleted(false);
+            setCurrentQuestion(0);
+            setScore(0);
+            setSelectedAnswer('');
+            setShowFeedback(false);
+            setIsCorrect(false);
           };
 
           const handleStartName = () => {
@@ -1321,6 +1393,9 @@
                   )
                 ),
                 
+                studentName.trim() && React.createElement('div', { className: "mb-2 text-sm text-gray-600 text-center" },
+                  "Pressione Enter para continuar"
+                ),
                 React.createElement('button', {
                   onClick: handleStartName,
                   disabled: !studentName.trim(),
@@ -1373,6 +1448,9 @@
                   )
                 ),
                 
+                React.createElement('div', { className: "mb-2 text-sm text-gray-600 text-center" },
+                  "Pressione Enter para continuar"
+                ),
                 React.createElement('button', {
                   onClick: () => {
                     setTimeout(saveResult, 100);
@@ -1443,16 +1521,25 @@
               // Answer options or feedback
               !showFeedback ? 
                 React.createElement('div', { className: "mb-6" },
+                  React.createElement('div', { className: "mb-4 text-sm text-gray-600 text-center" },
+                    "Use as setas ↑↓ ou números 1-4 para navegar. Enter para selecionar."
+                  ),
                   React.createElement('div', { className: "grid grid-cols-1 gap-4" },
-                    operations.map((operation) => 
+                    operations.map((operation, index) => 
                       React.createElement('button', {
                         key: operation.value,
                         onClick: () => handleAnswerClick(operation.value),
-                        className: "p-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 text-left transform hover:scale-105"
+                        className: `p-4 border-2 rounded-lg transition-all duration-200 text-left transform hover:scale-105 ${
+                          selectedOperationIndex === index 
+                            ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-200' 
+                            : 'bg-white border-gray-300 hover:border-blue-500 hover:bg-blue-50'
+                        }`
                       },
                         React.createElement('div', { className: "flex items-center" },
                           React.createElement('span', { className: "text-2xl mr-3" }, operation.emoji),
-                          React.createElement('span', { className: "font-semibold text-lg" }, operation.label)
+                          React.createElement('span', { className: "font-semibold text-lg" }, 
+                            `${index + 1}. ${operation.label}`
+                          )
                         )
                       )
                     )
@@ -1493,6 +1580,9 @@
                   ),
                   
                   React.createElement('div', { className: "mt-4" },
+                    React.createElement('div', { className: "mb-2 text-sm text-gray-600 text-center" },
+                      "Pressione Enter para continuar"
+                    ),
                     React.createElement('button', {
                       onClick: handleNext,
                       className: "w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold transform hover:scale-105"
