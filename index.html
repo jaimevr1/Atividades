@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz de Identificação de Operações Matemáticas</title>
     <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400..700&display=swap" rel="stylesheet">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400..700&family=Fuzzy+Bubbles:wght@400;700&display=swap');
+</style>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -994,6 +996,10 @@
             '🔥 Desafios Supremos'
           ];
 
+          const [showMestre, setShowMestre] = useState(false);
+          const [showImperador, setShowImperador] = useState(false);
+          const [showDeuses, setShowDeuses] = useState(false);
+
           const operations = [
             { value: 'adição', label: 'Adição (+)', emoji: '➕' },
             { value: 'subtração', label: 'Subtração (-)', emoji: '➖' },
@@ -1012,10 +1018,10 @@
           const exportToCSV = () => {
             const results = loadSessionResults();
             const csvContent = results.map(result => 
-              `${result.name},${result.block},${result.score},${result.total},${result.percentage}%,${result.date},${result.time}`
+              `${result.name},${result.blockId},${result.score},${result.total},${result.percentage}%,${result.date},${result.time}`
             ).join('\n');
             
-            const header = 'Nome,Bloco,Acertos,Total,Porcentagem,Data,Horario\n';
+            const header = 'Nome,BlocoID,Acertos,Total,Porcentagem,Data,Horario\n';
             const fullContent = header + csvContent;
             
             const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
@@ -1133,6 +1139,7 @@
             const result = {
               name: studentName,
               block: blockTitles[selectedBlock],
+              blockId: selectedBlock,
               score: score,
               total: 5,
               percentage: Math.round((score / 5) * 100),
@@ -1165,62 +1172,77 @@
                 
                 // Seção Mestre (Blocos 1-9)
                 React.createElement('div', { className: "mb-8" },
-                  React.createElement('h2', {
-                    className: "text-xl font-bold text-center mb-4 text-purple-700 bg-purple-100 py-2 rounded-lg"
-                  }, "🏆 NÍVEIS MESTRE 🏆"),
-                  React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
-                    blockTitles.slice(0, 9).map((title, index) => 
-                      React.createElement('button', {
-                        key: index,
-                        onClick: () => handleStartQuiz(index),
-                        className: "p-3 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg border-2 border-gray-200 hover:border-purple-500 hover:from-blue-200 hover:to-purple-200 transition-all duration-300 transform hover:scale-105 text-center"
-                      },
-                        React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
-                        React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
-                        React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões`)
+                  React.createElement('button', {
+                    onClick: () => setShowMestre(!showMestre),
+                    className: "w-full text-xl font-bold text-center mb-4 text-purple-700 bg-purple-100 py-2 rounded-lg hover:bg-purple-200 transition-colors cursor-pointer flex items-center justify-center"
+                  }, 
+                    React.createElement('span', { className: "mr-2" }, showMestre ? '▼' : '▶'),
+                    "🏆 NÍVEIS MESTRE 🏆"
+                  ),
+                  showMestre &&
+                    React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
+                      blockTitles.slice(0, 9).map((title, index) => 
+                        React.createElement('button', {
+                          key: index,
+                          onClick: () => handleStartQuiz(index),
+                          className: "p-3 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg border-2 border-gray-200 hover:border-purple-500 hover:from-blue-200 hover:to-purple-200 transition-all duration-300 transform hover:scale-105 text-center"
+                        },
+                          React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
+                          React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
+                          React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões`)
+                        )
                       )
                     )
-                  )
                 ),
                 
                 // Seção Imperador-Imperatriz (Blocos 10-18)
                 React.createElement('div', { className: "mb-8" },
-                  React.createElement('h2', {
-                    className: "text-xl font-bold text-center mb-4 text-yellow-700 bg-yellow-100 py-2 rounded-lg"
-                  }, "👑 NÍVEIS IMPERADOR-IMPERATRIZ 👑"),
-                  React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
-                    blockTitles.slice(9, 18).map((title, index) => 
-                      React.createElement('button', {
-                        key: index + 9,
-                        onClick: () => handleStartQuiz(index + 9),
-                        className: "p-3 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-gray-200 hover:border-yellow-500 hover:from-yellow-200 hover:to-amber-200 transition-all duration-300 transform hover:scale-105 text-center"
-                      },
-                        React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
-                        React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
-                        React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões intermediárias`)
+                  React.createElement('button', {
+                    onClick: () => setShowImperador(!showImperador),
+                    className: "w-full text-xl font-bold text-center mb-4 text-yellow-700 bg-yellow-100 py-2 rounded-lg hover:bg-yellow-200 transition-colors cursor-pointer flex items-center justify-center"
+                  }, 
+                    React.createElement('span', { className: "mr-2" }, showImperador ? '▼' : '▶'),
+                    "👑 NÍVEIS IMPERADOR-IMPERATRIZ 👑"
+                  ),
+                  showImperador &&
+                    React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
+                      blockTitles.slice(9, 18).map((title, index) => 
+                        React.createElement('button', {
+                          key: index + 9,
+                          onClick: () => handleStartQuiz(index + 9),
+                          className: "p-3 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-gray-200 hover:border-yellow-500 hover:from-yellow-200 hover:to-amber-200 transition-all duration-300 transform hover:scale-105 text-center"
+                        },
+                          React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
+                          React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
+                          React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões intermediárias`)
+                        )
                       )
                     )
-                  )
                 ),
                 
                 // Seção Deuses (Blocos 19-27)
                 React.createElement('div', { className: "mb-8" },
-                  React.createElement('h2', {
-                    className: "text-xl font-bold text-center mb-4 text-red-700 bg-red-100 py-2 rounded-lg"
-                  }, "⚡ NÍVEIS DEUSES ⚡"),
-                  React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
-                    blockTitles.slice(18, 27).map((title, index) => 
-                      React.createElement('button', {
-                        key: index + 18,
-                        onClick: () => handleStartQuiz(index + 18),
-                        className: "p-3 bg-gradient-to-r from-red-100 to-orange-100 rounded-lg border-2 border-gray-200 hover:border-red-500 hover:from-red-200 hover:to-orange-200 transition-all duration-300 transform hover:scale-105 text-center"
-                      },
-                        React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
-                        React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
-                        React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões avançadas`)
+                  React.createElement('button', {
+                    onClick: () => setShowDeuses(!showDeuses),
+                    className: "w-full text-xl font-bold text-center mb-4 text-red-700 bg-red-100 py-2 rounded-lg hover:bg-red-200 transition-colors cursor-pointer flex items-center justify-center"
+                  }, 
+                    React.createElement('span', { className: "mr-2" }, showDeuses ? '▼' : '▶'),
+                    "⚡ NÍVEIS DEUSES ⚡"
+                  ),
+                  showDeuses &&
+                    React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
+                      blockTitles.slice(18, 27).map((title, index) => 
+                        React.createElement('button', {
+                          key: index + 18,
+                          onClick: () => handleStartQuiz(index + 18),
+                          className: "p-3 bg-gradient-to-r from-red-100 to-orange-100 rounded-lg border-2 border-gray-200 hover:border-red-500 hover:from-red-200 hover:to-orange-200 transition-all duration-300 transform hover:scale-105 text-center"
+                        },
+                          React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
+                          React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
+                          React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões avançadas`)
+                        )
                       )
                     )
-                  )
                 ),
                 
                 sessionActive && 
