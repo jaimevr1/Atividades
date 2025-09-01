@@ -1,0 +1,507 @@
+// SISTEMA DE BADGES PARA CORRIDA DA HISTÓRIA DO BRASIL
+
+const badgeSystem = {
+  // Badges específicos por bloco
+  blockBadges: [
+    {
+      blockId: 0,
+      name: "Colonização e Invasões Holandesas",
+      badges: {
+        bronze: { title: "Navegador Colonial", icon: "🚢", requirement: "3+ estrelas", description: "Conheceu o período colonial" },
+        silver: { title: "Defensor do Território", icon: "⚔️", requirement: "4+ estrelas", description: "Defendeu o Brasil colonial" },
+        gold: { title: "Mestre Colonial", icon: "👑", requirement: "5 estrelas", description: "Dominou as invasões coloniais" },
+        speed: { title: "Cronista Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Velocidade colonial máxima" }
+      }
+    },
+    {
+      blockId: 1,
+      name: "Expansão e Mineração",
+      badges: {
+        bronze: { title: "Garimpeiro Novato", icon: "⛏️", requirement: "3+ estrelas", description: "Descobriu o ouro da história" },
+        silver: { title: "Bandeirante Histórico", icon: "🗺️", requirement: "4+ estrelas", description: "Desbravou as minas do tempo" },
+        gold: { title: "Senhor das Minas", icon: "💎", requirement: "5 estrelas", description: "Mestre da mineração histórica" },
+        speed: { title: "Explorador Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Minerou conhecimento rapidamente" }
+      }
+    },
+    {
+      blockId: 2,
+      name: "Independência e Império",
+      badges: {
+        bronze: { title: "Patriota Jovem", icon: "🇧🇷", requirement: "3+ estrelas", description: "Gritou pela independência" },
+        silver: { title: "Herói da Independência", icon: "📢", requirement: "4+ estrelas", description: "Lutou pela liberdade" },
+        gold: { title: "Imperador do Conhecimento", icon: "👑", requirement: "5 estrelas", description: "Reinou sobre a cronologia imperial" },
+        speed: { title: "Libertador Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Independência em tempo recorde" }
+      }
+    },
+    {
+      blockId: 3,
+      name: "Abolição e República Velha",
+      badges: {
+        bronze: { title: "Defensor da Liberdade", icon: "⛓️", requirement: "3+ estrelas", description: "Lutou contra a escravidão" },
+        silver: { title: "Republicano Histórico", icon: "🏛️", requirement: "4+ estrelas", description: "Proclamou a república temporal" },
+        gold: { title: "Libertador Supremo", icon: "🕊️", requirement: "5 estrelas", description: "Aboliu a ignorância histórica" },
+        speed: { title: "Revolucionário Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Revolução cronológica rápida" }
+      }
+    },
+    {
+      blockId: 4,
+      name: "Brasil Contemporâneo",
+      badges: {
+        bronze: { title: "Cidadão Moderno", icon: "🏗️", requirement: "3+ estrelas", description: "Conheceu o Brasil atual" },
+        silver: { title: "Construtor de Brasília", icon: "🏛️", requirement: "4+ estrelas", description: "Edificou conhecimento moderno" },
+        gold: { title: "Guardião da Democracia", icon: "🗳️", requirement: "5 estrelas", description: "Protegeu a história democrática" },
+        speed: { title: "Visionário Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Futuro em alta velocidade" }
+      }
+    }
+  ],
+
+  // Badges de conquista especial
+  achievementBadges: {
+    completionist: { 
+      title: "Historiador Completo", 
+      icon: "📚", 
+      requirement: "Completar todos os 5 blocos com 3+ estrelas", 
+      description: "Dominou toda a cronologia brasileira",
+      points: 15
+    },
+    perfectionist: { 
+      title: "Cronologista Perfeito", 
+      icon: "💎", 
+      requirement: "5 estrelas em 3+ blocos", 
+      description: "Precisão cronológica múltipla",
+      points: 12
+    },
+    speedMaster: { 
+      title: "Mestre da Velocidade", 
+      icon: "🏃‍♂️", 
+      requirement: "Modo expert em 3+ blocos", 
+      description: "Velocidade histórica suprema",
+      points: 10
+    },
+    timeKeeper: { 
+      title: "Guardião do Tempo", 
+      icon: "⏰", 
+      requirement: "100+ tentativas totais", 
+      description: "Persistência cronológica",
+      points: 8
+    },
+    historian: { 
+      title: "Historiador Brasileiro", 
+      icon: "🎓", 
+      requirement: "4+ estrelas em todos os blocos", 
+      description: "Excelência histórica nacional",
+      points: 20
+    }
+  },
+
+  // Sistema de pontuação
+  pointSystem: {
+    bronze: 2,
+    silver: 5,
+    gold: 10,
+    speed: 8,
+    achievement: 15
+  },
+
+  // Níveis progressivos baseados em pontos
+  levelSystem: [
+    { name: "Estudante de História", minPoints: 0, maxPoints: 9, icon: "📖", color: "gray" },
+    { name: "Pesquisador do Tempo", minPoints: 10, maxPoints: 24, icon: "🔍", color: "blue" },
+    { name: "Cronista Brasileiro", minPoints: 25, maxPoints: 49, icon: "✍️", color: "green" },
+    { name: "Historiador Nacional", minPoints: 50, maxPoints: 99, icon: "📚", color: "purple" },
+    { name: "Mestre da Cronologia", minPoints: 100, maxPoints: 149, icon: "⏳", color: "yellow" },
+    { name: "Guardião da História", minPoints: 150, maxPoints: 999, icon: "🏛️", color: "red" }
+  ],
+
+  // Funções de avaliação
+  evaluateBadge: (blockId, stars, isExpertMode, totalAttempts) => {
+    const earnedBadges = [];
+
+    // Badges por performance
+    if (stars >= 5) {
+      earnedBadges.push('gold');
+    } else if (stars >= 4) {
+      earnedBadges.push('silver');
+    } else if (stars >= 3) {
+      earnedBadges.push('bronze');
+    }
+
+    // Badge de velocidade
+    if (stars >= 5 && isExpertMode) {
+      earnedBadges.push('speed');
+    }
+
+    return earnedBadges;
+  },
+
+  // Verificar badges de conquista
+  checkAchievements: (allBlocksData) => {
+    const achievements = [];
+    
+    // Completionist
+    const completedBlocks = Object.values(allBlocksData).filter(block => 
+      block.stars >= 3
+    ).length;
+    if (completedBlocks >= 5) {
+      achievements.push('completionist');
+    }
+
+    // Perfectionist
+    const perfectBlocks = Object.values(allBlocksData).filter(block => 
+      block.stars >= 5
+    ).length;
+    if (perfectBlocks >= 3) {
+      achievements.push('perfectionist');
+    }
+
+    // Speed Master
+    const expertBlocks = Object.values(allBlocksData).filter(block => 
+      block.isExpertMode && block.stars >= 5
+    ).length;
+    if (expertBlocks >= 3) {
+      achievements.push('speedMaster');
+    }
+
+    // Time Keeper
+    const totalAttempts = Object.values(allBlocksData).reduce((sum, block) => 
+      sum + (block.attempts || 0), 0
+    );
+    if (totalAttempts >= 100) {
+      achievements.push('timeKeeper');
+    }
+
+    // Historian
+    const excellentBlocks = Object.values(allBlocksData).filter(block => 
+      block.stars >= 4
+    ).length;
+    if (excellentBlocks >= 5) {
+      achievements.push('historian');
+    }
+
+    return achievements;
+  },
+
+  // Calcular pontos totais
+  calculateTotalPoints: (studentData) => {
+    let totalPoints = 0;
+    
+    // Pontos dos blocos
+    Object.values(studentData.blocks || {}).forEach(blockData => {
+      if (blockData.badges) {
+        blockData.badges.forEach(badgeType => {
+          totalPoints += badgeSystem.pointSystem[badgeType] || 0;
+        });
+      }
+    });
+    
+    // Pontos de conquistas
+    (studentData.achievements || []).forEach(achievement => {
+      totalPoints += badgeSystem.achievementBadges[achievement].points || 0;
+    });
+    
+    return totalPoints;
+  },
+
+  // Determinar nível atual
+  getCurrentLevel: (totalPoints) => {
+    return badgeSystem.levelSystem.find(level => 
+      totalPoints >= level.minPoints && totalPoints <= level.maxPoints
+    ) || badgeSystem.levelSystem[0];
+  },
+
+  // Persistência localStorage
+  storage: {
+    saveStudentData: (studentName, blockId, stars, isExpertMode, attempts, badges) => {
+      const key = `corrida_historia_${studentName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+      const existing = JSON.parse(localStorage.getItem(key) || '{}');
+      
+      if (!existing.blocks) existing.blocks = {};
+      existing.blocks[blockId] = {
+        stars: stars,
+        isExpertMode: isExpertMode,
+        attempts: attempts,
+        badges: badges,
+        completedAt: new Date().toISOString()
+      };
+      
+      // Verificar conquistas
+      const achievements = badgeSystem.checkAchievements(existing.blocks);
+      existing.achievements = achievements;
+      
+      localStorage.setItem(key, JSON.stringify(existing));
+      return existing;
+    },
+    
+    loadStudentData: (studentName) => {
+      const key = `corrida_historia_${studentName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+      return JSON.parse(localStorage.getItem(key) || '{}');
+    },
+    
+    clearStudentData: (studentName) => {
+      const key = `corrida_historia_${studentName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+      localStorage.removeItem(key);
+    }
+  },
+
+  // CSV export para badges
+  exportBadgeCSV: (studentName, sessionData) => {
+    const studentData = badgeSystem.storage.loadStudentData(studentName);
+    const totalPoints = badgeSystem.calculateTotalPoints(studentData);
+    const currentLevel = badgeSystem.getCurrentLevel(totalPoints);
+    
+    const badgeRows = [];
+    
+    // Header
+    badgeRows.push(['Aluno', 'Data_Sessao', 'Bloco_Concluido', 'Estrelas_Conquistadas', 'Badges_Sessao', 'Pontos_Sessao', 'Pontos_Total', 'Nivel_Atual', 'Modo_Expert']);
+    
+    // Dados da sessão
+    const sessionBadges = sessionData.badges.join('_') || 'Nenhuma';
+    const sessionPoints = sessionData.badges.reduce((sum, badge) => sum + (badgeSystem.pointSystem[badge] || 0), 0);
+    
+    badgeRows.push([
+      studentName,
+      new Date().toISOString(),
+      sessionData.blockName,
+      sessionData.stars,
+      sessionBadges,
+      sessionPoints,
+      totalPoints,
+      currentLevel.name,
+      sessionData.isExpertMode ? 'Sim' : 'Nao'
+    ]);
+    
+    // Conquistas especiais
+    if (studentData.achievements && studentData.achievements.length > 0) {
+      badgeRows.push(['', '', '', '', '', '', '', '', '']);
+      badgeRows.push(['CONQUISTAS_ESPECIAIS', '', '', '', '', '', '', '', '']);
+      
+      studentData.achievements.forEach(achievement => {
+        const achievementData = badgeSystem.achievementBadges[achievement];
+        badgeRows.push([
+          studentName,
+          new Date().toISOString(),
+          'Conquista_Especial',
+          achievementData.title,
+          achievementData.description,
+          achievementData.points,
+          totalPoints,
+          currentLevel.name,
+          'Especial'
+        ]);
+      });
+    }
+    
+    return badgeRows.map(row => row.join(',')).join('\n');
+  },
+
+  // Componente visual de badge
+  BadgeDisplay: ({ badges, blockId, size = 'normal' }) => {
+    const sizeClasses = size === 'small' ? 'text-lg p-1' : 'text-2xl p-2';
+    
+    return React.createElement('div', {
+      className: `flex justify-center space-x-2 ${size === 'small' ? 'mb-2' : 'mb-4'}`
+    }, 
+      badges.map((badgeType, index) => {
+        const badgeData = badgeSystem.blockBadges[blockId].badges[badgeType];
+        const bgColor = badgeType === 'gold' ? 'from-yellow-300 to-yellow-500' :
+                       badgeType === 'silver' ? 'from-gray-300 to-gray-500' :
+                       badgeType === 'speed' ? 'from-purple-300 to-purple-500' :
+                       'from-orange-300 to-orange-500';
+        
+        return React.createElement('div', {
+          key: index,
+          className: `text-center ${sizeClasses} bg-gradient-to-b ${bgColor} rounded-lg border-2 border-yellow-600 shadow-lg`,
+          title: badgeData.description
+        },
+          React.createElement('div', { className: size === 'small' ? 'text-sm' : 'text-xl' }, badgeData.icon),
+          React.createElement('div', { className: 'text-xs font-bold' }, badgeData.title.split(' ')[0])
+        );
+      })
+    );
+  },
+
+  // Componente de progresso de nível
+  LevelDisplay: ({ studentName, totalPoints }) => {
+    const currentLevel = badgeSystem.getCurrentLevel(totalPoints);
+    const nextLevel = badgeSystem.levelSystem.find(level => level.minPoints > totalPoints);
+    const progress = nextLevel ? 
+      ((totalPoints - currentLevel.minPoints) / (nextLevel.minPoints - currentLevel.minPoints)) * 100 : 100;
+    
+    return React.createElement('div', {
+      className: 'bg-white/90 rounded-lg p-4 border-2 border-gray-300 mb-4'
+    },
+      React.createElement('div', { className: 'flex items-center justify-between mb-2' },
+        React.createElement('span', { className: 'text-lg font-bold' }, `${currentLevel.icon} ${currentLevel.name}`),
+        React.createElement('span', { className: 'text-sm text-gray-600' }, `${totalPoints} pontos`)
+      ),
+      React.createElement('div', { className: 'w-full bg-gray-200 rounded-full h-3' },
+        React.createElement('div', {
+          className: `bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-500`,
+          style: { width: `${progress}%` }
+        })
+      ),
+      nextLevel && React.createElement('div', { className: 'text-xs text-gray-500 mt-1' },
+        `Próximo nível: ${nextLevel.name} (${nextLevel.minPoints - totalPoints} pontos restantes)`
+      )
+    );
+  },
+
+  // Integração no componente (adicionar aos useStates)
+  useState_additions: `
+    const [studentBadges, setStudentBadges] = useState({});
+    const [sessionBadges, setSessionBadges] = useState([]);
+    const [totalPoints, setTotalPoints] = useState(0);
+    const [currentLevel, setCurrentLevel] = useState(badgeSystem.levelSystem[0]);
+  `,
+
+  // Função para executar ao completar bloco
+  awardBadges: `
+    const awardBadges = (blockId, stars, isExpertMode, totalAttempts) => {
+      const earnedBadges = badgeSystem.evaluateBadge(blockId, stars, isExpertMode, totalAttempts);
+      
+      // Salvar dados do estudante
+      const updatedData = badgeSystem.storage.saveStudentData(
+        studentName, blockId, stars, isExpertMode, totalAttempts, earnedBadges
+      );
+      
+      // Atualizar estados
+      setSessionBadges(earnedBadges);
+      setStudentBadges(updatedData);
+      
+      const newTotalPoints = badgeSystem.calculateTotalPoints(updatedData);
+      setTotalPoints(newTotalPoints);
+      setCurrentLevel(badgeSystem.getCurrentLevel(newTotalPoints));
+      
+      return earnedBadges;
+    };
+  `,
+
+  // CSV combinado (histórico + badges)
+  exportCombinedCSV: `
+    const exportWithBadges = () => {
+      // CSV histórico normal
+      const historyCSV = generateHistoryCSV();
+      
+      // CSV badges
+      const sessionData = {
+        blockName: blockTitles[selectedBlock],
+        stars: score,
+        badges: sessionBadges,
+        isExpertMode: isExpertMode
+      };
+      
+      const badgeCSV = badgeSystem.exportBadgeCSV(studentName, sessionData);
+      
+      // Combinar
+      const combinedContent = historyCSV + '\\n\\nBADGES_E_CONQUISTAS\\n' + badgeCSV;
+      
+      // Download
+      const blob = new Blob([combinedContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', \`Corrida_Badges_\${studentName}_\${new Date().toISOString().split('T')[0]}.csv\`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+  `,
+
+  // Tela de badges no final do jogo
+  BadgeResultScreen: `
+    // Adicionar após completar o jogo
+    useEffect(() => {
+      if (gameCompleted && score > 0) {
+        const earnedBadges = awardBadges(selectedBlock, score, isExpertMode, attempts.length);
+        // Mostrar badges conquistadas por 3 segundos
+        if (earnedBadges.length > 0) {
+          setShowCelebration(true);
+          setCelebrationMessage(\`Badges conquistadas: \${earnedBadges.length}!\`);
+          setTimeout(() => setShowCelebration(false), 3000);
+        }
+      }
+    }, [gameCompleted, score]);
+  `,
+
+  // Tela de perfil do estudante (opcional)
+  ProfileScreen: `
+    const StudentProfile = () => {
+      const studentData = badgeSystem.storage.loadStudentData(studentName);
+      const totalPoints = badgeSystem.calculateTotalPoints(studentData);
+      const currentLevel = badgeSystem.getCurrentLevel(totalPoints);
+      
+      return (
+        <div className="bg-white rounded-lg p-6 shadow-lg">
+          <h2 className="text-2xl font-bold mb-4">Perfil de {studentName}</h2>
+          
+          {/* Nível atual */}
+          <badgeSystem.LevelDisplay studentName={studentName} totalPoints={totalPoints} />
+          
+          {/* Badges por bloco */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {blockTitles.map((title, index) => {
+              const blockData = studentData.blocks?.[index];
+              return (
+                <div key={index} className="bg-gray-50 rounded-lg p-4">
+                  <h4 className="font-bold text-sm mb-2">{title}</h4>
+                  {blockData ? (
+                    <>
+                      <div className="flex items-center mb-2">
+                        {[...Array(5)].map((_, i) => (
+                          <span key={i} className={\`text-lg \${i < blockData.stars ? 'text-yellow-500' : 'text-gray-300'}\`}>
+                            ⭐
+                          </span>
+                        ))}
+                      </div>
+                      <badgeSystem.BadgeDisplay badges={blockData.badges} blockId={index} size="small" />
+                    </>
+                  ) : (
+                    <p className="text-gray-500 text-sm">Não jogado ainda</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          
+          {/* Conquistas especiais */}
+          {studentData.achievements && studentData.achievements.length > 0 && (
+            <div className="mt-6">
+              <h3 className="text-lg font-bold mb-3">Conquistas Especiais</h3>
+              <div className="flex flex-wrap gap-2">
+                {studentData.achievements.map(achievement => {
+                  const achievementData = badgeSystem.achievementBadges[achievement];
+                  return (
+                    <div key={achievement} className="bg-gradient-to-r from-gold-300 to-yellow-500 rounded-lg p-2 text-center border-2 border-yellow-600">
+                      <div className="text-lg">{achievementData.icon}</div>
+                      <div className="text-xs font-bold">{achievementData.title}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+  `
+};
+
+// IMPLEMENTAÇÃO NO COMPONENTE PRINCIPAL (adicionar essas linhas)
+
+// 1. Adicionar aos useStates:
+// const [studentBadges, setStudentBadges] = useState({});
+// const [sessionBadges, setSessionBadges] = useState([]);
+
+// 2. Adicionar na função de completar jogo:
+// const earnedBadges = badgeSystem.evaluateBadge(selectedBlock, score, isExpertMode, attempts.length);
+// const updatedData = badgeSystem.storage.saveStudentData(studentName, selectedBlock, score, isExpertMode, attempts.length, earnedBadges);
+// setSessionBadges(earnedBadges);
+
+// 3. Modificar o CSV export para incluir badges:
+// const sessionData = { blockName: blockTitles[selectedBlock], stars: score, badges: sessionBadges, isExpertMode: isExpertMode };
+// const badgeCSV = badgeSystem.exportBadgeCSV(studentName, sessionData);
+// const combinedContent = historyCSV + '\n\nBADGES\n' + badgeCSV;
+
+// 4. Adicionar display de badges na tela de resultados:
+// {sessionBadges.length > 0 && <badgeSystem.BadgeDisplay badges={sessionBadges} blockId={selectedBlock} />}
