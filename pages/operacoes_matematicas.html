@@ -70,6 +70,175 @@
           const [showCelebration, setShowCelebration] = useState(false);
           const [celebrationMessage, setCelebrationMessage] = useState('');
           const [selectedOperationIndex, setSelectedOperationIndex] = useState(0);
+          const [currentAudio, setCurrentAudio] = useState(null);
+          const [backgroundMusic, setBackgroundMusic] = useState(null);
+          const [musicPlaying, setMusicPlaying] = useState(true);
+
+          // Lista de músicas de fundo disponíveis
+          const backgroundMusicFiles = [
+            'musica_fundo_1.mp3',
+            'musica_fundo_2.mp3',
+            'musica_fundo_3.mp3',
+            'musica_fundo_4.mp3',
+            'musica_fundo_5.mp3'
+          ];
+
+          // Listas de sons de feedback
+          const feedbackSounds = {
+            acertos: [
+              'acerto_1.mp3',
+              'acerto_2.mp3', 
+              'acerto_3.mp3',
+              'acerto_4.mp3'
+            ],
+            erros: [
+              'erro_1.mp3',
+              'erro_2.mp3',
+              'erro_3.mp3', 
+              'erro_4.mp3'
+            ]
+          };
+
+          // Inicializar música de fundo
+          useEffect(() => {
+            const initBackgroundMusic = () => {
+              try {
+                // Escolher música aleatoriamente
+                const randomIndex = Math.floor(Math.random() * backgroundMusicFiles.length);
+                const musicPath = `../media/musicas/fundo/${backgroundMusicFiles[randomIndex]}`;
+                
+                const music = new Audio(musicPath);
+                music.volume = 0.15; // Volume baixo (15%)
+                music.loop = true; // Repetir infinitamente
+                
+                setBackgroundMusic(music);
+                
+                // Tentar tocar automaticamente
+                music.play().catch(error => {
+                  console.log('Música de fundo não pôde ser iniciada automaticamente:', error);
+                  // A música será iniciada na primeira interação do usuário
+                });
+
+                // Quando a música terminar (improvável com loop), escolher outra
+                music.addEventListener('ended', () => {
+                  initBackgroundMusic();
+                });
+
+              } catch (error) {
+                console.log('Erro ao inicializar música de fundo:', error);
+              }
+            };
+
+            initBackgroundMusic();
+            
+            // Cleanup ao desmontar o componente
+            return () => {
+              if (backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+              }
+            };
+          }, []);
+
+          // Função para controlar música de fundo
+          const toggleBackgroundMusic = () => {
+            if (backgroundMusic) {
+              if (musicPlaying) {
+                backgroundMusic.pause();
+                setMusicPlaying(false);
+              } else {
+                backgroundMusic.play().catch(error => {
+                  console.log('Não foi possível tocar música de fundo:', error);
+                });
+                setMusicPlaying(true);
+              }
+            }
+          };
+
+          // Função para reduzir temporariamente o volume da música de fundo
+          const reduceBackgroundVolume = () => {
+            if (backgroundMusic && musicPlaying) {
+              backgroundMusic.volume = 0.05; // Reduz para 5% durante áudio educacional
+            }
+          };
+
+          // Função para restaurar o volume normal da música de fundo
+          const restoreBackgroundVolume = () => {
+            if (backgroundMusic && musicPlaying) {
+              setTimeout(() => {
+                backgroundMusic.volume = 0.15; // Volta para 15% após áudio
+              }, 500); // Pequeno delay para suavizar a transição
+            }
+          };
+
+          // Função para tocar som de feedback (acerto/erro)
+          const playFeedbackSound = (isCorrect) => {
+            try {
+              const soundType = isCorrect ? 'acertos' : 'erros';
+              const sounds = feedbackSounds[soundType];
+              const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+              const soundPath = `../media/sons/feedback/${soundType}/${randomSound}`;
+              
+              const feedbackAudio = new Audio(soundPath);
+              feedbackAudio.volume = 0.7; // Volume médio para feedback
+              feedbackAudio.play().catch(error => {
+                console.log('Som de feedback não encontrado:', soundPath);
+              });
+            } catch (error) {
+              console.log('Erro ao reproduzir som de feedback:', error);
+            }
+          };
+
+          // Função para garantir que a música de fundo toque após primeira interação
+          const ensureBackgroundMusicPlaying = () => {
+            if (backgroundMusic && backgroundMusic.paused && musicPlaying) {
+              backgroundMusic.play().catch(error => {
+                console.log('Não foi possível iniciar música de fundo:', error);
+              });
+            }
+          };
+
+          // Função para reproduzir áudio dos problemas com prevenção de sobreposição
+          const playAudio = (blockIndex, questionIndex, audioType = 'enunciado') => {
+            try {
+              // Garantir que a música de fundo está tocando
+              ensureBackgroundMusicPlaying();
+              
+              // Reduzir volume da música de fundo durante áudio educacional
+              reduceBackgroundVolume();
+
+              // Parar áudio anterior se estiver tocando
+              if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+              }
+
+              // Formato: bloco_XX_questao_X_enunciado.mp3 ou bloco_XX_questao_X_explicacao.mp3
+              const blockStr = String(blockIndex + 1).padStart(2, '0');
+              const questionStr = String(questionIndex + 1);
+              const audioPath = `../media/audios/matematica/bloco_${blockStr}/bloco_${blockStr}_questao_${questionStr}_${audioType}.mp3`;
+              
+              const audio = new Audio(audioPath);
+              audio.volume = 0.8; // Volume alto para áudio educacional (80%)
+              setCurrentAudio(audio);
+              
+              // Limpar referência e restaurar volume quando áudio terminar
+              audio.addEventListener('ended', () => {
+                setCurrentAudio(null);
+                restoreBackgroundVolume();
+              });
+
+              audio.play().catch(error => {
+                console.log('Áudio não encontrado ou erro na reprodução:', audioPath);
+                setCurrentAudio(null);
+                restoreBackgroundVolume();
+              });
+            } catch (error) {
+              console.log('Erro ao tentar reproduzir áudio:', error);
+              setCurrentAudio(null);
+              restoreBackgroundVolume();
+            }
+          };
 
           const problemBlocks = [
             // Bloco 1: Soma e Subtração (Fácil)
@@ -1027,6 +1196,15 @@
                        fontSize === 'cursive' ? "'Fuzzy Bubbles', cursive" :
                        "'OpenDyslexic', 'Comic Sans MS', cursive"
           });
+
+          // Componente do botão flutuante de controle de música
+          const MusicToggleButton = () => (
+            React.createElement('button', {
+              onClick: toggleBackgroundMusic,
+              className: "fixed top-4 right-4 w-14 h-14 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl transition-all duration-200 hover:scale-110 shadow-lg z-50 border-2 border-white",
+              title: musicPlaying ? "Pausar música de fundo" : "Tocar música de fundo"
+            }, musicPlaying ? "🎵" : "🔇")
+          );
           
           const exportToCSV = () => {
             const results = loadSessionResults();
@@ -1123,6 +1301,14 @@
             setSelectedAnswer(operation);
             setIsCorrect(correct);
             setShowFeedback(true);
+            
+            // Tocar som de feedback imediatamente
+            playFeedbackSound(correct);
+            
+            // Reproduzir áudio de explicação automaticamente após a resposta
+            setTimeout(() => {
+              playAudio(selectedBlock, currentQuestion, 'explicacao');
+            }, 1000); // Aguarda 1 segundo para dar tempo do usuário ver o feedback visual
             
             if (correct) {
               setScore(score + 1);
@@ -1293,6 +1479,7 @@
               className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
               style: getFontStyle()
             }, 
+              MusicToggleButton(),
               React.createElement('div', {
                 className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8"
               },
@@ -1428,9 +1615,16 @@
                 React.createElement('div', {
                   className: "p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500"
                 },
-                  React.createElement('p', {
-                    className: "text-lg leading-relaxed text-gray-800"
-                  }, currentProblem.text)
+                  React.createElement('div', { className: "flex items-start justify-between" },
+                    React.createElement('p', {
+                      className: "text-lg leading-relaxed text-gray-800 flex-1 mr-4"
+                    }, currentProblem.text),
+                    React.createElement('button', {
+                      onClick: () => playAudio(selectedBlock, currentQuestion, 'enunciado'),
+                      className: "flex-shrink-0 w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center text-xl transition-all duration-200 hover:scale-110",
+                      title: "Ouvir enunciado do problema"
+                    }, "🔊")
+                  )
                 )
               ),
               

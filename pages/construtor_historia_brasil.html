@@ -92,6 +92,172 @@
           const [sessionBadges, setSessionBadges] = useState([]);
           const [errorCount, setErrorCount] = useState(0);
           const [allSessionData, setAllSessionData] = useState([]);
+          const [currentAudio, setCurrentAudio] = useState(null);
+          const [backgroundMusic, setBackgroundMusic] = useState(null);
+          const [musicPlaying, setMusicPlaying] = useState(true);
+
+          // Lista de músicas de fundo disponíveis
+          const backgroundMusicFiles = [
+            'musica_fundo_1.mp3',
+            'musica_fundo_2.mp3',
+            'musica_fundo_3.mp3',
+            'musica_fundo_4.mp3',
+            'musica_fundo_5.mp3'
+          ];
+
+          // Listas de sons de feedback
+          const feedbackSounds = {
+            acertos: [
+              'acerto_1.mp3',
+              'acerto_2.mp3', 
+              'acerto_3.mp3',
+              'acerto_4.mp3'
+            ],
+            erros: [
+              'erro_1.mp3',
+              'erro_2.mp3',
+              'erro_3.mp3', 
+              'erro_4.mp3'
+            ]
+          };
+
+          // Inicializar música de fundo
+          useEffect(() => {
+            const initBackgroundMusic = () => {
+              try {
+                // Escolher música aleatoriamente
+                const randomIndex = Math.floor(Math.random() * backgroundMusicFiles.length);
+                const musicPath = `../media/musicas/fundo/${backgroundMusicFiles[randomIndex]}`;
+                
+                const music = new Audio(musicPath);
+                music.volume = 0.15; // Volume baixo (15%)
+                music.loop = true; // Repetir infinitamente
+                
+                setBackgroundMusic(music);
+                
+                // Tentar tocar automaticamente
+                music.play().catch(error => {
+                  console.log('Música de fundo não pôde ser iniciada automaticamente:', error);
+                });
+
+                // Quando a música terminar (improvável com loop), escolher outra
+                music.addEventListener('ended', () => {
+                  initBackgroundMusic();
+                });
+
+              } catch (error) {
+                console.log('Erro ao inicializar música de fundo:', error);
+              }
+            };
+
+            initBackgroundMusic();
+            
+            // Cleanup ao desmontar o componente
+            return () => {
+              if (backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+              }
+            };
+          }, []);
+
+          // Função para controlar música de fundo
+          const toggleBackgroundMusic = () => {
+            if (backgroundMusic) {
+              if (musicPlaying) {
+                backgroundMusic.pause();
+                setMusicPlaying(false);
+              } else {
+                backgroundMusic.play().catch(error => {
+                  console.log('Não foi possível tocar música de fundo:', error);
+                });
+                setMusicPlaying(true);
+              }
+            }
+          };
+
+          // Função para reduzir temporariamente o volume da música de fundo
+          const reduceBackgroundVolume = () => {
+            if (backgroundMusic && musicPlaying) {
+              backgroundMusic.volume = 0.05; // Reduz para 5% durante áudio educacional
+            }
+          };
+
+          // Função para restaurar o volume normal da música de fundo
+          const restoreBackgroundVolume = () => {
+            if (backgroundMusic && musicPlaying) {
+              setTimeout(() => {
+                backgroundMusic.volume = 0.15; // Volta para 15% após áudio
+              }, 500); // Pequeno delay para suavizar a transição
+            }
+          };
+
+          // Função para tocar som de feedback (acerto/erro)
+          const playFeedbackSound = (isCorrect) => {
+            try {
+              const soundType = isCorrect ? 'acertos' : 'erros';
+              const sounds = feedbackSounds[soundType];
+              const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+              const soundPath = `../media/sons/feedback/${soundType}/${randomSound}`;
+              
+              const feedbackAudio = new Audio(soundPath);
+              feedbackAudio.volume = 0.7; // Volume médio para feedback
+              feedbackAudio.play().catch(error => {
+                console.log('Som de feedback não encontrado:', soundPath);
+              });
+            } catch (error) {
+              console.log('Erro ao reproduzir som de feedback:', error);
+            }
+          };
+
+          // Função para garantir que a música de fundo toque após primeira interação
+          const ensureBackgroundMusicPlaying = () => {
+            if (backgroundMusic && backgroundMusic.paused && musicPlaying) {
+              backgroundMusic.play().catch(error => {
+                console.log('Não foi possível iniciar música de fundo:', error);
+              });
+            }
+          };
+
+          // Função para reproduzir áudio dos eventos históricos com prevenção de sobreposição
+          const playAudio = (blockIndex, eventId) => {
+            try {
+              // Garantir que a música de fundo está tocando
+              ensureBackgroundMusicPlaying();
+              
+              // Reduzir volume da música de fundo durante áudio educacional
+              reduceBackgroundVolume();
+
+              // Parar áudio anterior se estiver tocando
+              if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+              }
+
+              // Formato: bloco_X_evento_Y.mp3
+              const audioPath = `../media/audios/historia/bloco_${blockIndex + 1}/bloco_${blockIndex + 1}_evento_${eventId + 1}.mp3`;
+              
+              const audio = new Audio(audioPath);
+              audio.volume = 0.8; // Volume alto para áudio educacional (80%)
+              setCurrentAudio(audio);
+              
+              // Limpar referência e restaurar volume quando áudio terminar
+              audio.addEventListener('ended', () => {
+                setCurrentAudio(null);
+                restoreBackgroundVolume();
+              });
+
+              audio.play().catch(error => {
+                console.log('Áudio não encontrado ou erro na reprodução:', audioPath);
+                setCurrentAudio(null);
+                restoreBackgroundVolume();
+              });
+            } catch (error) {
+              console.log('Erro ao tentar reproduzir áudio:', error);
+              setCurrentAudio(null);
+              restoreBackgroundVolume();
+            }
+          };
 
           const eventBlocks = [
             [
@@ -350,6 +516,9 @@
               eventYear: draggedEvent.year
             };
             setAttempts(prev => [...prev, attemptData]);
+
+            // Tocar som de feedback imediatamente
+            playFeedbackSound(isCorrect);
 
             if (isCorrect) {
               const newPlaced = [...placedEvents];
@@ -823,27 +992,34 @@
                     
                     <div className="space-y-3">
                       {availableEvents.map((event) => (
-                        <div
-                          key={`available-${event.id}`}
-                          draggable={true}
-                          onDragStart={(e) => handleDragStart(e, event)}
-                          className={`
-                            drag-element w-full h-[80px] p-4 rounded-lg border-3 font-bold text-white text-lg
-                            transition-all duration-300 flex items-center justify-between
-                            ${event.color} border-gray-700
-                            shadow-lg hover:shadow-xl
-                          `}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <span className="text-3xl">{event.icon}</span>
-                            <div className="text-left">
-                              <div className="text-lg font-semibold">{event.title}</div>
-                              <div className="text-xs text-white/70">Arraste para organizar</div>
-                            </div>
-                          </div>
-                          
-                          <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs">
+                        <div key={`available-${event.id}`} className="flex items-center space-x-3">
+                          {/* Botão de áudio do lado esquerdo */}
+                          <button
+                            onClick={() => playAudio(selectedBlock, event.id)}
+                            className="flex-shrink-0 w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center text-xl transition-all duration-200 hover:scale-110 shadow-lg"
+                            title={`Ouvir sobre: ${event.title}`}
+                          >
                             🔊
+                          </button>
+                          
+                          {/* Card do evento */}
+                          <div
+                            draggable={true}
+                            onDragStart={(e) => handleDragStart(e, event)}
+                            className={`
+                              drag-element flex-1 h-[80px] p-4 rounded-lg border-3 font-bold text-white text-lg
+                              transition-all duration-300 flex items-center justify-between
+                              ${event.color} border-gray-700
+                              shadow-lg hover:shadow-xl
+                            `}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <span className="text-3xl">{event.icon}</span>
+                              <div className="text-left">
+                                <div className="text-lg font-semibold">{event.title}</div>
+                                <div className="text-xs text-white/70">Arraste para organizar</div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       ))}
