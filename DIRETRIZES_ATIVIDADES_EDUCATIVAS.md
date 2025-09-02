@@ -11,9 +11,19 @@ Este documento estabelece os padrões e práticas que todas as atividades do por
 - **Botão "Voltar ao Portal"**: Navegação `../index.html`
 - **Design responsivo**: Compatível com diferentes tamanhos de tela
 
+### 1.1.1 Portal Principal - Layout dos Cards
+- **Ícone centralizado**: Grande e visualmente atrativo
+- **Título e descrição**: Claros e informativos
+- **Informações organizadas**:
+  - Tempo estimado centralizado com ícone ⏱️
+  - Categoria e dificuldade lado a lado abaixo do tempo
+  - Badges coloridas com bordas arredondadas
+- **Botão de ação**: Destaque com gradiente e hover effects
+
 ### 1.2 Tela de Seleção de Blocos/Níveis
 - **Saudação personalizada**: "Olá, [Nome do Estudante]!"
 - **Tutorial**: Instruções claras sobre como jogar a atividade
+- **Linha divisória sutil**: Entre tutorial e blocos (`border-t border-gray-200 my-6`)
 - **Blocos organizados**: Grid responsivo com informações dos blocos
 - **Botão "Finalizar Sessão"**: Para encerrar e baixar CSV
 
@@ -102,6 +112,13 @@ Carlos Lima,Historia,Detective da Historia,Caso Independencia,5_misterios,450s,5
 - **Tamanhos de fonte**: Adequados para diferentes idades
 - **Interface intuitiva**: Ícones e instruções claras
 
+### 3.5 Elementos Visuais Padronizados
+- **Linhas divisórias**: `border-t border-gray-200 my-6` entre seções
+- **Espaçamentos**: Consistentes entre elementos (my-6, mb-4, etc.)
+- **Bordas arredondadas**: rounded-lg, rounded-xl para elementos
+- **Sombras sutis**: shadow-lg, shadow-xl para profundidade
+- **Transições**: hover:scale-105, transition-all duration-300
+
 ## 4. Estrutura de Arquivos
 
 ### 4.1 Localização
@@ -116,6 +133,12 @@ atividades/
 └── docs/
     └── DIRETRIZES_ATIVIDADES_EDUCATIVAS.md
 ```
+
+**Atividades Disponíveis:**
+- Quiz de Operações Matemáticas (Matemática)
+- Construtor de História do Brasil (História - Intermediário)
+- Corrida da História do Brasil (História - Avançado)
+- Detective da História - Independência (História - Intermediário)
 
 ### 4.2 Nomenclatura
 - **Arquivos HTML**: lowercase com underscores

@@ -649,6 +649,9 @@
                     </div>
                   </div>
 
+                  {/* Linha divisória */}
+                  <div className="border-t border-gray-200 my-6"></div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {blockTitles.map((title, index) => (
                       <button
@@ -840,7 +843,6 @@
                         `}
                       >
                         <div className="text-2xl font-black text-gray-800">{year}</div>
-                        <div className="text-sm text-gray-600">Clique aqui</div>
                         {completedEvents.some(e => e.year === year) && (
                           <div className="text-2xl mt-1">✅</div>
                         )}
@@ -867,7 +869,7 @@
                       onClick={resetGame}
                       className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold transform hover:scale-105"
                     >
-                      ⏹️ Interromper e Escolher Outro Período
+                      ← Voltar
                     </button>
                   </div>
                 </div>

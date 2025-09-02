@@ -1444,26 +1444,34 @@
               
               // Answer options or feedback
               !showFeedback ? 
-                React.createElement('div', { className: "mb-6" },
-                  React.createElement('div', { className: "grid grid-cols-1 gap-4" },
-                    operations.map((operation, index) => 
-                      React.createElement('button', {
-                        key: operation.value,
-                        onClick: () => handleAnswerClick(operation.value),
-                        className: `p-4 border-2 rounded-lg transition-all duration-200 text-left transform hover:scale-105 ${
-                          selectedOperationIndex === index 
-                            ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-200' 
-                            : 'bg-white border-gray-300 hover:border-blue-500 hover:bg-blue-50'
-                        }`
-                      },
-                        React.createElement('div', { className: "flex items-center" },
-                          React.createElement('span', { className: "text-2xl mr-3" }, operation.emoji),
-                          React.createElement('span', { className: "font-semibold text-lg" }, 
-                            `${index + 1}. ${operation.label}`
+                React.createElement('div', {},
+                  React.createElement('div', { className: "mb-4" },
+                    React.createElement('div', { className: "grid grid-cols-1 gap-4" },
+                      operations.map((operation, index) => 
+                        React.createElement('button', {
+                          key: operation.value,
+                          onClick: () => handleAnswerClick(operation.value),
+                          className: `p-4 border-2 rounded-lg transition-all duration-200 text-left transform hover:scale-105 ${
+                            selectedOperationIndex === index 
+                              ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-200' 
+                              : 'bg-white border-gray-300 hover:border-blue-500 hover:bg-blue-50'
+                          }`
+                        },
+                          React.createElement('div', { className: "flex items-center" },
+                            React.createElement('span', { className: "text-2xl mr-3" }, operation.emoji),
+                            React.createElement('span', { className: "font-semibold text-lg" }, 
+                              `${index + 1}. ${operation.label}`
+                            )
                           )
                         )
                       )
                     )
+                  ),
+                  React.createElement('div', { className: "mt-4" },
+                    React.createElement('button', {
+                      onClick: resetQuiz,
+                      className: "w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold transform hover:scale-105"
+                    }, '← Voltar')
                   )
                 ) :
                 React.createElement('div', { className: "mb-6" },
@@ -1508,7 +1516,7 @@
                     React.createElement('button', {
                       onClick: resetQuiz,
                       className: "w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold transform hover:scale-105"
-                    }, '⏹️ Interromper e Escolher Novo Bloco')
+                    }, '← Voltar')
                   )
                 )
             )

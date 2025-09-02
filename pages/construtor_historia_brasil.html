@@ -666,6 +666,9 @@
                     </div>
                   </div>
 
+                  {/* Linha divisória */}
+                  <div className="border-t border-gray-200 my-6"></div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {blockTitles.map((title, index) => (
                       <button
@@ -783,16 +786,10 @@
                 </div>
 
                 <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-orange-200 p-4 mb-6">
-                  <div className="flex justify-between items-center mb-3">
+                  <div className="text-center mb-3">
                     <h3 className="text-xl font-bold text-gray-800">
                       Progresso: {correctCount}/5 eventos
                     </h3>
-                    <button
-                      onClick={backToBlockSelection}
-                      className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-lg border-2 border-gray-600"
-                    >
-                      Trocar Período
-                    </button>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-4 border-2 border-gray-300">
                     <div 
@@ -831,7 +828,7 @@
                           draggable={true}
                           onDragStart={(e) => handleDragStart(e, event)}
                           className={`
-                            drag-element w-full min-h-[80px] p-4 rounded-lg border-3 font-bold text-white text-lg
+                            drag-element w-full h-[80px] p-4 rounded-lg border-3 font-bold text-white text-lg
                             transition-all duration-300 flex items-center justify-between
                             ${event.color} border-gray-700
                             shadow-lg hover:shadow-xl
@@ -869,7 +866,7 @@
                           onDragLeave={handleDragLeave}
                           onDrop={(e) => handleDrop(e, position)}
                           className={`
-                            drop-zone min-h-[80px] p-4 rounded-lg border-3
+                            drop-zone h-[80px] p-4 rounded-lg border-3
                             flex items-center justify-center text-lg font-bold
                             transition-all duration-300
                             ${placedEvents[position] !== null 
@@ -891,7 +888,6 @@
                               <div className="text-4xl mb-1 animate-pulse">⬇️</div>
                               <div className="text-lg font-bold">Posição {position + 1}</div>
                               <div className="text-sm text-gray-400">Arraste um evento aqui</div>
-                              <div className="text-xs text-orange-500 font-semibold mt-1">DROP ZONE</div>
                             </div>
                           )}
                         </div>
@@ -906,7 +902,7 @@
                       onClick={resetGame}
                       className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold transform hover:scale-105"
                     >
-                      ⏹️ Interromper e Escolher Outro Bloco
+                      ← Voltar
                     </button>
                   </div>
                 </div>

@@ -124,6 +124,17 @@
               category: 'História',
               difficulty: 'Avançado',
               estimatedTime: '10-15 min'
+            },
+            {
+              id: 'detective-historia',
+              title: 'Detective da História - Independência',
+              description: 'Investigate pistas e resolva mistérios da Independência do Brasil',
+              icon: '🕵️‍♂️',
+              color: 'from-amber-500 to-orange-600',
+              link: 'pages/detective_historia_independencia.html',
+              category: 'História',
+              difficulty: 'Intermediário',
+              estimatedTime: '20-25 min'
             }
           ];
 
@@ -187,25 +198,6 @@
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {activities.map((activity) => (
                       <div key={activity.id} className="activity-card card-hover">
-                        {/* Category Badge */}
-                        <div className="absolute top-4 left-4">
-                          <span className="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full">
-                            {activity.category}
-                          </span>
-                        </div>
-                        
-                        {/* Difficulty Badge */}
-                        <div className="absolute top-4 right-4">
-                          <span className={`text-xs font-bold px-3 py-1 rounded-full ${
-                            activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
-                            activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
-                            activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {activity.difficulty}
-                          </span>
-                        </div>
-
                         {/* Icon Placeholder */}
                         <div className="icon-placeholder">
                           {activity.icon}
@@ -221,10 +213,25 @@
                         </p>
 
                         {/* Stats */}
-                        <div className="flex justify-center items-center gap-6 mb-6 text-sm text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <span>⏱️</span>
-                            <span>{activity.estimatedTime}</span>
+                        <div className="mb-6">
+                          <div className="flex justify-center items-center gap-2 mb-3 text-sm text-gray-500">
+                            <div className="flex items-center gap-1">
+                              <span>⏱️</span>
+                              <span>{activity.estimatedTime}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-center items-center gap-4 text-xs">
+                            <span className="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full">
+                              {activity.category}
+                            </span>
+                            <span className={`font-bold px-3 py-1 rounded-full ${
+                              activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
+                              activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
+                              activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {activity.difficulty}
+                            </span>
                           </div>
                         </div>
 
