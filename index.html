@@ -57,6 +57,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             border: 3px solid transparent;
             background-clip: padding-box;
+            position: relative;
         }
         .activity-card:hover {
             border-color: #667eea;
@@ -88,7 +89,7 @@
         const { useState } = React;
         
         const PortalAtividades = () => {
-          const [selectedFont, setSelectedFont] = useState('dyslexic');
+          const [selectedFont, setSelectedFont] = useState('comic');
 
           const activities = [
             {
@@ -97,9 +98,9 @@
               description: 'Identifique qual operação matemática resolver diferentes problemas',
               icon: '🧮',
               color: 'from-blue-500 to-purple-600',
-              link: 'operacoes_matematicas.html',
+              link: 'pages/operacoes_matematicas.html',
               category: 'Matemática',
-              difficulty: 'Básico',
+              difficulty: 'Variado',
               estimatedTime: '15-20 min'
             },
             {
@@ -108,10 +109,21 @@
               description: 'Organize eventos históricos na linha do tempo correta',
               icon: '📚',
               color: 'from-orange-500 to-red-600',
-              link: 'construtor_historia_brasil.html',
+              link: 'pages/construtor_historia_brasil.html',
               category: 'História',
               difficulty: 'Intermediário',
               estimatedTime: '20-30 min'
+            },
+            {
+              id: 'corrida-historia',
+              title: 'Corrida da História do Brasil',
+              description: 'Corra contra o tempo identificando anos de eventos históricos',
+              icon: '🏃‍♂️',
+              color: 'from-purple-500 to-pink-600',
+              link: 'pages/corrida_historia_brasil.html',
+              category: 'História',
+              difficulty: 'Avançado',
+              estimatedTime: '10-15 min'
             }
           ];
 
@@ -141,17 +153,6 @@
                     </h3>
                     <div className="grid grid-cols-2 gap-3">
                       <button
-                        onClick={() => setSelectedFont('dyslexic')}
-                        className={`px-4 py-3 rounded-lg font-semibold transition-all ${
-                          selectedFont === 'dyslexic' 
-                            ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
-                            : 'bg-white/20 text-white hover:bg-white/30'
-                        }`}
-                        style={{ fontFamily: "'OpenDyslexic', sans-serif" }}
-                      >
-                        OpenDyslexic
-                      </button>
-                      <button
                         onClick={() => setSelectedFont('comic')}
                         className={`px-4 py-3 rounded-lg font-semibold transition-all ${
                           selectedFont === 'comic' 
@@ -161,6 +162,17 @@
                         style={{ fontFamily: "'Comic Sans MS', cursive" }}
                       >
                         Comic Sans
+                      </button>
+                      <button
+                        onClick={() => setSelectedFont('dyslexic')}
+                        className={`px-4 py-3 rounded-lg font-semibold transition-all ${
+                          selectedFont === 'dyslexic' 
+                            ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
+                            : 'bg-white/20 text-white hover:bg-white/30'
+                        }`}
+                        style={{ fontFamily: "'OpenDyslexic', sans-serif" }}
+                      >
+                        OpenDyslexic
                       </button>
                     </div>
                   </div>
@@ -172,7 +184,7 @@
                 <div className="max-w-6xl mx-auto">
                   
                   {/* Activities Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {activities.map((activity) => (
                       <div key={activity.id} className="activity-card card-hover">
                         {/* Category Badge */}
@@ -187,7 +199,8 @@
                           <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                             activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
                             activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
+                            activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
+                            'bg-gray-100 text-gray-800'
                           }`}>
                             {activity.difficulty}
                           </span>
@@ -230,44 +243,6 @@
                     ))}
                   </div>
 
-                  {/* Features Section */}
-                  <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-                      ✨ Recursos das Atividades
-                    </h2>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="text-center p-6 bg-blue-50 rounded-xl">
-                        <div className="text-4xl mb-4">🎯</div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">
-                          Personalização
-                        </h3>
-                        <p className="text-gray-600">
-                          Escolha fontes adequadas para dislexia e outras necessidades especiais
-                        </p>
-                      </div>
-                      
-                      <div className="text-center p-6 bg-green-50 rounded-xl">
-                        <div className="text-4xl mb-4">📊</div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">
-                          Acompanhamento
-                        </h3>
-                        <p className="text-gray-600">
-                          Relatórios detalhados do desempenho para análise pedagógica
-                        </p>
-                      </div>
-                      
-                      <div className="text-center p-6 bg-purple-50 rounded-xl">
-                        <div className="text-4xl mb-4">🎮</div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">
-                          Gamificação
-                        </h3>
-                        <p className="text-gray-600">
-                          Aprendizado divertido com elementos de jogo e celebrações
-                        </p>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Instructions */}
                   <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-xl p-6">

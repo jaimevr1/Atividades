@@ -441,11 +441,8 @@
             ]);
 
             const csvData = [
-              ['Aluno', 'Data_Hora', 'Tipo_Acao', 'Evento_Trabalhado', 'Ano_Evento', 'Posicao_Tentada', 'Resultado', 'Tempo_Decorrido', 'Bloco_Historico'],
-              ...detailedAttempts,
-              ['', '', '', '', '', '', '', '', ''],
-              ['RESUMO_FINAL', '', '', '', '', '', '', '', ''],
-              [studentName, new Date().toISOString(), 'Atividade_Completa', blockTitles[selectedBlock].replace(/[^a-zA-Z0-9\\s]/g, ''), 'Multiplos_periodos', `${correctCount}/5_acertos`, `${attempts.length}_tentativas`, `${totalTime}s_total`, 'Sequenciamento_Historico']
+              ['Nome', 'Materia', 'Atividade', 'Bloco', 'Questao', 'Tempo_Execucao', 'Acertos', 'Erros', 'Score'],
+              [studentName, 'Historia', 'Construtor de Historia', blockTitles[selectedBlock].replace(/[^a-zA-Z0-9\\s]/g, ''), `${attempts.length}_tentativas`, `${totalTime}s`, correctCount, attempts.length - correctCount, `${Math.round((correctCount / 5) * 100)}%`]
             ];
 
             // Adicionar dados de badges ao CSV
@@ -526,30 +523,25 @@
             if (allSessionData.length === 0) return;
             
             const csvData = [
-              ['Aluno', 'Data_Hora', 'Bloco_Historico', 'Acertos', 'Total_Eventos', 'Porcentagem_Final', 'Tempo_Segundos', 'Total_Tentativas', 'Erros_Cometidos', 'Badges_Conquistadas', 'Pontos_Badges']
+              ['Nome', 'Materia', 'Atividade', 'Bloco', 'Questao', 'Tempo_Execucao', 'Acertos', 'Erros', 'Score']
             ];
             
-            let totalPoints = 0;
-            
             allSessionData.forEach(session => {
-              const badgePoints = session.badges.reduce((sum, badge) => sum + (badgeSystem.badgePoints[badge] || 0), 0);
-              totalPoints += badgePoints;
+              const errorCount = session.attempts.length - session.correctCount;
+              const score = `${session.finalPercentage}%`;
               
               csvData.push([
                 studentName,
-                session.timestamp.toISOString(),
+                'Historia',
+                'Construtor de Historia',
                 session.blockName,
+                `${session.attempts.length}_tentativas`,
+                `${session.totalTime}s`,
                 session.correctCount,
-                5,
-                `${session.finalPercentage}%`,
-                session.totalTime,
-                session.attempts.length,
-                session.errorCount,
-                session.badges.join('_'),
-                badgePoints
+                errorCount,
+                score
               ]);
             });
-            
             
             const csvContent = csvData.map(row => row.join(',')).join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -613,17 +605,25 @@
                   </div>
                   
                   
-                  <button
-                    onClick={startGame}
-                    disabled={!studentName.trim()}
-                    className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
-                      studentName.trim()
-                        ? 'bg-orange-500 text-white hover:bg-orange-600 transform hover:scale-105'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    Começar Aventura Histórica!
-                  </button>
+                  <div className="space-y-4">
+                    <button
+                      onClick={startGame}
+                      disabled={!studentName.trim()}
+                      className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
+                        studentName.trim()
+                          ? 'bg-orange-500 text-white hover:bg-orange-600 transform hover:scale-105'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      Começar Aventura Histórica!
+                    </button>
+                    <a
+                      href="../index.html"
+                      className="block w-full px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold"
+                    >
+                      ← Voltar ao Portal
+                    </a>
+                  </div>
                 </div>
               </div>
             );
@@ -642,6 +642,30 @@
                     </p>
                   </div>
                   
+                  {/* Tutorial */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-6">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+                      Como Jogar
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                      <div className="bg-blue-100 rounded-lg p-4">
+                        <div className="text-2xl mb-2">1️⃣</div>
+                        <div className="text-lg font-semibold">Arraste os eventos</div>
+                        <div className="text-sm text-gray-600">Da lista da esquerda</div>
+                      </div>
+                      <div className="bg-green-100 rounded-lg p-4">
+                        <div className="text-2xl mb-2">2️⃣</div>
+                        <div className="text-lg font-semibold">Solte na linha do tempo</div>
+                        <div className="text-sm text-gray-600">Na ordem cronológica</div>
+                      </div>
+                      <div className="bg-yellow-100 rounded-lg p-4">
+                        <div className="text-2xl mb-2">3️⃣</div>
+                        <div className="text-lg font-semibold">Complete a história</div>
+                        <div className="text-sm text-gray-600">Todos os 5 eventos</div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {blockTitles.map((title, index) => (
                       <button
@@ -738,12 +762,6 @@
                       className="w-full px-8 py-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-xl font-bold transform hover:scale-105"
                     >
                       Escolher Outro Período
-                    </button>
-                    <button
-                      onClick={backToBlockSelection}
-                      className="w-full px-8 py-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-xl font-bold"
-                    >
-                      Voltar ao Início
                     </button>
                   </div>
                 </div>
@@ -883,25 +901,13 @@
                 </div>
 
                 <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-orange-200 p-6 mt-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                    Como Jogar
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div className="bg-blue-100 rounded-lg p-4">
-                      <div className="text-2xl mb-2">1️⃣</div>
-                      <div className="text-lg font-semibold">Arraste os eventos</div>
-                      <div className="text-sm text-gray-600">Da lista da esquerda</div>
-                    </div>
-                    <div className="bg-green-100 rounded-lg p-4">
-                      <div className="text-2xl mb-2">2️⃣</div>
-                      <div className="text-lg font-semibold">Solte na linha do tempo</div>
-                      <div className="text-sm text-gray-600">Na ordem cronológica</div>
-                    </div>
-                    <div className="bg-yellow-100 rounded-lg p-4">
-                      <div className="text-2xl mb-2">3️⃣</div>
-                      <div className="text-lg font-semibold">Complete a história</div>
-                      <div className="text-sm text-gray-600">Todos os 5 eventos</div>
-                    </div>
+                  <div className="text-center mt-6">
+                    <button
+                      onClick={resetGame}
+                      className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold transform hover:scale-105"
+                    >
+                      ⏹️ Interromper e Escolher Outro Bloco
+                    </button>
                   </div>
                 </div>
               </div>

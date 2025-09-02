@@ -1006,65 +1006,19 @@
             { value: 'divisão', label: 'Divisão (÷)', emoji: '➗' }
           ];
 
-          // Keyboard navigation
+          // Keyboard navigation (apenas Enter nas telas iniciais)
           React.useEffect(() => {
             const handleKeyDown = (e) => {
-              // Navegação durante o quiz
-              if (quizStarted && !quizCompleted && !showFeedback) {
-                if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-                  e.preventDefault();
-                  setSelectedOperationIndex((prev) => 
-                    prev < operations.length - 1 ? prev + 1 : 0
-                  );
-                }
-                if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-                  e.preventDefault();
-                  setSelectedOperationIndex((prev) => 
-                    prev > 0 ? prev - 1 : operations.length - 1
-                  );
-                }
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  handleAnswerClick(operations[selectedOperationIndex].value);
-                }
-                if (e.key >= '1' && e.key <= '4') {
-                  const index = parseInt(e.key) - 1;
-                  if (index < operations.length) {
-                    e.preventDefault();
-                    setSelectedOperationIndex(index);
-                    handleAnswerClick(operations[index].value);
-                  }
-                }
-              }
-              
-              // Navegação durante feedback
-              if (showFeedback && e.key === 'Enter') {
-                e.preventDefault();
-                handleNext();
-              }
-              
               // Navegação na tela inicial
               if (!quizStarted && !showBlockSelection && e.key === 'Enter' && studentName.trim()) {
                 e.preventDefault();
                 handleStartName();
               }
-              
-              // Navegação na tela de resultados
-              if (quizCompleted && e.key === 'Enter') {
-                e.preventDefault();
-                setTimeout(saveResult, 100);
-                resetQuiz();
-              }
             };
 
             document.addEventListener('keydown', handleKeyDown);
             return () => document.removeEventListener('keydown', handleKeyDown);
-          }, [quizStarted, showFeedback, quizCompleted, showBlockSelection, studentName, selectedOperationIndex]);
-
-          // Reset selected operation index when question changes
-          React.useEffect(() => {
-            setSelectedOperationIndex(0);
-          }, [currentQuestion]);
+          }, [quizStarted, showBlockSelection, studentName]);
 
           const getFontStyle = () => ({
             fontSize: fontSize === 'large' ? '28px' : '20px',
@@ -1076,11 +1030,12 @@
           
           const exportToCSV = () => {
             const results = loadSessionResults();
-            const csvContent = results.map(result => 
-              `${result.name},${result.blockId},${result.score},${result.total},${result.percentage}%,${result.date},${result.time}`
-            ).join('\n');
+            const csvContent = results.map(result => {
+              const timeInSeconds = Math.round((new Date(result.time) - new Date()) / 1000);
+              return `${result.name},Matematica,Quiz de Operacoes,${result.block},Questao_${result.blockId + 1},${timeInSeconds > 0 ? timeInSeconds : 60}s,${result.score},${5 - result.score},${result.percentage}%`;
+            }).join('\n');
             
-            const header = 'Nome,BlocoID,Acertos,Total,Porcentagem,Data,Horario\n';
+            const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
             const fullContent = header + csvContent;
             
             const now = new Date();
@@ -1359,18 +1314,21 @@
                 ),
                 
                 
-                studentName.trim() && React.createElement('div', { className: "mb-2 text-sm text-gray-600 text-center" },
-                  "Pressione Enter para continuar"
-                ),
-                React.createElement('button', {
-                  onClick: handleStartName,
-                  disabled: !studentName.trim(),
-                  className: `w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
-                    studentName.trim()
-                      ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`
-                }, "🚀 Próximo!")
+                React.createElement('div', { className: "space-y-4" },
+                  React.createElement('button', {
+                    onClick: handleStartName,
+                    disabled: !studentName.trim(),
+                    className: `w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
+                      studentName.trim()
+                        ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`
+                  }, "🚀 Próximo!"),
+                  React.createElement('a', {
+                    href: '../index.html',
+                    className: 'block w-full px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold'
+                  }, "← Voltar ao Portal")
+                )
               )
             );
           }
@@ -1423,7 +1381,7 @@
                     resetQuiz();
                   },
                   className: "w-full px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-xl font-bold transform hover:scale-105"
-                }, sessionActive ? "🎯 Escolher Novo Bloco" : "🏠 Voltar ao Início")
+                }, "🎯 Escolher Novo Bloco")
               )
             );
           }
@@ -1487,9 +1445,6 @@
               // Answer options or feedback
               !showFeedback ? 
                 React.createElement('div', { className: "mb-6" },
-                  React.createElement('div', { className: "mb-4 text-sm text-gray-600 text-center" },
-                    "Use as setas ↑↓ ou números 1-4 para navegar. Enter para selecionar."
-                  ),
                   React.createElement('div', { className: "grid grid-cols-1 gap-4" },
                     operations.map((operation, index) => 
                       React.createElement('button', {
@@ -1546,13 +1501,14 @@
                   ),
                   
                   React.createElement('div', { className: "mt-4" },
-                    React.createElement('div', { className: "mb-2 text-sm text-gray-600 text-center" },
-                      "Pressione Enter para continuar"
-                    ),
                     React.createElement('button', {
                       onClick: handleNext,
-                      className: "w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold transform hover:scale-105"
-                    }, currentQuestion < 4 ? '➡️ Próxima Questão' : '🏁 Ver Resultado')
+                      className: "w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold transform hover:scale-105 mb-3"
+                    }, currentQuestion < 4 ? '➡️ Próxima Questão' : '🏁 Ver Resultado'),
+                    React.createElement('button', {
+                      onClick: resetQuiz,
+                      className: "w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold transform hover:scale-105"
+                    }, '⏹️ Interromper e Escolher Novo Bloco')
                   )
                 )
             )

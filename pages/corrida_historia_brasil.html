@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Corrida da História do Brasil</title>
-    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -14,7 +13,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
         }
         .loading {
             display: flex;
@@ -83,7 +82,7 @@
           const [sessionBadges, setSessionBadges] = useState([]);
           const [allSessionData, setAllSessionData] = useState([]);
 
-          // 5 blocos de eventos históricos
+          // 6 blocos de eventos históricos
           const eventBlocks = [
             {
               name: "Colonização e Invasões Holandesas",
@@ -139,6 +138,17 @@
                 { id: 3, year: 1985, text: "O fim da Ditadura e a volta do voto direto para presidente.", image: "caminhos/ilustra_fim_ditadura.png", icon: "🗳️" },
                 { id: 4, year: 1988, text: "A promulgação da Constituição Federal, a Constituição Cidadã.", image: "caminhos/ilustra_constituicao_88.png", icon: "⚖️" }
               ]
+            },
+            {
+              name: "Personalidades do Brasil",
+              timeline: [1822, 1888, 1930, 1950, 1985],
+              events: [
+                { id: 0, year: 1822, text: "Dom Pedro I proclamou a independência do Brasil.", image: "caminhos/ilustra_dom_pedro_i.png", icon: "👑" },
+                { id: 1, year: 1888, text: "Princesa Isabel assinou a Lei Áurea, que aboliu a escravidão no Brasil.", image: "caminhos/ilustra_princesa_isabel.png", icon: "✨" },
+                { id: 2, year: 1930, text: "Getúlio Vargas assumiu a presidência, iniciando a Era Vargas e governando por 15 anos.", image: "caminhos/ilustra_getulio_vargas.png", icon: "🎩" },
+                { id: 3, year: 1950, text: "Juscelino Kubitschek foi responsável pela construção de Brasília.", image: "caminhos/ilustra_jk.png", icon: "🏗️" },
+                { id: 4, year: 1985, text: "Tancredo Neves foi eleito o primeiro presidente civil após a Ditadura Militar, mas faleceu antes de assumir o cargo.", image: "caminhos/ilustra_tancredo.png", icon: "🗳️" }
+              ]
             }
           ];
 
@@ -147,7 +157,8 @@
             "Expansão e Mineração", 
             "Independência e Império",
             "Abolição e República Velha",
-            "Brasil Contemporâneo"
+            "Brasil Contemporâneo",
+            "Personalidades do Brasil"
           ];
 
           const celebrations = [
@@ -217,6 +228,16 @@
                   silver: { title: "Construtor de Brasília", icon: "🏛️", requirement: "4+ estrelas", description: "Edificou conhecimento moderno" },
                   gold: { title: "Guardião da Democracia", icon: "🗳️", requirement: "5 estrelas", description: "Protegeu a história democrática" },
                   speed: { title: "Visionário Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Futuro em alta velocidade" }
+                }
+              },
+              {
+                blockId: 5,
+                name: "Personalidades do Brasil",
+                badges: {
+                  bronze: { title: "Conhecedor de Líderes", icon: "🎖️", requirement: "3+ estrelas", description: "Conheceu grandes figuras brasileiras" },
+                  silver: { title: "Estudioso da Liderança", icon: "👑", requirement: "4+ estrelas", description: "Compreendeu o impacto dos líderes" },
+                  gold: { title: "Mestre da História dos Líderes", icon: "🏆", requirement: "5 estrelas", description: "Dominou a cronologia dos grandes líderes" },
+                  speed: { title: "Especialista Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Expert em liderança histórica" }
                 }
               }
             ],
@@ -426,24 +447,25 @@
             if (allSessionData.length === 0) return;
             
             const csvData = [
-              ['Aluno', 'Data_Hora', 'Bloco_Historico', 'Estrelas_Conquistadas', 'Modo_Expert', 'Total_Tentativas', 'Badges_Conquistadas', 'Pontos_Badges']
+              ['Nome', 'Materia', 'Atividade', 'Bloco', 'Questao', 'Tempo_Execucao', 'Acertos', 'Erros', 'Score']
             ];
             
-            let totalPoints = 0;
-            
             allSessionData.forEach(session => {
-              const badgePoints = session.badges.reduce((sum, badge) => sum + (badgeSystem.pointSystem[badge] || 0), 0);
-              totalPoints += badgePoints;
+              const errorCount = session.totalAttempts - session.stars;
+              const averageTime = session.attempts.length > 0 
+                ? Math.round(session.attempts.reduce((sum, attempt) => sum + attempt.responseTime, 0) / session.attempts.length)
+                : 8;
               
               csvData.push([
                 studentName,
-                session.timestamp.toISOString(),
+                'Historia',
+                'Corrida da Historia',
                 session.blockName,
+                `${session.totalAttempts}_eventos`,
+                `${averageTime}s`,
                 session.stars,
-                session.isExpertMode ? 'Sim' : 'Nao',
-                session.totalAttempts,
-                session.badges.join('_') || 'Nenhuma',
-                badgePoints
+                errorCount,
+                `${Math.round((session.stars / 5) * 100)}%`
               ]);
             });
             
@@ -534,7 +556,7 @@
             fontSize: '24px',
             fontFamily: fontSize === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
                        fontSize === 'comic' ? "'Comic Sans MS', cursive" :
-                       "'OpenDyslexic', sans-serif"
+                       "'Comic Sans MS', sans-serif"
           });
 
           // Tela inicial
@@ -560,17 +582,25 @@
                     />
                   </div>
                   
-                  <button
-                    onClick={startGame}
-                    disabled={!studentName.trim()}
-                    className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
-                      studentName.trim()
-                        ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    Começar Corrida Histórica!
-                  </button>
+                  <div className="space-y-4">
+                    <button
+                      onClick={startGame}
+                      disabled={!studentName.trim()}
+                      className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
+                        studentName.trim()
+                          ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      Começar Corrida Histórica!
+                    </button>
+                    <a
+                      href="../index.html"
+                      className="block w-full px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold"
+                    >
+                      ← Voltar ao Portal
+                    </a>
+                  </div>
                 </div>
               </div>
             );
@@ -590,6 +620,35 @@
                     </p>
                   </div>
                   
+                  {/* Tutorial */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6 mb-6">
+                    <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                      Como Jogar a Corrida
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                      <div className="bg-blue-100 rounded-lg p-4">
+                        <div className="text-2xl mb-2">1️⃣</div>
+                        <div className="text-sm font-semibold">Evento aparece</div>
+                        <div className="text-xs text-gray-600">No centro da tela</div>
+                      </div>
+                      <div className="bg-green-100 rounded-lg p-4">
+                        <div className="text-2xl mb-2">2️⃣</div>
+                        <div className="text-sm font-semibold">Timer de 8 segundos</div>
+                        <div className="text-xs text-gray-600">Corra contra o tempo!</div>
+                      </div>
+                      <div className="bg-yellow-100 rounded-lg p-4">
+                        <div className="text-2xl mb-2">3️⃣</div>
+                        <div className="text-sm font-semibold">Clique no ano</div>
+                        <div className="text-xs text-gray-600">Na linha do tempo</div>
+                      </div>
+                      <div className="bg-purple-100 rounded-lg p-4">
+                        <div className="text-2xl mb-2">4️⃣</div>
+                        <div className="text-sm font-semibold">Colete estrelas</div>
+                        <div className="text-xs text-gray-600">5 estrelas = vitória!</div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {blockTitles.map((title, index) => (
                       <button
@@ -682,17 +741,6 @@
                     >
                       Escolher Outro Período
                     </button>
-                    <button
-                      onClick={() => {
-                        setShowBlockSelection(false);
-                        setStudentName('');
-                        setGameStarted(false);
-                        setGameCompleted(false);
-                      }}
-                      className="w-full px-8 py-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-xl font-bold"
-                    >
-                      Voltar ao Início
-                    </button>
                   </div>
                 </div>
               </div>
@@ -704,7 +752,6 @@
             <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4" style={getFontStyle()}>
               <div className="max-w-6xl mx-auto">
                 
-                {/* Header com score e modo */}
                 <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-4 mb-6">
                   <div className="flex justify-between items-center">
                     <div>
@@ -730,7 +777,50 @@
                   </div>
                 </div>
 
-                {/* Timeline horizontal */}
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6 mb-6">
+                  {currentEvent ? (
+                    <div className="text-center">
+                      <div className="mb-4">
+                        <div className="flex justify-center items-center mb-2">
+                          <span className="text-2xl font-bold text-gray-800 mr-3">⏰ {timeLeft}s</span>
+                          {isExpertMode && <span className="text-lg font-bold text-purple-600">MODO EXPERT</span>}
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-4 border-2 border-gray-300 overflow-hidden">
+                          <div 
+                            className={`h-full rounded-full transition-all duration-1000 ${
+                              timeLeft > maxTime * 0.6 ? 'bg-green-500' :
+                              timeLeft > maxTime * 0.3 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${(timeLeft / maxTime) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div className="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-xl border-3 border-yellow-200 p-6 pulse-animation">
+                        <div className="text-4xl mb-4">{currentEvent.icon}</div>
+                        <div className="bg-white/60 rounded-lg p-4 mb-4">
+                          <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+                            Placeholder Imagem {currentEvent.year}
+                          </div>
+                        </div>
+                        <p className="text-lg font-semibold text-gray-800 leading-relaxed">
+                          {currentEvent.text}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          📅 Clique no ano correto na linha do tempo abaixo!
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <div className="text-6xl mb-4 animate-bounce">🏃‍♂️</div>
+                      <p className="text-2xl font-bold text-gray-800">
+                        Prepare-se! Próximo evento chegando...
+                      </p>
+                    </div>
+                  )}
+                </div>
+
                 <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6 mb-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
                     🎯 Linha do Tempo - Clique no ano correto!
@@ -759,93 +849,26 @@
                   </div>
                 </div>
 
-                {/* Área central do evento */}
-                <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6 mb-6">
-                  {currentEvent ? (
-                    <div className="text-center">
-                      {/* Timer visual */}
-                      <div className="mb-4">
-                        <div className="flex justify-center items-center mb-2">
-                          <span className="text-2xl font-bold text-gray-800 mr-3">⏰ {timeLeft}s</span>
-                          {isExpertMode && <span className="text-lg font-bold text-purple-600">MODO EXPERT</span>}
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-4 border-2 border-gray-300">
-                          <div 
-                            className={`h-full rounded-full transition-all duration-1000 ${
-                              timeLeft > maxTime * 0.6 ? 'bg-green-500' :
-                              timeLeft > maxTime * 0.3 ? 'bg-yellow-500' : 'bg-red-500'
-                            }`}
-                            style={{ width: `${(timeLeft / maxTime) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      {/* Evento atual */}
-                      <div className="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-xl border-3 border-yellow-200 p-6 pulse-animation">
-                        <div className="text-4xl mb-4">{currentEvent.icon}</div>
-                        <div className="bg-white/60 rounded-lg p-4 mb-4">
-                          <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-sm">
-                            Placeholder Imagem {currentEvent.year}
-                          </div>
-                        </div>
-                        <p className="text-lg font-semibold text-gray-800 leading-relaxed">
-                          {currentEvent.text}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-2">
-                          📅 Clique no ano correto na linha do tempo acima!
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <div className="text-6xl mb-4 animate-bounce">🏃‍♂️</div>
-                      <p className="text-2xl font-bold text-gray-800">
-                        Prepare-se! Próximo evento chegando...
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Celebração */}
                 {showCelebration && (
                   <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white text-2xl font-bold text-center p-6 rounded-xl border-4 border-green-600 animate-bounce z-50 shadow-2xl">
                     {celebrationMessage}
                   </div>
                 )}
 
-                {/* Popup de erro */}
                 {showError && (
                   <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xl font-bold text-center p-6 rounded-xl border-4 border-red-600 animate-pulse z-50 shadow-2xl">
                     {errorMessage}
                   </div>
                 )}
 
-                {/* Instruções */}
                 <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                    Como Jogar a Corrida
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                    <div className="bg-blue-100 rounded-lg p-4">
-                      <div className="text-2xl mb-2">1️⃣</div>
-                      <div className="text-sm font-semibold">Evento aparece</div>
-                      <div className="text-xs text-gray-600">No centro da tela</div>
-                    </div>
-                    <div className="bg-green-100 rounded-lg p-4">
-                      <div className="text-2xl mb-2">2️⃣</div>
-                      <div className="text-sm font-semibold">Timer de 8 segundos</div>
-                      <div className="text-xs text-gray-600">Corra contra o tempo!</div>
-                    </div>
-                    <div className="bg-yellow-100 rounded-lg p-4">
-                      <div className="text-2xl mb-2">3️⃣</div>
-                      <div className="text-sm font-semibold">Clique no ano</div>
-                      <div className="text-xs text-gray-600">Na linha do tempo</div>
-                    </div>
-                    <div className="bg-purple-100 rounded-lg p-4">
-                      <div className="text-2xl mb-2">4️⃣</div>
-                      <div className="text-sm font-semibold">Colete estrelas</div>
-                      <div className="text-xs text-gray-600">5 estrelas = vitória!</div>
-                    </div>
+                  <div className="text-center mt-6">
+                    <button
+                      onClick={resetGame}
+                      className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold transform hover:scale-105"
+                    >
+                      ⏹️ Interromper e Escolher Outro Período
+                    </button>
                   </div>
                 </div>
               </div>
