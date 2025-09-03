@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__gemini-cli__ask-gemini",
+      "Bash(grep:*)",
+      "Bash(for i in {01..27})",
+      "Bash(do mkdir -p \"media/audios/matematica/bloco_$i\")",
+      "Bash(done)",
+      "Bash(for i in {1..6})",
+      "Bash(do mkdir -p \"media/audios/historia/bloco_$i\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

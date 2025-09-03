@@ -4,92 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atividades Educativas - Portal Principal</title>
-    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+        @import url('./src/styles/index.css');
+        
+        /* Additional portal-specific styles */
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 70%, #ffeaa7 100%);
         }
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        }
+        
         .activity-card {
-            background: white;
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 3px solid transparent;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid transparent;
             background-clip: padding-box;
             position: relative;
+            overflow: hidden;
         }
+        
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, #667eea, #764ba2, #f093fb);
+            z-index: -1;
+            margin: -2px;
+            border-radius: inherit;
+        }
+        
         .activity-card:hover {
-            border-color: #667eea;
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
         }
-        .icon-placeholder {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 48px;
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
+            100% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.6); }
         }
     </style>
 </head>
 <body>
     <div id="root">
-        <div class="loading">
+        <div class="loading-container">
             <div class="spinner"></div>
-            Carregando Portal de Atividades...
+            <p>Carregando Portal de Atividades...</p>
         </div>
     </div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
         
         const PortalAtividades = () => {
-          const [selectedFont, setSelectedFont] = useState('comic');
+          const [selectedFont, setSelectedFont] = useState('modern');
+          const [isLoading, setIsLoading] = useState(true);
+          
+          useEffect(() => {
+            // Simulate loading time
+            const timer = setTimeout(() => setIsLoading(false), 1500);
+            return () => clearTimeout(timer);
+          }, []);
 
           const activities = [
             {
@@ -97,139 +89,181 @@
               title: 'Quiz de Operações Matemáticas',
               description: 'Identifique qual operação matemática resolver diferentes problemas',
               icon: '🧮',
-              color: 'from-blue-500 to-purple-600',
+              gradient: 'from-blue-500 via-purple-500 to-indigo-600',
               link: 'pages/operacoes_matematicas.html',
               category: 'Matemática',
               difficulty: 'Variado',
-              estimatedTime: '15-20 min'
+              estimatedTime: '15-20 min',
+              color: 'blue'
             },
             {
               id: 'historia-brasil',
               title: 'Construtor de História do Brasil',
               description: 'Organize eventos históricos na linha do tempo correta',
               icon: '📚',
-              color: 'from-orange-500 to-red-600',
+              gradient: 'from-orange-500 via-red-500 to-pink-600',
               link: 'pages/construtor_historia_brasil.html',
               category: 'História',
               difficulty: 'Intermediário',
-              estimatedTime: '20-30 min'
+              estimatedTime: '20-30 min',
+              color: 'orange'
             },
             {
               id: 'corrida-historia',
               title: 'Corrida da História do Brasil',
               description: 'Corra contra o tempo identificando anos de eventos históricos',
               icon: '🏃‍♂️',
-              color: 'from-purple-500 to-pink-600',
+              gradient: 'from-purple-500 via-pink-500 to-rose-600',
               link: 'pages/corrida_historia_brasil.html',
               category: 'História',
               difficulty: 'Avançado',
-              estimatedTime: '10-15 min'
+              estimatedTime: '10-15 min',
+              color: 'purple'
             },
             {
               id: 'detective-historia',
               title: 'Detective da História - Independência',
               description: 'Investigate pistas e resolva mistérios da Independência do Brasil',
               icon: '🕵️‍♂️',
-              color: 'from-amber-500 to-orange-600',
+              gradient: 'from-amber-500 via-orange-500 to-red-600',
               link: 'pages/detective_historia_independencia.html',
               category: 'História',
               difficulty: 'Intermediário',
-              estimatedTime: '20-25 min'
+              estimatedTime: '20-25 min',
+              color: 'amber'
             }
           ];
 
-          const getFontStyle = () => ({
-            fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
-                       selectedFont === 'comic' ? "'Comic Sans MS', cursive" :
-                       "'OpenDyslexic', sans-serif"
-          });
+          const getFontClass = () => {
+            switch(selectedFont) {
+              case 'dyslexic': return 'font-dyslexic';
+              case 'playful': return 'font-playful';
+              case 'modern': return 'font-modern';
+              default: return 'font-modern';
+            }
+          };
+          
+          const getDifficultyColor = (difficulty) => {
+            switch(difficulty) {
+              case 'Básico': return 'bg-green-100 text-green-800 border-green-200';
+              case 'Intermediário': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+              case 'Avançado': return 'bg-red-100 text-red-800 border-red-200';
+              default: return 'bg-gray-100 text-gray-800 border-gray-200';
+            }
+          };
+
+          if (isLoading) {
+            return (
+              <div className="loading-container">
+                <div className="spinner"></div>
+                <p className="text-responsive-lg">Carregando Portal de Atividades...</p>
+              </div>
+            );
+          }
 
           return (
-            <div className="min-h-screen gradient-bg" style={getFontStyle()}>
-              {/* Header */}
+            <div className={`min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 ${getFontClass()}`}>
+              {/* Hero Section */}
               <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-black opacity-20"></div>
-                <div className="relative z-10 text-white text-center py-20">
-                  <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                    🎯 Portal de Atividades Educativas
-                  </h1>
-                  <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto px-4">
-                    Aprenda brincando com atividades interativas personalizadas para diferentes necessidades
-                  </p>
+                <div className="hero-gradient">
+                  <div className="absolute inset-0 bg-black opacity-10"></div>
                   
-                  {/* Font Selection */}
-                  <div className="max-w-md mx-auto bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                    <h3 className="text-lg font-semibold mb-4">
-                      🎨 Escolha sua Fonte Preferida:
-                    </h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={() => setSelectedFont('comic')}
-                        className={`px-4 py-3 rounded-lg font-semibold transition-all ${
-                          selectedFont === 'comic' 
-                            ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
-                            : 'bg-white/20 text-white hover:bg-white/30'
-                        }`}
-                        style={{ fontFamily: "'Comic Sans MS', cursive" }}
-                      >
-                        Comic Sans
-                      </button>
-                      <button
-                        onClick={() => setSelectedFont('dyslexic')}
-                        className={`px-4 py-3 rounded-lg font-semibold transition-all ${
-                          selectedFont === 'dyslexic' 
-                            ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
-                            : 'bg-white/20 text-white hover:bg-white/30'
-                        }`}
-                        style={{ fontFamily: "'OpenDyslexic', sans-serif" }}
-                      >
-                        OpenDyslexic
-                      </button>
+                  {/* Floating Elements */}
+                  <div className="absolute top-20 left-10 floating-element opacity-20">
+                    <div className="w-16 h-16 bg-white rounded-full"></div>
+                  </div>
+                  <div className="absolute top-40 right-20 floating-element opacity-20" style={{animationDelay: '2s'}}>
+                    <div className="w-12 h-12 bg-white rounded-full"></div>
+                  </div>
+                  <div className="absolute bottom-20 left-1/4 floating-element opacity-20" style={{animationDelay: '4s'}}>
+                    <div className="w-20 h-20 bg-white rounded-full"></div>
+                  </div>
+                  
+                  <div className="relative z-10 text-white text-center py-16 px-4">
+                    <div className="max-w-4xl mx-auto">
+                      <h1 className="text-responsive-2xl md:text-6xl font-bold mb-6 leading-tight">
+                        🎯 Portal de Atividades Educativas
+                      </h1>
+                      <p className="text-responsive-lg md:text-2xl mb-8 opacity-90 leading-relaxed">
+                        Aprenda brincando com atividades interativas personalizadas para diferentes necessidades
+                      </p>
+                      
+                      {/* Font Selection */}
+                      <div className="max-w-md mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                        <h3 className="text-responsive-md font-semibold mb-4">
+                          🎨 Escolha sua Fonte Preferida:
+                        </h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          {[
+                            { key: 'modern', label: 'Moderna', font: 'font-modern' },
+                            { key: 'playful', label: 'Divertida', font: 'font-playful' },
+                            { key: 'dyslexic', label: 'Acessível', font: 'font-dyslexic' }
+                          ].map((font) => (
+                            <button
+                              key={font.key}
+                              onClick={() => setSelectedFont(font.key)}
+                              className={`px-4 py-3 rounded-xl font-semibold transition-all duration-300 ${font.font} ${
+                                selectedFont === font.key 
+                                  ? 'bg-white text-purple-600 shadow-lg transform scale-105 pulse-glow' 
+                                  : 'bg-white/20 text-white hover:bg-white/30 hover:scale-105'
+                              }`}
+                            >
+                              {font.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Main Content */}
-              <div className="relative z-10 px-4 pb-20 -mt-10">
-                <div className="max-w-6xl mx-auto">
+              <div className="relative -mt-16 px-4 pb-20">
+                <div className="max-w-7xl mx-auto">
                   
                   {/* Activities Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    {activities.map((activity) => (
-                      <div key={activity.id} className="activity-card card-hover">
-                        {/* Icon Placeholder */}
-                        <div className="icon-placeholder">
-                          {activity.icon}
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 mb-16">
+                    {activities.map((activity, index) => (
+                      <div 
+                        key={activity.id} 
+                        className="activity-card rounded-3xl p-6 transition-all duration-500 hover:shadow-2xl"
+                        style={{ animationDelay: `${index * 0.1}s` }}
+                      >
+                        {/* Icon Container */}
+                        <div className="relative mb-6">
+                          <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${activity.gradient} flex items-center justify-center text-4xl shadow-lg`}>
+                            {activity.icon}
+                          </div>
+                          <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center text-sm font-bold shadow-md">
+                            ⭐
+                          </div>
                         </div>
 
                         {/* Content */}
-                        <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                        <h3 className="text-responsive-lg font-bold text-gray-800 mb-3 text-center leading-tight">
                           {activity.title}
                         </h3>
                         
-                        <p className="text-gray-600 mb-4 leading-relaxed">
+                        <p className="text-gray-600 mb-4 text-center leading-relaxed text-sm">
                           {activity.description}
                         </p>
 
                         {/* Stats */}
-                        <div className="mb-6">
-                          <div className="flex justify-center items-center gap-2 mb-3 text-sm text-gray-500">
-                            <div className="flex items-center gap-1">
-                              <span>⏱️</span>
-                              <span>{activity.estimatedTime}</span>
-                            </div>
+                        <div className="mb-6 space-y-3">
+                          <div className="flex justify-center items-center gap-2 text-sm text-gray-500">
+                            <span className="text-lg">⏱️</span>
+                            <span className="font-medium">{activity.estimatedTime}</span>
                           </div>
-                          <div className="flex justify-center items-center gap-4 text-xs">
-                            <span className="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full">
+                          <div className="flex justify-center items-center gap-3 text-xs">
+                            <span className={`px-3 py-1 rounded-full font-bold border-2 ${
+                              activity.category === 'Matemática' 
+                                ? 'bg-blue-100 text-blue-800 border-blue-200' 
+                                : 'bg-purple-100 text-purple-800 border-purple-200'
+                            }`}>
                               {activity.category}
                             </span>
-                            <span className={`font-bold px-3 py-1 rounded-full ${
-                              activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
-                              activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
-                              activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span className={`px-3 py-1 rounded-full font-bold border-2 ${getDifficultyColor(activity.difficulty)}`}>
                               {activity.difficulty}
                             </span>
                           </div>
@@ -238,10 +272,8 @@
                         {/* Action Button */}
                         <a
                           href={activity.link}
-                          onClick={(e) => {
-                            localStorage.setItem('selectedFont', selectedFont);
-                          }}
-                          className={`inline-flex items-center justify-center w-full px-8 py-4 bg-gradient-to-r ${activity.color} text-white font-bold text-lg rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300`}
+                          onClick={() => localStorage.setItem('selectedFont', selectedFont)}
+                          className={`block w-full px-6 py-4 bg-gradient-to-r ${activity.gradient} text-white font-bold text-center rounded-2xl hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-sm`}
                         >
                           <span className="mr-2">🚀</span>
                           Começar Atividade
@@ -250,46 +282,64 @@
                     ))}
                   </div>
 
-
-                  {/* Instructions */}
-                  <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-xl p-6">
-                    <h3 className="text-2xl font-bold text-center text-gray-800 mb-4">
-                      📋 Como Usar
+                  {/* Instructions Section */}
+                  <div className="bg-white/80 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl">
+                    <h3 className="text-responsive-xl font-bold text-center text-gray-800 mb-8">
+                      📋 Como Usar o Portal
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                      <div className="bg-blue-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">1️⃣</div>
-                        <div className="font-semibold">Escolha sua fonte</div>
-                        <div className="text-sm text-gray-600">Personalize para suas necessidades</div>
-                      </div>
-                      <div className="bg-green-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">2️⃣</div>
-                        <div className="font-semibold">Selecione uma atividade</div>
-                        <div className="text-sm text-gray-600">Clique no card da atividade</div>
-                      </div>
-                      <div className="bg-yellow-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">3️⃣</div>
-                        <div className="font-semibold">Digite seu nome</div>
-                        <div className="text-sm text-gray-600">Para acompanhar seu progresso</div>
-                      </div>
-                      <div className="bg-purple-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">4️⃣</div>
-                        <div className="font-semibold">Divirta-se aprendendo!</div>
-                        <div className="text-sm text-gray-600">Complete as atividades</div>
-                      </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                      {[
+                        { step: '1️⃣', title: 'Escolha sua fonte', desc: 'Personalize para suas necessidades', color: 'bg-blue-50 border-blue-200' },
+                        { step: '2️⃣', title: 'Selecione uma atividade', desc: 'Clique no card da atividade', color: 'bg-green-50 border-green-200' },
+                        { step: '3️⃣', title: 'Digite seu nome', desc: 'Para acompanhar seu progresso', color: 'bg-yellow-50 border-yellow-200' },
+                        { step: '4️⃣', title: 'Divirta-se aprendendo!', desc: 'Complete as atividades', color: 'bg-purple-50 border-purple-200' }
+                      ].map((instruction, index) => (
+                        <div key={index} className={`${instruction.color} rounded-2xl p-6 border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg`}>
+                          <div className="text-4xl mb-3">{instruction.step}</div>
+                          <div className="font-semibold text-gray-800 mb-2">{instruction.title}</div>
+                          <div className="text-sm text-gray-600">{instruction.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Features Section */}
+                  <div className="mt-16 text-center">
+                    <h3 className="text-responsive-xl font-bold text-gray-800 mb-8">
+                      ✨ Recursos Especiais
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {[
+                        { icon: '🎵', title: 'Áudio Interativo', desc: 'Música de fundo e narração educativa' },
+                        { icon: '🏆', title: 'Sistema de Badges', desc: 'Conquiste medalhas e acompanhe seu progresso' },
+                        { icon: '📱', title: 'Responsivo', desc: 'Funciona perfeitamente em tablets e celulares' }
+                      ].map((feature, index) => (
+                        <div key={index} className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-white/30 hover:bg-white/80 transition-all duration-300">
+                          <div className="text-4xl mb-3">{feature.icon}</div>
+                          <h4 className="font-bold text-gray-800 mb-2">{feature.title}</h4>
+                          <p className="text-gray-600 text-sm">{feature.desc}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="bg-black/20 text-white text-center py-8">
-                <p className="text-lg">
-                  🌟 Desenvolvido para tornar o aprendizado acessível e divertido
-                </p>
-                <p className="text-sm mt-2 opacity-80">
-                  Com suporte especial para necessidades educativas especiais
-                </p>
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-12">
+                <div className="max-w-4xl mx-auto px-4">
+                  <p className="text-responsive-lg mb-4">
+                    🌟 Desenvolvido para tornar o aprendizado acessível e divertido
+                  </p>
+                  <p className="text-sm opacity-80">
+                    Com suporte especial para necessidades educativas especiais
+                  </p>
+                  <div className="mt-6 flex justify-center space-x-4">
+                    <span className="text-2xl animate-bounce">🎓</span>
+                    <span className="text-2xl animate-bounce" style={{animationDelay: '0.2s'}}>📚</span>
+                    <span className="text-2xl animate-bounce" style={{animationDelay: '0.4s'}}>🎯</span>
+                  </div>
+                </div>
               </div>
             </div>
           );

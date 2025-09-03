@@ -1,0 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Quicksand:wght@300;400;500;600;700&family=OpenDyslexic:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Modern Color Palette - Soft and Kid-Friendly */
+  --color-primary: #667eea;
+  --color-secondary: #764ba2;
+  --color-accent: #f093fb;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-background: #fef7ff;
+  --color-surface: #ffffff;
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  
+  /* Soft Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  --gradient-error: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  
+  /* Spacing and Sizing */
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 20px;
+  --border-radius-2xl: 24px;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.2);
+  
+  /* Font Settings */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', 'Quicksand', 'OpenDyslexic', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+#root {
+  margin: auto;
+  min-height: 100vh;
+}
+
+/* Modern Button Styles */
+.btn-primary {
+  @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 active:scale-95;
+  background: var(--gradient-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+  @apply px-6 py-3 rounded-xl font-semibold text-gray-700 bg-white border-2 border-gray-200 transition-all duration-300 transform hover:scale-105 active:scale-95;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  @apply border-purple-300 bg-purple-50;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-success {
+  @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 active:scale-95;
+  background: var(--gradient-success);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-warning {
+  @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 active:scale-95;
+  background: var(--gradient-warning);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-error {
+  @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 active:scale-95;
+  background: var(--gradient-error);
+  box-shadow: var(--shadow-md);
+}
+
+/* Modern Card Styles */
+.card {
+  @apply bg-white rounded-2xl p-6 transition-all duration-300;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.card:hover {
+  @apply transform -translate-y-2;
+  box-shadow: var(--shadow-lg);
+}
+
+.card-interactive {
+  @apply cursor-pointer;
+}
+
+.card-interactive:hover {
+  @apply transform -translate-y-3;
+  box-shadow: var(--shadow-xl);
+}
+
+/* Loading Animation */
+.loading-container {
+  @apply flex flex-col items-center justify-center min-h-screen text-white text-2xl;
+  background: var(--gradient-primary);
+}
+
+.spinner {
+  @apply border-4 border-white/20 border-t-white rounded-full w-12 h-12 mb-6;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Celebration Animation */
+.celebration {
+  @apply fixed inset-0 flex items-center justify-center z-50 pointer-events-none;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+}
+
+.celebration-content {
+  @apply bg-white rounded-3xl p-8 text-center transform scale-110;
+  box-shadow: var(--shadow-xl);
+  animation: celebrationPulse 0.6s ease-out;
+}
+
+@keyframes celebrationPulse {
+  0% { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+  50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Error/Feedback Animation */
+.error-feedback {
+  @apply fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-xl z-50;
+  box-shadow: var(--shadow-lg);
+  animation: slideInRight 0.3s ease-out;
+}
+
+.success-feedback {
+  @apply fixed top-4 right-4 bg-green-500 text-white px-6 py-4 rounded-xl z-50;
+  box-shadow: var(--shadow-lg);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  0% { transform: translateX(100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+/* Progress Bar */
+.progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-4 overflow-hidden;
+}
+
+.progress-fill {
+  @apply h-full transition-all duration-500 ease-out rounded-full;
+  background: var(--gradient-primary);
+}
+
+/* Drag and Drop Styles */
+.drag-element {
+  @apply cursor-grab transition-all duration-300 transform hover:scale-105;
+}
+
+.drag-element:active {
+  @apply cursor-grabbing scale-110;
+}
+
+.drop-zone {
+  @apply border-3 border-dashed border-gray-300 rounded-xl transition-all duration-300;
+}
+
+.drop-zone.drag-over {
+  @apply border-purple-400 bg-purple-50 border-4;
+  box-shadow: var(--shadow-md);
+}
+
+/* Font Classes */
+.font-dyslexic {
+  font-family: 'OpenDyslexic', sans-serif;
+}
+
+.font-playful {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.font-modern {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Responsive Typography */
+.text-responsive-xs { @apply text-sm sm:text-base; }
+.text-responsive-sm { @apply text-base sm:text-lg; }
+.text-responsive-md { @apply text-lg sm:text-xl; }
+.text-responsive-lg { @apply text-xl sm:text-2xl; }
+.text-responsive-xl { @apply text-2xl sm:text-3xl; }
+.text-responsive-2xl { @apply text-3xl sm:text-4xl; }
+
+/* Background Patterns */
+.bg-pattern {
+  background-image: url('https://images.unsplash.com/photo-1612605979431-1b198ddfcf20?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTAwNDR8MHwxfHNlYXJjaHwzfHxnZW9tZXRyaWMlMjBwYXR0ZXJuJTIwZWR1Y2F0aW9uJTIwcGFzdGVsfGVufDB8MHx8cHVycGxlfDE3NTY4NTgwMDd8MA&ixlib=rb-4.1.0&q=85');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Audio Controls */
+.audio-control {
+  @apply fixed bottom-4 right-4 bg-white rounded-full p-3 shadow-lg cursor-pointer transition-all duration-300 hover:scale-110;
+  border: 2px solid var(--color-primary);
+}
+
+/* Badge Styles */
+.badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
+}
+
+.badge-bronze {
+  @apply bg-orange-100 text-orange-800;
+}
+
+.badge-silver {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.badge-gold {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-speed {
+  @apply bg-purple-100 text-purple-800;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .card {
+    @apply p-4;
+  }
+  
+  .btn-primary, .btn-secondary, .btn-success, .btn-warning, .btn-error {
+    @apply px-4 py-2 text-sm;
+  }
+  
+  .celebration-content {
+    @apply p-6 mx-4;
+  }
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus Styles */
+button:focus,
+input:focus,
+select:focus {
+  @apply outline-none ring-4 ring-purple-300 ring-opacity-50;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-text-primary: #000000;
+    --color-text-secondary: #333333;
+    --color-border: #666666;
+  }
+}
