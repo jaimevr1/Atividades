@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fazenda de Mobs</title>
+    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+        }
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="loading">
+            <div class="spinner"></div>
+            Carregando Atividade...
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const FazendaMobs = () => {
+            const [studentName, setStudentName] = useState('');
+            const [selectedFont, setSelectedFont] = useState(localStorage.getItem('selectedFont') || 'comic');
+            const [currentPhase, setCurrentPhase] = useState('inicio');
+            const [currentBlock, setCurrentBlock] = useState(null);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [sessionResults, setSessionResults] = useState([]);
+            const [startTime, setStartTime] = useState(null);
+            const [userAnswer, setUserAnswer] = useState('');
+            const [showFeedback, setShowFeedback] = useState(false);
+            const [isCorrect, setIsCorrect] = useState(false);
+            const [score, setScore] = useState(0);
+
+            const questionsBlocks = {
+                1: { // 6-7 anos - Multiplicação básica até 4x, produtos até 20
+                  title: "🎮 Novato no Roblox - Primeiros Passos",
+                  ageRange: "6-7 anos",
+                  questions: [
+                    {
+                      scenario: "Você acabou de entrar no Roblox! Seu avatar precisa de roupas novas. Você encontrou 3 lojas, cada uma vendendo 2 camisetas legais. Quantas camisetas diferentes você pode escolher no total?",
+                      visual: "🏪[👕👕] 🏪[👕👕] 🏪[👕👕]",
+                      calculation: "2 + 2 + 2",
+                      answer: 6,
+                      multiplication: "3 × 2",
+                      hint: "Conte as camisetas de cada loja e some tudo!",
+                      context: "Customização de avatar - conceito fundamental do Roblox"
+                    },
+                    {
+                      scenario: "No jogo 'Pet Simulator', você ganhou 4 ovos especiais. Cada ovo sempre dá exatamente 3 pets quando quebra. Se você quebrar todos os ovos, quantos pets novos você terá?",
+                      visual: "🥚[🐱🐶🐰] 🥚[🐱🐶🐰] 🥚[🐱🐶🐰] 🥚[🐱🐶🐰]",
+                      calculation: "3 + 3 + 3 + 3",
+                      answer: 12,
+                      multiplication: "4 × 3",
+                      hint: "Cada ovo sempre dá 3 pets. Conte todos!",
+                      context: "Pet games são muito populares entre crianças pequenas"
+                    },
+                    {
+                      scenario: "Você está jogando 'Obby Escape' e chegou numa sala com 5 plataformas. Em cada plataforma há exatamente 2 moedas brilhantes para coletar. Quantas moedas você conseguirá pegar nesta sala?",
+                      visual: "⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙]",
+                      calculation: "2 + 2 + 2 + 2 + 2",
+                      answer: 10,
+                      multiplication: "5 × 2",
+                      hint: "Cada plataforma tem 2 moedas. Some todas!",
+                      context: "Obbys são obstacle courses muito jogados por crianças"
+                    },
+                    {
+                      scenario: "No 'Tycoon dos Dinossauros', você construiu 2 cercados gigantes. Cada cercado abriga exatamente 4 dinossauros bebês. Quantos dinossauros bebês você está cuidando no total?",
+                      visual: "🦕🦕🦕🦕 | 🦕🦕🦕🦕",
+                      calculation: "4 + 4",
+                      answer: 8,
+                      multiplication: "2 × 4",
+                      hint: "Conte os dinossauros de cada cercado!",
+                      context: "Tycoons ensinam gestão de recursos de forma lúdica"
+                    },
+                    {
+                      scenario: "Você está no 'Pizza Place' trabalhando como entregador. Você fez 3 viagens de entrega hoje. Em cada viagem, você entregou exatamente 5 pizzas quentinhas. Quantas pizzas você entregou no dia todo?",
+                      visual: "🚗[🍕🍕🍕🍕🍕] 🚗[🍕🍕🍕🍕🍕] 🚗[🍕🍕🍕🍕🍕]",
+                      calculation: "5 + 5 + 5",
+                      answer: 15,
+                      multiplication: "3 × 5",
+                      hint: "Some as pizzas de todas as suas viagens!",
+                      context: "Roleplay games ajudam a entender profissões"
+                    }
+                  ]
+                },
+                2: { // 8-9 anos - Multiplicação até 8x, produtos até 60
+                  title: "⚔️ Aventureiro Experiente - Desafios Maiores",
+                  ageRange: "8-9 anos", 
+                  questions: [
+                    {
+                      scenario: "No 'Simulator de Mineração Espacial', você descobriu um asteroide raro com 7 pontos de escavação. Cada ponto sempre rende exatamente 6 cristais preciosos quando minerado completamente. Se você minerar todo o asteroide, quantos cristais terá coletado?",
+                      visual: "☄️ → ⛏️[💎💎💎💎💎💎] × 7 pontos",
+                      calculation: "6 + 6 + 6 + 6 + 6 + 6 + 6",
+                      answer: 42,
+                      multiplication: "7 × 6",
+                      hint: "Cada ponto de escavação rende 6 cristais. Multiplique!",
+                      context: "Simulators espaciais estimulam interesse por ciências"
+                    },
+                    {
+                      scenario: "Você é dono de uma loja de carros no 'Vehicle Simulator'. Hoje chegaram 6 caminhões de entrega, cada um trazendo exatamente 8 carros novos para sua loja. Quantos carros novos você recebeu para vender?",
+                      visual: "🚛[🚗🚗🚗🚗🚗🚗🚗🚗] × 6 caminhões",
+                      calculation: "8 + 8 + 8 + 8 + 8 + 8",
+                      answer: 48,
+                      multiplication: "6 × 8",
+                      hint: "Cada caminhão trouxe 8 carros. Calcule o total!",
+                      context: "Vehicle simulators trabalham conceitos de negócios"
+                    },
+                    {
+                      scenario: "No 'Torre de Batalha', você formou uma guilda com 8 membros (incluindo você). Cada membro da guilda ganhou exatamente 7 pontos de experiência na última missão. Quantos pontos de experiência sua guilda ganhou no total?",
+                      visual: "👥[⭐⭐⭐⭐⭐⭐⭐] × 8 membros",
+                      calculation: "7 + 7 + 7 + 7 + 7 + 7 + 7 + 7",
+                      answer: 56,
+                      multiplication: "8 × 7",
+                      hint: "Cada membro ganhou 7 pontos. Multiplique pelo número de membros!",
+                      context: "Guilds ensinam trabalho em equipe e colaboração"
+                    },
+                    {
+                      scenario: "Você trabalha no 'Restaurante Cinco Estrelas' como chef. Para o jantar especial de hoje, você precisa preparar 9 mesas VIP. Cada mesa VIP sempre serve exatamente 5 pratos principais. Quantos pratos principais você precisa cozinhar?",
+                      visual: "🍽️[🥘🥘🥘🥘🥘] × 9 mesas VIP",
+                      calculation: "5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5",
+                      answer: 45,
+                      multiplication: "9 × 5",
+                      hint: "Cada mesa VIP precisa de 5 pratos. Calcule o total!",
+                      context: "Gestão de restaurante ensina planejamento e organização"
+                    },
+                    {
+                      scenario: "No 'Academia de Super Heróis', você está treinando com 6 colegas novatos. O instrutor deu para cada um de vocês exatamente 9 exercícios especiais para praticar esta semana. Quantos exercícios no total o grupo inteiro precisa completar?",
+                      visual: "🦸‍♂️[📋📋📋📋📋📋📋📋📋] × 6 novatos",
+                      calculation: "9 + 9 + 9 + 9 + 9 + 9",
+                      answer: 54,
+                      multiplication: "6 × 9",
+                      hint: "Cada novato recebeu 9 exercícios. Multiplique!",
+                      context: "Temas de super-heróis motivam persistência e esforço"
+                    }
+                  ]
+                },
+                3: { // 10-11 anos - Multiplicação com dezenas, produtos até 200
+                  title: "👑 Mestre do Roblox - Grandes Conquistas",
+                  ageRange: "10-11 anos",
+                  questions: [
+                    {
+                      scenario: "Você criou um 'Império Comercial' no Roblox e agora possui 12 lojas diferentes espalhadas pelo mapa. Cada loja gera exatamente 15 Robux de lucro por dia. Se todas as lojas funcionarem perfeitamente por um dia inteiro, quanto Robux você ganhará?",
+                      visual: "🏪[💰15] × 12 lojas = ? Robux por dia",
+                      calculation: "15 + 15 + 15... (12 vezes)",
+                      answer: 180,
+                      multiplication: "12 × 15",
+                      hint: "Cada loja rende 15 Robux por dia. Multiplique pelo número de lojas!",
+                      context: "Empreendedorismo digital e gestão financeira"
+                    },
+                    {
+                      scenario: "No 'Torneio Mundial de Esportes', você é técnico de 14 equipes diferentes. Cada equipe tem exatamente 11 jogadores prontos para competir. Quantos atletas estão sob sua responsabilidade no total?",
+                      visual: "⚽[👤👤👤👤👤👤👤👤👤👤👤] × 14 equipes",
+                      calculation: "11 + 11 + 11... (14 vezes)",
+                      answer: 154,
+                      multiplication: "14 × 11",
+                      hint: "Cada equipe tem 11 jogadores. Multiplique pelo número de equipes!",
+                      context: "Esportes ensinam liderança e responsabilidade"
+                    },
+                    {
+                      scenario: "Você é arquiteto no 'Cidade dos Sonhos' e recebeu uma encomenda gigante: construir 16 edifícios residenciais idênticos. Cada edifício precisa de exatamente 13 tipos diferentes de materiais de construção. Quantos tipos de materiais você precisa calcular no total?",
+                      visual: "🏢[🧱📦⚙️🪟🚪...13 tipos] × 16 edifícios",
+                      calculation: "13 + 13 + 13... (16 vezes)",
+                      answer: 208,
+                      multiplication: "16 × 13",
+                      hint: "Cada edifício usa 13 tipos de materiais. Multiplique!",
+                      context: "Arquitetura estimula pensamento espacial e planejamento"
+                    },
+                    {
+                      scenario: "No 'Festival de Música Virtual', você é organizador de 13 palcos simultâneos. Cada palco terá exatamente 12 apresentações musicais durante o evento. Quantas apresentações musicais acontecerão no festival inteiro?",
+                      visual: "🎵[🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤] × 13 palcos",
+                      calculation: "12 + 12 + 12... (13 vezes)",
+                      answer: 156,
+                      multiplication: "13 × 12",
+                      hint: "Cada palco terá 12 apresentações. Multiplique pelo número de palcos!",
+                      context: "Organização de eventos desenvolve habilidades de coordenação"
+                    },
+                    {
+                      scenario: "Você é líder da aliança mais poderosa no 'Estratégia Galáctica'. Sua aliança controla 15 planetas habitados. Cada planeta contribui com exatamente 14 naves de guerra para a frota unificada. Quantas naves de guerra sua aliança possui no total?",
+                      visual: "🪐[🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀] × 15 planetas",
+                      calculation: "14 + 14 + 14... (15 vezes)",
+                      answer: 210,
+                      multiplication: "15 × 14",
+                      hint: "Cada planeta contribui com 14 naves. Multiplique pelo número de planetas!",
+                      context: "Estratégia espacial desenvolve pensamento tático"
+                    }
+                  ]
+                }
+              };
+
+            const getFontStyle = () => ({
+                fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : "'Comic Sans MS', cursive"
+            });
+
+            const handleStartName = () => {
+                if (studentName.trim()) {
+                    setCurrentPhase('selecao');
+                }
+            };
+
+            const selecionarBloco = (bloco) => {
+                setCurrentBlock(bloco);
+                setCurrentQuestion(0);
+                setScore(0);
+                setCurrentPhase('jogo');
+                setStartTime(Date.now());
+            };
+
+            const submitAnswer = () => {
+                const questionData = questionsBlocks[currentBlock].questions[currentQuestion];
+                const correct = parseInt(userAnswer) === questionData.answer;
+                
+                if(correct) {
+                    setScore(prev => prev + 1);
+                }
+
+                setIsCorrect(correct);
+                setShowFeedback(true);
+
+                setTimeout(() => {
+                    nextQuestion();
+                }, 3000);
+            };
+
+            const nextQuestion = () => {
+                setShowFeedback(false);
+                setUserAnswer('');
+                if (currentQuestion < questionsBlocks[currentBlock].questions.length - 1) {
+                    setCurrentQuestion(prev => prev + 1);
+                } else {
+                    saveResult();
+                    setCurrentPhase('selecao');
+                }
+            };
+            
+            const saveResult = () => {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                const config = questionsBlocks[currentBlock];
+                const result = {
+                    Nome: studentName,
+                    Materia: 'Matematica',
+                    Atividade: 'Fazenda de Mobs',
+                    Bloco: config.title,
+                    Questao: `Bloco_${currentBlock}`,
+                    Tempo_Execucao: `${timeSpent}s`,
+                    Acertos: score,
+                    Erros: config.questions.length - score,
+                    Score: `${Math.round((score / config.questions.length) * 100)}%`
+                };
+                const updatedResults = [...sessionResults, result];
+                setSessionResults(updatedResults);
+                localStorage.setItem('fazendaMobsResults', JSON.stringify(updatedResults));
+            };
+
+            const downloadCSV = () => {
+                const resultsToExport = JSON.parse(localStorage.getItem('fazendaMobsResults') || '[]');
+                if (resultsToExport.length === 0) {
+                    alert("Nenhum dado para exportar!");
+                    return;
+                }
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = resultsToExport.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
+                const fullContent = header + csvContent;
+                const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `resultados-fazenda_mobs-${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                localStorage.removeItem('fazendaMobsResults');
+                setSessionResults([]);
+                setCurrentPhase('inicio');
+            };
+
+            if (currentPhase === 'inicio') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4 flex items-center justify-center" style={getFontStyle()}>
+                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center">
+                            <h1 className="text-4xl font-bold text-gray-800 mb-4">🐄 Fazenda de Mobs</h1>
+                            <p className="text-lg text-gray-600 mb-6">Aprenda multiplicação gerenciando sua fazenda de mobs do Roblox!</p>
+                            <input type="text" placeholder="Digite seu nome" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="w-full p-4 border-2 border-gray-300 rounded-lg text-xl mb-6" />
+                            <button onClick={handleStartName} disabled={!studentName.trim()} className="w-full py-4 bg-green-600 text-white font-bold text-xl rounded-lg hover:bg-green-700 disabled:opacity-50">
+                                Começar
+                            </button>
+                            <a href="../index.html" className="block w-full mt-4 px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600">Voltar ao Portal</a>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (currentPhase === 'selecao') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4" style={getFontStyle()}>
+                        <div className="max-w-4xl mx-auto">
+                            <h1 className="text-4xl font-bold text-white text-center mb-8">Olá, {studentName}! Escolha um bloco de desafios:</h1>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                {Object.entries(questionsBlocks).map(([key, config]) => (
+                                    <div key={key} className="bg-white rounded-lg p-6 shadow-lg cursor-pointer" onClick={() => selecionarBloco(parseInt(key))}>
+                                        <h3 className="text-xl font-bold mb-2">{config.title}</h3>
+                                        <p className="text-gray-600">{config.ageRange}</p>
+                                    </div>
+                                ))}
+                            </div>
+                             <button onClick={downloadCSV} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold">
+                                Finalizar Sessão e Baixar CSV
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (currentPhase === 'jogo') {
+                const questionData = questionsBlocks[currentBlock].questions[currentQuestion];
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 p-4 flex items-center justify-center" style={getFontStyle()}>
+                        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl p-8">
+                            <div className="mb-6">
+                                <p className="text-lg text-gray-600 text-center">Questão {currentQuestion + 1} de {questionsBlocks[currentBlock].questions.length}</p>
+                                <div className="w-full bg-gray-200 rounded-full h-4 mt-2">
+                                    <div className="bg-green-500 h-4 rounded-full" style={{width: `${((currentQuestion + 1) / questionsBlocks[currentBlock].questions.length) * 100}%`}}></div>
+                                </div>
+                            </div>
+                            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg">
+                                <h3 className="text-xl font-semibold text-gray-800">{questionData.scenario}</h3>
+                            </div>
+                            <div className="text-center my-6 text-3xl font-mono text-gray-700">{questionData.visual}</div>
+                            {!showFeedback ? (
+                                <div className="space-y-4">
+                                    <input
+                                        type="number"
+                                        value={userAnswer}
+                                        onChange={(e) => setUserAnswer(e.target.value)}
+                                        className="w-full p-4 border-2 border-gray-300 rounded-lg text-xl text-center"
+                                        placeholder="Sua resposta..."
+                                    />
+                                    <button onClick={submitAnswer} disabled={!userAnswer} className="w-full py-4 bg-blue-600 text-white font-bold text-xl rounded-lg disabled:opacity-50">
+                                        Confirmar
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className={`text-center p-6 rounded-lg ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}>
+                                    <h4 className={`text-2xl font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? 'Correto!' : 'Quase lá!'}</h4>
+                                    <p className="text-lg mt-2">A resposta é {questionData.answer}. ({questionData.multiplication})</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        ReactDOM.render(<FazendaMobs />, document.getElementById('root'));
+    </script>
+</body>
+</html>

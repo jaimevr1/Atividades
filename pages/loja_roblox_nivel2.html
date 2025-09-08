@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja do Roblox - Nível 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+        }
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="loading">
+            <div class="spinner"></div>
+            Carregando Atividade...
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const LojaRobloxNivel2 = () => {
+            const [studentName, setStudentName] = useState('');
+            const [selectedFont, setSelectedFont] = useState(localStorage.getItem('selectedFont') || 'comic');
+            const [currentPhase, setCurrentPhase] = useState('inicio'); // inicio, selecao, jogo, resultado
+            const [currentBlock, setCurrentBlock] = useState(null);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showFeedback, setShowFeedback] = useState(false);
+            const [feedbackMessage, setFeedbackMessage] = useState('');
+            const [isCorrect, setIsCorrect] = useState(false);
+            const [score, setScore] = useState(0);
+            const [quizCompleted, setQuizCompleted] = useState(false);
+            const [sessionResults, setSessionResults] = useState([]);
+            const [startTime, setStartTime] = useState(null);
+            const [completedBlocks, setCompletedBlocks] = useState([]);
+
+            const blocos = [
+                {
+                  id: 1,
+                  titulo: "Primeiras Compras",
+                  subtitulo: "Começando no Roblox",
+                  cor: "from-green-400 to-blue-500",
+                  dificuldade: "Fácil",
+                  objetivo: "Aquecer com somas simples",
+                  robuxInicial: 50,
+                  situacoes: [
+                    {
+                      contexto: "Você acabou de criar sua conta no Roblox e ganhou 50 Robux de bônus! Hora de personalizar seu avatar.",
+                      pergunta: "Compre uma camisa (10 Robux) e um chapéu (15 Robux). Quanto você gastará no total?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
+                        { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 20, texto: "20 Robux" },
+                        { id: 2, valor: 25, texto: "25 Robux" },
+                        { id: 3, valor: 30, texto: "30 Robux" },
+                        { id: 4, valor: 15, texto: "15 Robux" }
+                      ],
+                      respostaCorreta: 25,
+                      dica: "Some os preços dos itens no carrinho: 10 + 15 = ?"
+                    },
+                    {
+                      contexto: "Seu avatar está ficando massa! Agora você quer adicionar óculos para ficar ainda mais estiloso.",
+                      pergunta: "Compre os óculos (8 Robux). Somando com suas compras anteriores, quanto gastou no total?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
+                        { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" },
+                        { id: 3, nome: "Óculos Cool", preco: 8, emoji: "🕶️" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 28, texto: "28 Robux" },
+                        { id: 2, valor: 33, texto: "33 Robux" },
+                        { id: 3, valor: 38, texto: "38 Robux" },
+                        { id: 4, valor: 23, texto: "23 Robux" }
+                      ],
+                      respostaCorreta: 33,
+                      dica: "Você já gastou 25 Robux. Agora adicione mais 8 Robux dos óculos: 25 + 8 = ?"
+                    },
+                    {
+                      contexto: "Você quer saber se ainda tem dinheiro para comprar outras coisas legais.",
+                      pergunta: "Você tinha 50 Robux e já gastou 33. Quantos Robux sobraram?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Dinheiro Gasto", preco: 33, emoji: "💸" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 17, texto: "17 Robux" },
+                        { id: 2, valor: 12, texto: "12 Robux" },
+                        { id: 3, valor: 22, texto: "22 Robux" },
+                        { id: 4, valor: 15, texto: "15 Robux" }
+                      ],
+                      respostaCorreta: 17,
+                      dica: "Calcule quanto sobrou: 50 - 33 = ?",
+                      tipoCalculo: "sobra",
+                      dinheiroInicial: 50
+                    },
+                    {
+                      contexto: "Legal! Você descobriu que ainda pode comprar mais coisas! Vamos ver se dá para comprar os tênis.",
+                      pergunta: "Adicione os tênis (12 Robux) ao seu carrinho. Quanto você gastará no total até agora?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
+                        { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" },
+                        { id: 3, nome: "Óculos Cool", preco: 8, emoji: "🕶️" },
+                        { id: 4, nome: "Tênis Bacana", preco: 12, emoji: "👟" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 40, texto: "40 Robux" },
+                        { id: 2, valor: 45, texto: "45 Robux" },
+                        { id: 3, valor: 50, texto: "50 Robux" },
+                        { id: 4, valor: 35, texto: "35 Robux" }
+                      ],
+                      respostaCorreta: 45,
+                      dica: "Some tudo que você comprou: 33 + 12 = ?"
+                    },
+                    {
+                      contexto: "Parabéns! Você montou seu primeiro look completo no Roblox! Agora vamos ver quanto dinheiro sobrou.",
+                      pergunta: "Depois de gastar 45 Robux dos seus 50 Robux iniciais, quantos sobraram?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Total Gasto", preco: 45, emoji: "💸" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 3, texto: "3 Robux" },
+                        { id: 2, valor: 5, texto: "5 Robux" },
+                        { id: 3, valor: 8, texto: "8 Robux" },
+                        { id: 4, valor: 10, texto: "10 Robux" }
+                      ],
+                      respostaCorreta: 5,
+                      dica: "Quanto sobrou da sua carteira: 50 - 45 = ?",
+                      tipoCalculo: "sobra",
+                      dinheiroInicial: 50
+                    }
+                  ]
+                },
+                {
+                  id: 2,
+                  titulo: "Loja de Pets",
+                  subtitulo: "Adotando companheiros virtuais",
+                  cor: "from-purple-500 to-pink-500",
+                  dificuldade: "Médio",
+                  objetivo: "Resolver problemas com valores maiores",
+                  robuxInicial: 150,
+                  situacoes: [
+                    {
+                      contexto: "Você entrou na loja de pets do Roblox! Tem 150 Robux para adotar bichinhos fofinhos.",
+                      pergunta: "Compre um cachorro (45 Robux) e um gato (38 Robux). Quanto você gastará?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
+                        { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 75, texto: "75 Robux" },
+                        { id: 2, valor: 83, texto: "83 Robux" },
+                        { id: 3, valor: 90, texto: "90 Robux" },
+                        { id: 4, valor: 78, texto: "78 Robux" }
+                      ],
+                      respostaCorreta: 83,
+                      dica: "Some os preços dos pets: 45 + 38 = ?"
+                    },
+                    {
+                      contexto: "Seus pets estão adorando brincar juntos! Agora você quer adicionar um coelho para completar a família.",
+                      pergunta: "Adicione o coelho (32 Robux) aos seus pets. Quanto você terá gasto no total?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
+                        { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" },
+                        { id: 3, nome: "Coelho Saltitante", preco: 32, emoji: "🐰" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 110, texto: "110 Robux" },
+                        { id: 2, valor: 115, texto: "115 Robux" },
+                        { id: 3, valor: 120, texto: "120 Robux" },
+                        { id: 4, valor: 105, texto: "105 Robux" }
+                      ],
+                      respostaCorreta: 115,
+                      dica: "Você já gastou 83 Robux. Adicione mais 32 Robux: 83 + 32 = ?"
+                    },
+                    {
+                      contexto: "Você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets.",
+                      pergunta: "Dos seus 150 Robux iniciais, quantos sobraram após gastar 115?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Total Gasto", preco: 115, emoji: "💸" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 30, texto: "30 Robux" },
+                        { id: 2, valor: 35, texto: "35 Robux" },
+                        { id: 3, valor: 40, texto: "40 Robux" },
+                        { id: 4, valor: 25, texto: "25 Robux" }
+                      ],
+                      respostaCorreta: 35,
+                      dica: "Calcule: 150 - 115 = ?",
+                      tipoCalculo: "sobra",
+                      dinheiroInicial: 150
+                    },
+                    {
+                      contexto: "Seus pets estão com fome! Você decidiu comprar comida premium para eles.",
+                      pergunta: "Adicione a comida premium (35 Robux). Quanto você terá gasto no total?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
+                        { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" },
+                        { id: 3, nome: "Coelho Saltitante", preco: 32, emoji: "🐰" },
+                        { id: 4, nome: "Comida Premium", preco: 35, emoji: "🍖" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 145, texto: "145 Robux" },
+                        { id: 2, valor: 150, texto: "150 Robux" },
+                        { id: 3, valor: 155, texto: "155 Robux" },
+                        { id: 4, valor: 140, texto: "140 Robux" }
+                      ],
+                      respostaCorreta: 150,
+                      dica: "Some todas as suas compras: 115 + 35 = ?"
+                    },
+                    {
+                      contexto: "Incrível! Você gastou exatamente todos os seus Robux cuidando bem dos seus pets!",
+                      pergunta: "Depois de gastar 150 Robux dos seus 150 Robux iniciais, quantos sobraram?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Total Gasto", preco: 150, emoji: "💸" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 0, texto: "0 Robux" },
+                        { id: 2, valor: 5, texto: "5 Robux" },
+                        { id: 3, valor: 10, texto: "10 Robux" },
+                        { id: 4, valor: 15, texto: "15 Robux" }
+                      ],
+                      respostaCorreta: 0,
+                      dica: "Você gastou tudo: 150 - 150 = ?",
+                      tipoCalculo: "sobra",
+                      dinheiroInicial: 150
+                    }
+                  ]
+                },
+                {
+                  id: 3,
+                  titulo: "Parque de Diversões",
+                  subtitulo: "Ingressos e brinquedos",
+                  cor: "from-red-500 to-orange-600",
+                  dificuldade: "Avançado",
+                  objetivo: "Gerenciar orçamento com valores maiores",
+                  robuxInicial: 200,
+                  situacoes: [
+                    {
+                      contexto: "Você chegou no parque de diversões do Roblox! Tem 200 Robux para se divertir o dia todo.",
+                      pergunta: "Compre o ingresso do parque (85 Robux) e um lanche (67 Robux). Quanto você gastará?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
+                        { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 145, texto: "145 Robux" },
+                        { id: 2, valor: 152, texto: "152 Robux" },
+                        { id: 3, valor: 160, texto: "160 Robux" },
+                        { id: 4, valor: 138, texto: "138 Robux" }
+                      ],
+                      respostaCorreta: 152,
+                      dica: "Some o ingresso e o lanche: 85 + 67 = ?"
+                    },
+                    {
+                      contexto: "Depois do lanche, você quer andar na montanha-russa! Mas primeiro precisa de um refrigerante para se refrescar.",
+                      pergunta: "Adicione um refrigerante (25 Robux). Quanto você terá gasto no total?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
+                        { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" },
+                        { id: 3, nome: "Refrigerante", preco: 25, emoji: "🥤" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 170, texto: "170 Robux" },
+                        { id: 2, valor: 177, texto: "177 Robux" },
+                        { id: 3, valor: 185, texto: "185 Robux" },
+                        { id: 4, valor: 162, texto: "162 Robux" }
+                      ],
+                      respostaCorreta: 177,
+                      dica: "Você já gastou 152 Robux. Adicione mais 25: 152 + 25 = ?"
+                    },
+                    {
+                      contexto: "Agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída.",
+                      pergunta: "Dos seus 200 Robux iniciais, quantos sobraram depois de gastar 177?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Total Gasto", preco: 177, emoji: "💸" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 18, texto: "18 Robux" },
+                        { id: 2, valor: 23, texto: "23 Robux" },
+                        { id: 3, valor: 28, texto: "28 Robux" },
+                        { id: 4, valor: 33, texto: "33 Robux" }
+                      ],
+                      respostaCorreta: 23,
+                      dica: "Calcule: 200 - 177 = ?",
+                      tipoCalculo: "sobra",
+                      dinheiroInicial: 200
+                    },
+                    {
+                      contexto: "Legal! Você ainda tem dinheiro para comprar um imã de lembrança do parque.",
+                      pergunta: "Adicione o imã (23 Robux) às suas compras. Quanto você terá gasto no total?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
+                        { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" },
+                        { id: 3, nome: "Refrigerante", preco: 25, emoji: "🥤" },
+                        { id: 4, nome: "Imã", preco: 23, emoji: "🧢" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 195, texto: "195 Robux" },
+                        { id: 2, valor: 200, texto: "200 Robux" },
+                        { id: 3, valor: 205, texto: "205 Robux" },
+                        { id: 4, valor: 190, texto: "190 Robux" }
+                      ],
+                      respostaCorreta: 200,
+                      dica: "Some todas as suas compras: 177 + 23 = ?"
+                    },
+                    {
+                      contexto: "Perfeito! Você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro!",
+                      pergunta: "Depois de gastar 200 Robux dos seus 200 Robux iniciais, quantos sobraram?",
+                      carrinhoFixo: [
+                        { id: 1, nome: "Total Gasto", preco: 200, emoji: "💸" }
+                      ],
+                      opcoes: [
+                        { id: 1, valor: 0, texto: "0 Robux" },
+                        { id: 2, valor: 5, texto: "5 Robux" },
+                        { id: 3, valor: 10, texto: "10 Robux" },
+                        { id: 4, valor: 15, texto: "15 Robux" }
+                      ],
+                      respostaCorreta: 0,
+                      dica: "Você gastou exatamente tudo: 200 - 200 = ?",
+                      tipoCalculo: "sobra",
+                      dinheiroInicial: 200
+                    }
+                  ]
+                }
+            ];
+
+            useEffect(() => {
+                if (currentPhase === 'jogo' && !startTime) {
+                    setStartTime(Date.now());
+                }
+            }, [currentPhase, startTime]);
+
+            const getFontStyle = () => ({
+                fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : "'Comic Sans MS', cursive"
+            });
+
+            const handleStartName = () => {
+                if (studentName.trim()) {
+                    setCurrentPhase('selecao');
+                }
+            };
+
+            const selecionarBloco = (bloco) => {
+                setCurrentBlock(bloco);
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setScore(0);
+                setQuizCompleted(false);
+                setCurrentPhase('jogo');
+                setStartTime(Date.now());
+            };
+
+            const handleAnswerClick = (opcao) => {
+                setSelectedAnswer(opcao);
+                const situacao = currentBlock.situacoes[currentQuestion];
+                const correct = opcao.valor === situacao.respostaCorreta;
+                setIsCorrect(correct);
+                
+                if (correct) {
+                    setScore(prev => prev + 1);
+                    setFeedbackMessage("✅ Perfeito! Você calculou certinho! 🎉");
+                } else {
+                    setFeedbackMessage(`❌ Quase lá! A resposta correta era ${situacao.respostaCorreta} Robux. ${situacao.dica}`);
+                }
+                
+                setShowFeedback(true);
+            };
+
+            const proximaPergunta = () => {
+                setShowFeedback(false);
+                setSelectedAnswer(null);
+                if (currentQuestion < currentBlock.situacoes.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    setStartTime(Date.now());
+                } else {
+                    setQuizCompleted(true);
+                }
+            };
+            
+            const saveResult = () => {
+                const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                const result = {
+                    Nome: studentName,
+                    Materia: 'Matematica',
+                    Atividade: 'Loja Roblox Nivel 2',
+                    Bloco: currentBlock.titulo,
+                    Questao: `Bloco_${currentBlock.id}`,
+                    Tempo_Execucao: `${timeSpent}s`,
+                    Acertos: score,
+                    Erros: currentBlock.situacoes.length - score,
+                    Score: `${Math.round((score / currentBlock.situacoes.length) * 100)}%`
+                };
+                const updatedResults = [...sessionResults, result];
+                setSessionResults(updatedResults);
+                localStorage.setItem('robloxShopSessionResults', JSON.stringify(updatedResults));
+            };
+
+            const finalizarSessao = () => {
+                const resultsToExport = JSON.parse(localStorage.getItem('robloxShopSessionResults') || '[]');
+                if (resultsToExport.length === 0) {
+                    alert('Nenhum dado para exportar! Jogue pelo menos um bloco.');
+                    return;
+                }
+
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = resultsToExport.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
+                const fullContent = header + csvContent;
+
+                const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') ;
+                link.setAttribute('href', url);
+                link.setAttribute('download', `resultados-loja_roblox-${dateStr}-${studentNameForFile}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                localStorage.removeItem('robloxShopSessionResults');
+                setSessionResults([]);
+                setStudentName('');
+                setCurrentPhase('inicio');
+            };
+
+            if (currentPhase === 'inicio') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 flex items-center justify-center p-4" style={getFontStyle()}>
+                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center">
+                            <div className="text-6xl mb-4">🎮</div>
+                            <h1 className="text-4xl font-bold text-purple-600 mb-2">Loja do Roblox - Nível 2</h1>
+                            <p className="text-lg text-gray-600 mb-6">Resolva problemas e gerencie seu orçamento de Robux!</p>
+                            <input
+                                type="text"
+                                placeholder="Digite seu nome"
+                                value={studentName}
+                                onChange={(e) => setStudentName(e.target.value)}
+                                className="w-full p-4 border-2 border-purple-300 rounded-lg text-xl mb-6 text-center font-bold"
+                            />
+                            <button onClick={handleStartName} disabled={!studentName.trim()} className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-xl rounded-lg hover:scale-105 transition-all duration-300 shadow-lg disabled:opacity-50">
+                                🚀 Começar Aventura!
+                            </button>
+                             <a href="../index.html" className="block w-full mt-4 px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold">
+                                ← Voltar ao Portal
+                            </a>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (currentPhase === 'selecao') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 p-4" style={getFontStyle()}>
+                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 mb-6 shadow-lg">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-2xl font-bold text-purple-600">👋 Olá, {studentName}!</h2>
+                                    <p className="text-gray-600">Escolha seu próximo desafio!</p>
+                                </div>
+                                <div className="flex space-x-3">
+                                    <button onClick={() => setCurrentPhase('inicio')} className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all">
+                                        🏠 Início
+                                    </button>
+                                    <button onClick={finalizarSessao} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold">
+                                        📊 Finalizar Sessão e Baixar CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                            {blocos.map((bloco) => (
+                                <div key={bloco.id} className={`bg-gradient-to-br ${bloco.cor} rounded-2xl p-6 text-white shadow-2xl hover:scale-105 transition-all duration-300`}>
+                                    <h3 className="text-2xl font-bold mb-1">{bloco.titulo}</h3>
+                                    <p className="text-sm opacity-90 mb-2">{bloco.subtitulo}</p>
+                                    <div className="inline-block bg-white/20 rounded-full px-3 py-1 text-xs font-bold mt-2">{bloco.dificuldade}</div>
+                                    {completedBlocks.includes(bloco.id) && <div className="text-2xl mt-2">✅ CONCLUÍDO</div>}
+                                    <div className="bg-white/10 rounded-lg p-4 my-4">
+                                        <p className="text-sm font-semibold mb-2">🎯 Objetivo:</p>
+                                        <p className="text-sm">{bloco.objetivo}</p>
+                                    </div>
+                                    <button onClick={() => selecionarBloco(bloco)} className="w-full py-3 bg-white text-gray-800 font-bold rounded-lg hover:bg-gray-100 transition-all">
+                                        {completedBlocks.includes(bloco.id) ? '🔄 Jogar Novamente' : '🎮 Começar'}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            }
+
+            if (quizCompleted) {
+                const percentage = Math.round((score / currentBlock.situacoes.length) * 100);
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4 flex items-center justify-center" style={getFontStyle()}>
+                        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 text-center">
+                            <h1 className="text-4xl font-bold mb-4 text-gray-800">🎊 Parabéns, {studentName}! 🎊</h1>
+                            <div className="text-8xl mb-6">{percentage >= 80 ? '🏆' : percentage >= 60 ? '🌟' : '💪'}</div>
+                            <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                                <p className="text-3xl font-bold text-gray-800 mb-2">{score} de {currentBlock.situacoes.length} acertos</p>
+                                <p className="text-xl text-gray-600 mb-4">{percentage}% de aproveitamento</p>
+                            </div>
+                            <button onClick={() => { saveResult(); setCurrentPhase('selecao'); }} className="w-full px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-xl font-bold">
+                                🎯 Escolher Novo Bloco
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (currentPhase === 'jogo') {
+                const situacao = currentBlock.situacoes[currentQuestion];
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 p-4 flex items-center justify-center" style={getFontStyle()}>
+                        <div className="w-full max-w-4xl mx-auto">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-6 mb-6">
+                                <div className="flex justify-between items-center">
+                                    <h2 className="text-2xl font-bold text-purple-700">{currentBlock.titulo}</h2>
+                                    <span className="text-lg font-semibold text-gray-600">Questão {currentQuestion + 1} de {currentBlock.situacoes.length}</span>
+                                </div>
+                            </div>
+
+                            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {/* Left side: Context and Fixed Cart */}
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-800 mb-2">📜 Contexto</h3>
+                                            <p className="text-lg text-gray-700 bg-gray-50 p-4 rounded-lg">{situacao.contexto}</p>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-800 mb-2">🛒 Itens no Carrinho</h3>
+                                            <div className="space-y-3">
+                                                {situacao.carrinhoFixo.map(item => (
+                                                    <div key={item.id} className="flex items-center bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
+                                                        <span className="text-4xl mr-4">{item.emoji}</span>
+                                                        <div>
+                                                            <div className="font-bold text-lg text-gray-800">{item.nome}</div>
+                                                            <div className="text-md text-blue-600 font-semibold">{item.preco} Robux</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Right side: Question and Options */}
+                                    <div className="space-y-6">
+                                        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-lg">
+                                            <h3 className="text-xl font-bold text-yellow-800 mb-3">🤔 Pergunta</h3>
+                                            <p className="text-lg text-gray-800">{situacao.pergunta}</p>
+                                        </div>
+
+                                        {!showFeedback ? (
+                                            <div className="space-y-3">
+                                                {situacao.opcoes.map(opcao => (
+                                                    <button 
+                                                        key={opcao.id} 
+                                                        onClick={() => handleAnswerClick(opcao)}
+                                                        className="w-full text-left p-4 bg-white rounded-lg border-2 border-gray-300 hover:border-purple-500 hover:bg-purple-50 transition-all transform hover:scale-105"
+                                                    >
+                                                        <span className="text-lg font-bold text-purple-700">{opcao.texto}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className={`p-6 rounded-lg border-4 ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                                                <div className="text-6xl mb-4 text-center">{isCorrect ? '🎉' : '🤔'}</div>
+                                                <p className="text-lg font-semibold text-gray-800 text-center mb-4">{feedbackMessage}</p>
+                                                <button onClick={proximaPergunta} className={`w-full py-3 text-white font-bold rounded-lg text-lg ${isCorrect ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}>
+                                                    {currentQuestion < currentBlock.situacoes.length - 1 ? 'Próxima Pergunta ➡️' : 'Ver Resultado 🏆'}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+        };
+
+        ReactDOM.render(<LojaRobloxNivel2 />, document.getElementById('root'));
+    </script>
+</body>
+</html>

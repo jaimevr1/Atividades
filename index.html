@@ -58,6 +58,8 @@
             border: 3px solid transparent;
             background-clip: padding-box;
             position: relative;
+            min-width: 300px;
+            flex-shrink: 0;
         }
         .activity-card:hover {
             border-color: #667eea;
@@ -75,6 +77,36 @@
             margin: 0 auto 20px;
             font-size: 48px;
         }
+        .carousel-container {
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .carousel-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .filter-button {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .filter-button:hover {
+            transform: scale(1.05);
+        }
+        .filter-button.active {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -90,6 +122,7 @@
         
         const PortalAtividades = () => {
           const [selectedFont, setSelectedFont] = useState('comic');
+          const [selectedCategory, setSelectedCategory] = useState('Todas');
 
           const activities = [
             {
@@ -135,8 +168,47 @@
               category: 'História',
               difficulty: 'Intermediário',
               estimatedTime: '20-25 min'
+            },
+            {
+              id: 'loja-roblox-nivel2',
+              title: 'Loja do Roblox - Nível 2',
+              description: 'Resolva problemas e gerencie seu orçamento de Robux em desafios de compra.',
+              icon: '🛒',
+              color: 'from-pink-500 to-yellow-500',
+              link: 'pages/loja_roblox_nivel2.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '15-25 min'
+            },
+            {
+              id: 'minecraft-constructor',
+              title: 'Construtor Minecraft',
+              description: 'Construa estruturas com blocos para resolver desafios de soma e agrupamento.',
+              icon: '🧱',
+              color: 'from-green-500 to-teal-500',
+              link: 'pages/minecraft_constructor.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '15-25 min'
+            },
+            {
+              id: 'fazenda-mobs',
+              title: 'Fazenda de Mobs',
+              description: 'Aprenda multiplicação gerenciando sua fazenda de mobs do Roblox!',
+              icon: '🐄',
+              color: 'from-green-400 to-blue-500',
+              link: 'pages/fazenda_mobs.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '10-20 min'
             }
           ];
+
+          const categories = ['Todas', 'Matemática', 'História'];
+          
+          const filteredActivities = selectedCategory === 'Todas' 
+            ? activities 
+            : activities.filter(activity => activity.category === selectedCategory);
 
           const getFontStyle = () => ({
             fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
@@ -157,34 +229,58 @@
                     Aprenda brincando com atividades interativas personalizadas para diferentes necessidades
                   </p>
                   
-                  {/* Font Selection */}
-                  <div className="max-w-md mx-auto bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                    <h3 className="text-lg font-semibold mb-4">
-                      🎨 Escolha sua Fonte Preferida:
-                    </h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={() => setSelectedFont('comic')}
-                        className={`px-4 py-3 rounded-lg font-semibold transition-all ${
-                          selectedFont === 'comic' 
-                            ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
-                            : 'bg-white/20 text-white hover:bg-white/30'
-                        }`}
-                        style={{ fontFamily: "'Comic Sans MS', cursive" }}
-                      >
-                        Comic Sans
-                      </button>
-                      <button
-                        onClick={() => setSelectedFont('dyslexic')}
-                        className={`px-4 py-3 rounded-lg font-semibold transition-all ${
-                          selectedFont === 'dyslexic' 
-                            ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
-                            : 'bg-white/20 text-white hover:bg-white/30'
-                        }`}
-                        style={{ fontFamily: "'OpenDyslexic', sans-serif" }}
-                      >
-                        OpenDyslexic
-                      </button>
+                  {/* Font Selection and How to Use - Side by Side */}
+                  <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
+                    {/* Font Selection */}
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                      <h3 className="text-lg font-semibold mb-4">
+                        🎨 Escolha sua Fonte Preferida:
+                      </h3>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          onClick={() => setSelectedFont('comic')}
+                          className={`px-4 py-3 rounded-lg font-semibold transition-all ${
+                            selectedFont === 'comic' 
+                              ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
+                          style={{ fontFamily: "'Comic Sans MS', cursive" }}
+                        >
+                          Comic Sans
+                        </button>
+                        <button
+                          onClick={() => setSelectedFont('dyslexic')}
+                          className={`px-4 py-3 rounded-lg font-semibold transition-all ${
+                            selectedFont === 'dyslexic' 
+                              ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
+                          style={{ fontFamily: "'OpenDyslexic', sans-serif" }}
+                        >
+                          OpenDyslexic
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* How to Use Instructions */}
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                      <h3 className="text-lg font-semibold mb-4">
+                        📋 Como Usar:
+                      </h3>
+                      <div className="grid grid-cols-4 gap-3 text-sm">
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Escolha sua fonte</div>
+                        </div>
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Filtre por matéria</div>
+                        </div>
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Selecione atividade</div>
+                        </div>
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Divirta-se!</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -194,9 +290,37 @@
               <div className="relative z-10 px-4 pb-20 -mt-10">
                 <div className="max-w-6xl mx-auto">
                   
+                  {/* Category Filters */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8">
+                    <h3 className="text-xl font-bold text-center text-gray-800 mb-4">
+                      📚 Filtrar por Matéria:
+                    </h3>
+                    <div className="flex flex-wrap justify-center gap-3">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setSelectedCategory(category)}
+                          className={`filter-button px-6 py-3 rounded-full font-semibold transition-all ${
+                            selectedCategory === category
+                              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white active'
+                              : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
+                          }`}
+                        >
+                          {category === 'Todas' && '🌍'}
+                          {category === 'Matemática' && '🔢'}
+                          {category === 'História' && '📜'}
+                          <span className="ml-2">{category}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="text-center mt-3 text-sm text-gray-600">
+                      Mostrando {filteredActivities.length} atividade{filteredActivities.length !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+                  
                   {/* Activities Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    {activities.map((activity) => (
+                    {filteredActivities.map((activity) => (
                       <div key={activity.id} className="activity-card card-hover">
                         {/* Icon Placeholder */}
                         <div className="icon-placeholder">
@@ -248,36 +372,6 @@
                         </a>
                       </div>
                     ))}
-                  </div>
-
-
-                  {/* Instructions */}
-                  <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-xl p-6">
-                    <h3 className="text-2xl font-bold text-center text-gray-800 mb-4">
-                      📋 Como Usar
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                      <div className="bg-blue-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">1️⃣</div>
-                        <div className="font-semibold">Escolha sua fonte</div>
-                        <div className="text-sm text-gray-600">Personalize para suas necessidades</div>
-                      </div>
-                      <div className="bg-green-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">2️⃣</div>
-                        <div className="font-semibold">Selecione uma atividade</div>
-                        <div className="text-sm text-gray-600">Clique no card da atividade</div>
-                      </div>
-                      <div className="bg-yellow-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">3️⃣</div>
-                        <div className="font-semibold">Digite seu nome</div>
-                        <div className="text-sm text-gray-600">Para acompanhar seu progresso</div>
-                      </div>
-                      <div className="bg-purple-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">4️⃣</div>
-                        <div className="font-semibold">Divirta-se aprendendo!</div>
-                        <div className="text-sm text-gray-600">Complete as atividades</div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>

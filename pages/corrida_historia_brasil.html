@@ -82,6 +82,40 @@
           const [sessionBadges, setSessionBadges] = useState([]);
           const [allSessionData, setAllSessionData] = useState([]);
 
+          // Listas de sons de feedback
+          const feedbackSounds = {
+            acertos: [
+              'acerto_1.mp3',
+              'acerto_2.mp3', 
+              'acerto_3.mp3',
+              'acerto_4.mp3'
+            ],
+            erros: [
+              'erro_1.mp3',
+              'erro_2.mp3',
+              'erro_3.mp3', 
+              'erro_4.mp3'
+            ]
+          };
+
+          // Função para tocar som de feedback (acerto/erro)
+          const playFeedbackSound = (isCorrect) => {
+            try {
+              const soundType = isCorrect ? 'acertos' : 'erros';
+              const sounds = feedbackSounds[soundType];
+              const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+              const soundPath = `../media/sons/feedback/${soundType}/${randomSound}`;
+              
+              const feedbackAudio = new Audio(soundPath);
+              feedbackAudio.volume = 0.7; // Volume médio para feedback
+              feedbackAudio.play().catch(error => {
+                console.log('Som de feedback não encontrado:', soundPath);
+              });
+            } catch (error) {
+              console.log('Erro ao reproduzir som de feedback:', error);
+            }
+          };
+
           // 6 blocos de eventos históricos
           const eventBlocks = [
             {
@@ -387,6 +421,9 @@
             };
             setAttempts(prev => [...prev, attemptData]);
 
+            // Tocar som de feedback imediatamente
+            playFeedbackSound(isCorrect);
+
             if (isCorrect) {
               setScore(prev => prev + 1);
               setCompletedEvents(prev => [...prev, currentEvent]);
@@ -435,6 +472,9 @@
               timeRemaining: 0
             };
             setAttempts(prev => [...prev, attemptData]);
+
+            // Tocar som de erro para timeout
+            playFeedbackSound(false);
 
             setErrorMessage("Tempo esgotado! Vamos tentar de novo!");
             setShowError(true);

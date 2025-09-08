@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz de Identificação de Operações Matemáticas</title>
-    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -14,7 +14,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
         }
         .loading {
             display: flex;
@@ -50,7 +50,7 @@
     </div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
         
         const QuizOperacoes = () => {
           const [studentName, setStudentName] = useState('');
@@ -1191,10 +1191,10 @@
 
           const getFontStyle = () => ({
             fontSize: fontSize === 'large' ? '28px' : '20px',
-            fontFamily: fontSize === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
+            fontFamily: fontSize === 'dyslexic' ? "'Comic Neue', sans-serif" : 
                        fontSize === 'comic' ? "'Comic Sans MS', cursive" :
                        fontSize === 'cursive' ? "'Fuzzy Bubbles', cursive" :
-                       "'OpenDyslexic', 'Comic Sans MS', cursive"
+                       "'Comic Neue', 'Comic Sans MS', cursive"
           });
 
           // Componente do botão flutuante de controle de música
