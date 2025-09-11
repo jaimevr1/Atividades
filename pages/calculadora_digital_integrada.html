@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧮 Calculadora Digital Expert</title>
+    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .font-dyslexic {
+            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="loading">
+            <div class="spinner"></div>
+            Carregando Calculadora Digital...
+        </div>
+    </div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const CalculadoraDigitalIntegrada = () => {
+            // Estados principais
+            const [studentName, setStudentName] = useState('');
+            const [hasStarted, setHasStarted] = useState(false);
+            const [font, setFont] = useState('Comic Sans MS');
+            const [currentScreen, setCurrentScreen] = useState('start'); // start, selection, game, result
+            const [currentLevel, setCurrentLevel] = useState('bloco_1');
+            const [currentMode, setCurrentMode] = useState('montador');
+            const [questionModes, setQuestionModes] = useState([]);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [sessionResults, setSessionResults] = useState([]);
+            const [startTime, setStartTime] = useState(null);
+
+            // Estados do jogo
+            const [currentQuestionData, setCurrentQuestionData] = useState(null);
+            const [calculatorDisplay, setCalculatorDisplay] = useState('0');
+            const [currentExpression, setCurrentExpression] = useState('');
+            const [userAnswer, setUserAnswer] = useState(null);
+            const [attempts, setAttempts] = useState(0);
+            const [totalScore, setTotalScore] = useState(0);
+            const [currentStreak, setCurrentStreak] = useState(0);
+            const [correctAnswers, setCorrectAnswers] = useState(0);
+            const [questionsAnswered, setQuestionsAnswered] = useState(0);
+            const [showFeedback, setShowFeedback] = useState(false);
+            const [feedbackMessage, setFeedbackMessage] = useState('');
+            const [isCorrect, setIsCorrect] = useState(false);
+
+            // Configuração dos níveis com blocos menores
+            const levels = {
+                // NÍVEL INICIANTE - 3 blocos de 5 questões cada
+                bloco_1: {
+                    name: "🌟 Estrela Cadente",
+                    emoji: "🌟", 
+                    description: "Primeiros passos na galáxia dos números",
+                    color: "from-blue-400 to-cyan-500",
+                    level: "Iniciante",
+                    questions: [
+                        { context: "🎮 João comprou {a} V-Bucks e ganhou {b} V-Bucks de presente! Quantos V-Bucks ele tem agora? 💰", range: [10, 50] },
+                        { context: "🍕 A pizzaria vendeu {a} pizzas de manhã e {b} pizzas à tarde. Quantas pizzas venderam hoje? 🍕", range: [15, 45] },
+                        { context: "⚽ No campeonato, o time fez {a} gols no primeiro jogo e {b} gols no segundo. Total de gols? ⚽", range: [2, 8] },
+                        { context: "📚 Ana leu {a} páginas ontem e {b} páginas hoje. Quantas páginas leu no total? 📖", range: [20, 60] },
+                        { context: "🎵 O playlist tem {a} músicas pop e {b} músicas rock. Quantas músicas ao todo? 🎶", range: [12, 35] }
+                    ]
+                },
+                bloco_2: {
+                    name: "🚀 Foguete Espacial",
+                    emoji: "🚀",
+                    description: "Decolando rumo aos grandes números",
+                    color: "from-green-400 to-teal-500", 
+                    level: "Iniciante",
+                    questions: [
+                        { context: "🏗️ Maria precisa de {a} blocos vermelhos e {b} blocos azuis para sua construção. Quantos blocos no total? 🧱", range: [25, 75] },
+                        { context: "🎪 O circo vendeu {a} ingressos pela manhã e {b} à noite. Quantas pessoas assistiram? 🎭", range: [30, 80] },
+                        { context: "🛒 No mercado, papai comprou {a} frutas e {b} verduras. Quantos itens ao todo? 🥕", range: [15, 55] },
+                        { context: "🎨 O artista usou {a} tintas vermelhas e {b} tintas azuis. Quantas tintas usou? 🖌️", range: [8, 25] },
+                        { context: "🐾 No parque, vi {a} cachorros e {b} gatos. Quantos animais vi no total? 🐕", range: [12, 40] }
+                    ]
+                },
+                bloco_3: {
+                    name: "⭐ Constelação Brilhante",
+                    emoji: "⭐",
+                    description: "Conectando estrelas matemáticas",
+                    color: "from-purple-400 to-pink-500",
+                    level: "Iniciante", 
+                    questions: [
+                        { context: "🎯 O arcade deu {a} tickets no jogo de basquete e {b} no jogo de dardos. Quantos tickets ganhei? 🏆", range: [40, 120] },
+                        { context: "📱 O app teve {a} downloads de manhã e {b} à tarde. Total de downloads hoje? 📈", range: [50, 150] },
+                        { context: "🍔 A lanchonete fez {a} hambúrgueres e {b} batatas fritas. Quantos itens prepararam? 🍟", range: [35, 95] },
+                        { context: "🎮 No servidor, entraram {a} jogadores novos e {b} jogadores antigos. Quantos players online? 👾", range: [60, 180] },
+                        { context: "🎬 O cinema vendeu {a} ingressos para o filme de ação e {b} para a comédia. Total vendido? 🍿", range: [45, 135] }
+                    ]
+                },
+
+                // NÍVEL AVENTUREIRO - 3 blocos de 5 questões cada  
+                bloco_4: {
+                    name: "🏰 Castelo dos Números",
+                    emoji: "🏰",
+                    description: "Defendendo o reino com matemática",
+                    color: "from-orange-400 to-red-500",
+                    level: "Aventureiro",
+                    questions: [
+                        { context: "⚔️ O cavaleiro coletou {a} moedas de ouro no castelo e {b} no dragão. Quanto ouro tem? 💰", range: [100, 300] },
+                        { context: "🏪 A loja vendeu {a} itens pela manhã e {b} à tarde. Quantos itens venderam hoje? 🛍️", range: [150, 400] },
+                        { context: "🚗 Na corrida, o carro azul fez {a} pontos e o vermelho {b} pontos. Quantos pontos somados? 🏁", range: [120, 350] },
+                        { context: "🎪 O mágico fez {a} truques no primeiro show e {b} no segundo. Quantos truques ao todo? ✨", range: [80, 250] },
+                        { context: "🌟 O influencer ganhou {a} seguidores no YouTube e {b} no TikTok. Total de seguidores? 📱", range: [200, 500] }
+                    ]
+                },
+                bloco_5: {
+                    name: "🌊 Oceano Matemático", 
+                    emoji: "🌊",
+                    description: "Navegando em águas profundas",
+                    color: "from-cyan-400 to-blue-600",
+                    level: "Aventureiro",
+                    questions: [
+                        { context: "🐠 O aquário tinha {a} peixes tropicais e chegaram {b} peixes novos. Quantos peixes agora? 🐟", range: [180, 450] },
+                        { context: "🏖️ Na praia, construí {a} castelos de areia de manhã e {b} à tarde. Quantos castelos fiz? 🏰", range: [160, 420] },
+                        { context: "⛵ O barco pescou {a} peixes pela manhã e {b} à tarde. Quantos peixes pescaram? 🎣", range: [140, 380] },
+                        { context: "🌺 A ilha tem {a} coqueiros na praia norte e {b} na praia sul. Quantos coqueiros no total? 🥥", range: [220, 550] },
+                        { context: "🏄 O surfista pegou {a} ondas de manhã e {b} à tarde. Quantas ondas surfou hoje? 🌊", range: [25, 85] }
+                    ]
+                },
+                bloco_6: {
+                    name: "🎯 Arena dos Campeões",
+                    emoji: "🎯",
+                    description: "Competindo com os melhores matemáticos",
+                    color: "from-yellow-400 to-orange-500", 
+                    level: "Aventureiro",
+                    questions: [
+                        { context: "🏆 No torneio, marquei {a} pontos na semifinal e {b} na final. Quantos pontos no total? ⚡", range: [300, 700] },
+                        { context: "🎮 O gamer fez {a} kills no primeiro mapa e {b} no segundo. Quantos kills ao todo? 💀", range: [250, 600] },
+                        { context: "🎪 O acrobata deu {a} saltos no primeiro número e {b} no segundo. Total de saltos? 🤸", range: [180, 520] },
+                        { context: "🚀 A nave coletou {a} cristais no planeta azul e {b} no planeta vermelho. Quantos cristais? 💎", range: [400, 900] },
+                        { context: "🎬 O filme arrecadou R$ {a} na primeira semana e R$ {b} na segunda. Total arrecadado? 💰", range: [350, 800] }
+                    ]
+                },
+
+                // NÍVEL MESTRE - 3 blocos de 5 questões cada
+                bloco_7: {
+                    name: "🔮 Templo dos Sábios",
+                    emoji: "🔮",
+                    description: "Desvendando mistérios ancestrais", 
+                    color: "from-indigo-500 to-purple-600",
+                    level: "Mestre",
+                    questions: [
+                        { context: "🏛️ O templo recebeu {a} visitantes de manhã e {b} à tarde. Quantas pessoas visitaram? 👥", range: [800, 2000] },
+                        { context: "📜 O sábio escreveu {a} pergaminhos na primeira semana e {b} na segunda. Quantos pergaminhos? ✍️", range: [600, 1500] },
+                        { context: "💎 A mina produziu {a} gemas preciosas de manhã e {b} à tarde. Total de gemas? ⛏️", range: [1000, 2500] },
+                        { context: "🌟 O observatório detectou {a} estrelas no telescópio 1 e {b} no telescópio 2. Quantas estrelas? 🔭", range: [1200, 3000] },
+                        { context: "🎭 O teatro vendeu {a} ingressos online e {b} na bilheteria. Total de ingressos vendidos? 🎫", range: [900, 2200] }
+                    ]
+                },
+                bloco_8: {
+                    name: "⚡ Laboratório do Futuro",
+                    emoji: "⚡",
+                    description: "Experimentando com super números",
+                    color: "from-pink-500 to-rose-600",
+                    level: "Mestre", 
+                    questions: [
+                        { context: "🧪 O cientista fez {a} experimentos na primeira fase e {b} na segunda. Quantos experimentos? 🔬", range: [1500, 4000] },
+                        { context: "🤖 A fábrica produziu {a} robôs no turno da manhã e {b} no da tarde. Quantos robôs? 🏭", range: [1800, 4500] },
+                        { context: "🚀 A estação espacial recebeu {a} suprimentos na cápsula 1 e {b} na cápsula 2. Total? 📦", range: [2000, 5000] },
+                        { context: "💻 O data center processou {a} dados de manhã e {b} à tarde. Quantos dados processados? 📊", range: [2200, 5500] },
+                        { context: "🎮 O servidor do jogo registrou {a} logins de manhã e {b} à tarde. Total de logins? 👾", range: [1600, 4200] }
+                    ]
+                },
+                bloco_9: {
+                    name: "👑 Palácio Imperial",
+                    emoji: "👑", 
+                    description: "Reinando sobre números majestosos",
+                    color: "from-amber-400 to-yellow-600",
+                    level: "Mestre",
+                    questions: [
+                        { context: "🏰 O reino arrecadou {a} moedas de impostos e {b} de comércio. Quantas moedas no tesouro? 💰", range: [3000, 8000] },
+                        { context: "🎪 O festival real teve {a} visitantes no primeiro dia e {b} no segundo. Quantos visitantes? 🎭", range: [2800, 7500] },
+                        { context: "⚔️ O exército tem {a} soldados na infantaria e {b} na cavalaria. Quantos soldados? 🛡️", range: [2500, 7000] },
+                        { context: "🎨 O palácio tem {a} pinturas na ala leste e {b} na ala oeste. Quantas pinturas ao todo? 🖼️", range: [3200, 8500] },
+                        { context: "🌟 A cerimônia real teve {a} convidados nobres e {b} convidados especiais. Total de convidados? 👑", range: [3500, 9000] }
+                    ]
+                },
+
+                // NÍVEL LENDA - 3 blocos de 5 questões cada  
+                bloco_10: {
+                    name: "🌌 Galáxia Infinita",
+                    emoji: "🌌",
+                    description: "Explorando o cosmos matemático",
+                    color: "from-violet-600 to-indigo-800", 
+                    level: "Lenda",
+                    questions: [
+                        { context: "🚀 A frota espacial coletou {a} minérios no asteroide Alpha e {b} no asteroide Beta. Total de minérios? 🌌", range: [15000, 40000] },
+                        { context: "🌟 O observatório galáctico registrou {a} sinais no setor norte e {b} no setor sul. Quantos sinais? 📡", range: [18000, 45000] },
+                        { context: "👽 A estação recebeu {a} visitantes da Terra e {b} de outros planetas. Quantos visitantes? 🛸", range: [12000, 35000] },
+                        { context: "💎 A mineração espacial extraiu {a} cristais do cometa azul e {b} do cometa vermelho. Total? ⛏️", range: [20000, 50000] },
+                        { context: "🌍 A confederação tem {a} habitantes na Terra e {b} em Marte. Quantos habitantes no total? 🪐", range: [25000, 60000] }
+                    ]
+                },
+                bloco_11: {
+                    name: "🔥 Dragão dos Números",
+                    emoji: "🔥",
+                    description: "Domando a besta matemática suprema", 
+                    color: "from-red-600 to-orange-700",
+                    level: "Lenda",
+                    questions: [
+                        { context: "🐲 O dragão guardava {a} moedas de ouro na câmara secreta e {b} na torre. Quantas moedas? 💰", range: [30000, 75000] },
+                        { context: "🏰 O reino mágico tem {a} feiticeiros na academia e {b} em missões. Quantos feiticeiros? ⚡", range: [28000, 70000] },
+                        { context: "🗡️ O herói derrotou {a} monstros na floresta sombria e {b} no vale perdido. Quantos monstros? ⚔️", range: [35000, 80000] },
+                        { context: "🔮 A profecia fala de {a} guerreiros da luz e {b} guerreiros das sombras. Total de guerreiros? 🌟", range: [32000, 85000] },
+                        { context: "🎭 A lenda conta {a} histórias do passado e {b} do futuro. Quantas histórias na lenda? 📚", range: [40000, 90000] }
+                    ]
+                },
+                bloco_12: {
+                    name: "🎆 Mestre Supremo", 
+                    emoji: "🎆",
+                    description: "O ápice da maestria matemática",
+                    color: "from-gradient-to-r from-purple-900 via-blue-900 to-indigo-900",
+                    level: "Lenda", 
+                    questions: [
+                        { context: "🌟 O universo contém {a} galáxias conhecidas e {b} galáxias descobertas recentemente. Total de galáxias? 🌌", range: [50000, 99000] },
+                        { context: "🏆 O campeonato mundial registrou {a} espectadores online e {b} presenciais. Quantos espectadores? 🎮", range: [45000, 95000] },
+                        { context: "💎 A corporação intergaláctica faturou {a} créditos no primeiro trimestre e {b} no segundo. Total faturado? 💰", range: [60000, 99000] },
+                        { context: "🚀 A missão espacial coletou {a} amostras no planeta X e {b} no planeta Y. Quantas amostras? 🧪", range: [55000, 99000] },
+                        { context: "🎯 O mestre supremo acumulou {a} pontos de sabedoria e {b} pontos de experiência. Total de pontos? ⭐", range: [70000, 99000] }
+                    ]
+                }
+            };
+
+            useEffect(() => {
+                const savedFont = localStorage.getItem('selectedFont');
+                if (savedFont === 'dyslexic') {
+                    setFont('OpenDyslexic');
+                }
+                
+                // Verificar se há sessão em andamento
+                const savedSession = localStorage.getItem('calculadoraDigitalSession');
+                if (savedSession) {
+                    const session = JSON.parse(savedSession);
+                    setStudentName(session.studentName);
+                    setSessionResults(session.results || []);
+                    setTotalScore(session.totalScore || 0);
+                }
+            }, []);
+
+            const handleStart = (name) => {
+                if (name.trim()) {
+                    setStudentName(name);
+                    setHasStarted(true);
+                    setCurrentScreen('selection');
+                    // Salvar início de sessão
+                    localStorage.setItem('calculadoraDigitalSession', JSON.stringify({
+                        studentName: name,
+                        results: [],
+                        totalScore: 0,
+                        startTime: new Date().toISOString()
+                    }));
+                }
+            };
+
+            const handleLevelSelect = (level) => {
+                setCurrentLevel(level);
+                setCurrentQuestion(0);
+                setCurrentScreen('game');
+                setStartTime(Date.now());
+                
+                // Gerar modos randomizados para as 5 questões (deve ter pelo menos uma de cada modo)
+                const modes = ['montador', 'detector', 'montador', 'detector', 'montador'];
+                const shuffledModes = modes.sort(() => Math.random() - 0.5);
+                setQuestionModes(shuffledModes);
+                setCurrentMode(shuffledModes[0]);
+                
+                generateQuestion(level, 0);
+            };
+
+            const generateQuestion = (level = currentLevel, questionIndex = currentQuestion) => {
+                const levelData = levels[level];
+                const questionTemplate = levelData.questions[questionIndex];
+                const [min, max] = questionTemplate.range;
+                
+                const a = Math.floor(Math.random() * (max - min)) + min;
+                const b = Math.floor(Math.random() * (max - min)) + min;
+                
+                setCurrentQuestionData({
+                    a,
+                    b,
+                    result: a + b,
+                    context: questionTemplate.context.replace('{a}', a.toLocaleString()).replace('{b}', b.toLocaleString()),
+                    level,
+                    questionIndex
+                });
+
+                // Reset estados do jogo
+                setCalculatorDisplay('0');
+                setCurrentExpression('');
+                setUserAnswer(null);
+                setAttempts(0);
+                setShowFeedback(false);
+            };
+
+            const handleModeSelect = (mode) => {
+                setCurrentMode(mode);
+                generateQuestion();
+            };
+
+            // Funções da calculadora
+            const inputNumber = (num) => {
+                if (calculatorDisplay === '0') {
+                    setCalculatorDisplay(num);
+                } else {
+                    setCalculatorDisplay(calculatorDisplay + num);
+                }
+            };
+
+            const inputOperator = (op) => {
+                if (currentExpression === '') {
+                    setCurrentExpression(calculatorDisplay + ' ' + op + ' ');
+                } else {
+                    calculate();
+                    setCurrentExpression(calculatorDisplay + ' ' + op + ' ');
+                }
+                setCalculatorDisplay('0');
+            };
+
+            const calculate = () => {
+                if (currentExpression !== '') {
+                    try {
+                        const expression = currentExpression + calculatorDisplay;
+                        const cleanExpression = expression.replace(/×/g, '*');
+                        const result = eval(cleanExpression);
+                        
+                        setUserAnswer(Math.round(result));
+                        setCalculatorDisplay(Math.round(result).toString());
+                        setCurrentExpression('');
+                        
+                        checkAnswer(Math.round(result));
+                    } catch (e) {
+                        setCalculatorDisplay('Erro');
+                    }
+                }
+            };
+
+            const clearAll = () => {
+                setCalculatorDisplay('0');
+                setCurrentExpression('');
+            };
+
+            const checkAnswer = (answer = userAnswer) => {
+                const isAnswerCorrect = answer === currentQuestionData.result;
+                setAttempts(attempts + 1);
+                setIsCorrect(isAnswerCorrect);
+
+                if (isAnswerCorrect) {
+                    setCorrectAnswers(correctAnswers + 1);
+                    setCurrentStreak(currentStreak + 1);
+                    
+                    const levelMultiplier = {avancado: 100, mestre: 200, expert: 300};
+                    const attemptsBonus = attempts === 0 ? 2 : 1;
+                    const newScore = totalScore + levelMultiplier[currentLevel] * attemptsBonus;
+                    setTotalScore(newScore);
+
+                    setFeedbackMessage('🎉 INCRÍVEL! Você é um MESTRE da matemática! ⭐');
+                    setShowFeedback(true);
+
+                    // Salvar resultado
+                    const newResult = {
+                        Nome: studentName,
+                        Materia: 'Matematica',
+                        Atividade: 'Calculadora Digital',
+                        Bloco: levels[currentLevel].name,
+                        Questao: `Questao_${currentQuestion + 1}`,
+                        Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
+                        Acertos: 1,
+                        Erros: attempts,
+                        Score: '100%'
+                    };
+
+                    const updatedResults = [...sessionResults, newResult];
+                    setSessionResults(updatedResults);
+
+                    // Atualizar localStorage
+                    localStorage.setItem('calculadoraDigitalSession', JSON.stringify({
+                        studentName,
+                        results: updatedResults,
+                        totalScore: newScore
+                    }));
+
+                    setTimeout(() => nextQuestion(), 2500);
+                } else {
+                    if (attempts === 0) {
+                        setFeedbackMessage('🎯 Quase lá! Tente mais uma vez! 💪');
+                        setShowFeedback(true);
+                        setTimeout(() => {
+                            setShowFeedback(false);
+                            clearAll();
+                        }, 2000);
+                    } else {
+                        setCurrentStreak(0);
+                        setFeedbackMessage(`📚 Resposta correta: ${currentQuestionData.result.toLocaleString()}`);
+                        setShowFeedback(true);
+
+                        // Salvar resultado incorreto
+                        const newResult = {
+                            Nome: studentName,
+                            Materia: 'Matematica',
+                            Atividade: 'Calculadora Digital',
+                            Bloco: levels[currentLevel].name,
+                            Questao: `Questao_${currentQuestion + 1}`,
+                            Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
+                            Acertos: 0,
+                            Erros: 2,
+                            Score: '0%'
+                        };
+
+                        const updatedResults = [...sessionResults, newResult];
+                        setSessionResults(updatedResults);
+
+                        localStorage.setItem('calculadoraDigitalSession', JSON.stringify({
+                            studentName,
+                            results: updatedResults,
+                            totalScore
+                        }));
+
+                        setTimeout(() => nextQuestion(), 4000);
+                    }
+                }
+                setQuestionsAnswered(questionsAnswered + 1);
+            };
+
+            const checkDetectorAnswer = () => {
+                const inputElement = document.getElementById('resultInput');
+                const userAnswer = parseInt(inputElement.value);
+                const correctAnswer = currentQuestionData.result;
+
+                setAttempts(attempts + 1);
+
+                if (userAnswer === correctAnswer) {
+                    setCorrectAnswers(correctAnswers + 1);
+                    setCurrentStreak(currentStreak + 1);
+                    
+                    // Pontuação baseada no nível atual
+                    const levelMultipliers = {
+                        'Iniciante': 100,
+                        'Aventureiro': 200, 
+                        'Mestre': 300,
+                        'Lenda': 500
+                    };
+                    const currentLevelData = levels[currentLevel];
+                    const baseMultiplier = levelMultipliers[currentLevelData.level] || 100;
+                    const attemptsBonus = attempts === 0 ? 2 : 1;
+                    const newScore = totalScore + baseMultiplier * attemptsBonus;
+                    setTotalScore(newScore);
+
+                    setFeedbackMessage('🚀 FANTÁSTICO! Você é mais rápido que uma máquina! 🤖⚡');
+                    setIsCorrect(true);
+                    setShowFeedback(true);
+
+                    // Salvar resultado correto
+                    const newResult = {
+                        Nome: studentName,
+                        Materia: 'Matematica',
+                        Atividade: 'Calculadora Digital',
+                        Bloco: levels[currentLevel].name,
+                        Questao: `Questao_${currentQuestion + 1}`,
+                        Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
+                        Acertos: 1,
+                        Erros: attempts,
+                        Score: '100%'
+                    };
+
+                    const updatedResults = [...sessionResults, newResult];
+                    setSessionResults(updatedResults);
+
+                    localStorage.setItem('calculadoraDigitalSession', JSON.stringify({
+                        studentName,
+                        results: updatedResults,
+                        totalScore: newScore
+                    }));
+
+                    setTimeout(() => nextQuestion(), 3500);
+                } else {
+                    if (attempts === 0) {
+                        setFeedbackMessage('🎯 Quase lá! Tente mais uma vez! 💪');
+                        setIsCorrect(false);
+                        setShowFeedback(true);
+                        setTimeout(() => {
+                            setShowFeedback(false);
+                            document.getElementById('resultInput').value = '';
+                            document.getElementById('resultInput').focus();
+                        }, 2000);
+                    } else {
+                        setCurrentStreak(0);
+                        setFeedbackMessage(`📚 A resposta era: ${correctAnswer.toLocaleString()}`);
+                        setIsCorrect(false);
+                        setShowFeedback(true);
+
+                        // Salvar resultado incorreto
+                        const newResult = {
+                            Nome: studentName,
+                            Materia: 'Matematica',
+                            Atividade: 'Calculadora Digital',
+                            Bloco: levels[currentLevel].name,
+                            Questao: `Questao_${currentQuestion + 1}`,
+                            Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
+                            Acertos: 0,
+                            Erros: 2,
+                            Score: '0%'
+                        };
+
+                        const updatedResults = [...sessionResults, newResult];
+                        setSessionResults(updatedResults);
+
+                        localStorage.setItem('calculadoraDigitalSession', JSON.stringify({
+                            studentName,
+                            results: updatedResults,
+                            totalScore
+                        }));
+
+                        setTimeout(() => nextQuestion(), 4000);
+                    }
+                }
+                setQuestionsAnswered(questionsAnswered + 1);
+            };
+
+            const nextQuestion = () => {
+                setShowFeedback(false);
+                
+                if (currentQuestion >= 4) {
+                    setCurrentScreen('result');
+                    return;
+                }
+
+                const newQuestionIndex = currentQuestion + 1;
+                setCurrentQuestion(newQuestionIndex);
+                setCurrentMode(questionModes[newQuestionIndex]); // Usar modo pré-definido
+                setStartTime(Date.now());
+                generateQuestion(currentLevel, newQuestionIndex);
+            };
+
+            const finishSession = () => {
+                // Gerar CSV no formato correto (igual às outras atividades)
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = sessionResults.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
+                const fullContent = header + csvContent;
+                
+                const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('pt-BR').replace(/\\//g, '-');
+                const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `calculadora_digital_${studentNameForFile}_${dateStr}.csv`;
+                
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                // Mostrar mensagem de sucesso
+                alert(`🎉 Dados exportados com sucesso!\\n\\n📊 Total de atividades: ${sessionResults.length}\\n💾 Arquivo: calculadora_digital_${studentNameForFile}_${dateStr}.csv`);
+
+                // Limpar sessão
+                localStorage.removeItem('calculadoraDigitalSession');
+                
+                // Reset total
+                setHasStarted(false);
+                setCurrentScreen('start');
+                setSessionResults([]);
+                setTotalScore(0);
+                setCurrentStreak(0);
+                setCorrectAnswers(0);
+                setQuestionsAnswered(0);
+            };
+
+            const restartLevel = () => {
+                setCurrentQuestion(0);
+                setCurrentScreen('game');
+                generateQuestion();
+            };
+
+            // Tela inicial
+            if (!hasStarted) {
+                return (
+                    <div className={`min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full transform transition-all duration-500 hover:scale-105">
+                            <div className="text-center mb-8">
+                                <div className="text-6xl mb-4">🧮</div>
+                                <h1 className="text-3xl font-bold text-gray-800 mb-2">Calculadora Digital Expert</h1>
+                                <p className="text-gray-600">🚀 Domine a matemática com desafios épicos! 🎯</p>
+                            </div>
+                            
+                            <div className="space-y-6">
+                                <div>
+                                    <label className="block text-lg font-bold text-gray-700 mb-2">
+                                        👤 Qual é o seu nome?
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl text-lg text-center focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                                        placeholder="Digite seu nome aqui"
+                                        value={studentName}
+                                        onChange={(e) => setStudentName(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && handleStart(studentName)}
+                                    />
+                                </div>
+                                
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium text-gray-700">🔤 Fonte para dislexia:</span>
+                                    <button
+                                        onClick={() => {
+                                            const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS';
+                                            setFont(newFont);
+                                            localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal');
+                                        }}
+                                        className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                                            font === 'OpenDyslexic' 
+                                                ? 'bg-green-500 text-white' 
+                                                : 'bg-gray-200 text-gray-700'
+                                        }`}
+                                    >
+                                        {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                                    </button>
+                                </div>
+
+                                <button
+                                    onClick={() => handleStart(studentName)}
+                                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:from-purple-600 hover:to-pink-600 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={!studentName.trim()}
+                                >
+                                    🎯 COMEÇAR AVENTURA! 🚀
+                                </button>
+
+                                <button
+                                    onClick={() => window.location.href = '../index.html'}
+                                    className="w-full bg-gray-300 text-gray-700 font-bold py-3 rounded-xl transition-all duration-300 hover:bg-gray-400 hover:shadow-lg"
+                                >
+                                    🏠 Voltar ao Portal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Tela de seleção de blocos
+            if (currentScreen === 'selection') {
+                // Agrupar blocos por nível
+                const groupedLevels = {};
+                Object.entries(levels).forEach(([key, level]) => {
+                    if (!groupedLevels[level.level]) {
+                        groupedLevels[level.level] = [];
+                    }
+                    groupedLevels[level.level].push({ key, ...level });
+                });
+
+                return (
+                    <div className={`min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
+                        <div className="max-w-7xl mx-auto">
+                            <div className="text-center mb-8">
+                                <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}! 🚀</h1>
+                                <p className="text-2xl text-white opacity-90">Escolha seu bloco de aventura matemática!</p>
+                            </div>
+
+                            <div className="bg-white rounded-3xl shadow-2xl p-8 mb-6">
+                                <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">📖 Como Funciona</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                                    <div className="bg-blue-50 p-6 rounded-xl">
+                                        <div className="text-4xl mb-3">🧮</div>
+                                        <h3 className="font-bold text-lg mb-2">Calculadora Real</h3>
+                                        <p className="text-gray-700">Use os botões da calculadora para resolver!</p>
+                                    </div>
+                                    <div className="bg-purple-50 p-6 rounded-xl">
+                                        <div className="text-4xl mb-3">🔍</div>
+                                        <h3 className="font-bold text-lg mb-2">Calculadora Quebrada</h3>
+                                        <p className="text-gray-700">Resolva mentalmente e digite o resultado!</p>
+                                    </div>
+                                    <div className="bg-green-50 p-6 rounded-xl">
+                                        <div className="text-4xl mb-3">🎲</div>
+                                        <h3 className="font-bold text-lg mb-2">Modos Aleatórios</h3>
+                                        <p className="text-gray-700">Cada questão usa um modo diferente!</p>
+                                    </div>
+                                    <div className="bg-pink-50 p-6 rounded-xl">
+                                        <div className="text-4xl mb-3">🏆</div>
+                                        <h3 className="font-bold text-lg mb-2">Progressão Épica</h3>
+                                        <p className="text-gray-700">5 questões para dominar cada bloco!</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-white/30 my-6"></div>
+
+                            {/* Blocos organizados por nível */}
+                            {Object.entries(groupedLevels).map(([levelName, blocksInLevel]) => (
+                                <div key={levelName} className="mb-12">
+                                    <h2 className="text-4xl font-bold text-center text-white mb-8">
+                                        {levelName === 'Iniciante' && '🌟'} 
+                                        {levelName === 'Aventureiro' && '⚡'} 
+                                        {levelName === 'Mestre' && '🔮'} 
+                                        {levelName === 'Lenda' && '🌌'} 
+                                        {' ' + levelName}
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                        {blocksInLevel.map((block) => {
+                                            const minRange = Math.min(...block.questions.map(q => q.range[0]));
+                                            const maxRange = Math.max(...block.questions.map(q => q.range[1]));
+                                            
+                                            return (
+                                                <div 
+                                                    key={block.key}
+                                                    className="bg-white rounded-3xl shadow-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer group"
+                                                    onClick={() => handleLevelSelect(block.key)}
+                                                >
+                                                    <div className="text-center">
+                                                        <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">{block.emoji}</div>
+                                                        <h3 className={`text-2xl font-bold mb-2 bg-gradient-to-r ${block.color} bg-clip-text text-transparent`}>
+                                                            {block.name}
+                                                        </h3>
+                                                        <p className="text-gray-600 mb-4 text-lg">{block.description}</p>
+                                                        <div className="bg-gray-100 rounded-xl p-4 mb-4">
+                                                            <p className="text-sm font-medium text-gray-700">📊 Números: {minRange.toLocaleString()} - {maxRange.toLocaleString()}</p>
+                                                            <p className="text-sm text-gray-600">⏱️ 5 questões • 🎲 Modos aleatórios</p>
+                                                            <p className="text-sm text-purple-600 font-bold">🧮 + 🔍 Calculadora Real + Detectora</p>
+                                                        </div>
+                                                        <button className={`w-full bg-gradient-to-r ${block.color} text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:shadow-lg group-hover:scale-105`}>
+                                                            🚀 COMEÇAR AVENTURA
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="text-center bg-white/10 backdrop-blur-sm rounded-3xl p-6">
+                                <h3 className="text-2xl font-bold text-white mb-4">🎮 Total: 12 Blocos Épicos!</h3>
+                                <p className="text-white/80 text-lg mb-6">Do iniciante ao lenda - 60 questões de pura aventura matemática!</p>
+                                <button
+                                    onClick={finishSession}
+                                    className="bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-green-600 hover:shadow-lg mr-4"
+                                >
+                                    💾 Finalizar Sessão & Baixar Resultados
+                                </button>
+                                <button
+                                    onClick={() => window.location.href = '../index.html'}
+                                    className="bg-gray-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-gray-600 hover:shadow-lg"
+                                >
+                                    🏠 Voltar ao Portal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Interface de jogo
+            if (currentScreen === 'game') {
+                const levelData = levels[currentLevel];
+                
+                return (
+                    <div className={`min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
+                        <div className="max-w-7xl mx-auto">
+                            {/* Header */}
+                            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h1 className="text-2xl font-bold text-gray-800">👋 {studentName} - {levelData.name}</h1>
+                                    <button
+                                        onClick={() => setCurrentScreen('selection')}
+                                        className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors duration-300"
+                                    >
+                                        ⬅️ Voltar
+                                    </button>
+                                </div>
+                                
+                                {/* Progresso */}
+                                <div className="flex justify-center gap-4 mb-4">
+                                    {[...Array(5)].map((_, i) => (
+                                        <div
+                                            key={i}
+                                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
+                                                i < currentQuestion ? 'bg-green-500 text-white' :
+                                                i === currentQuestion ? 'bg-blue-500 text-white transform scale-120' :
+                                                'bg-gray-300 text-gray-600'
+                                            }`}
+                                        >
+                                            {i + 1}
+                                        </div>
+                                    ))}
+                                </div>
+                                
+                                <div className="text-center font-bold text-gray-700">
+                                    📊 Questão {currentQuestion + 1} de 5
+                                </div>
+                            </div>
+
+                            {/* Estatísticas */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div className="bg-white rounded-xl p-4 text-center shadow-lg">
+                                    <div className="text-2xl font-bold text-purple-600">{totalScore.toLocaleString()}</div>
+                                    <div className="text-sm text-gray-600">🏆 Pontos</div>
+                                </div>
+                                <div className="bg-white rounded-xl p-4 text-center shadow-lg">
+                                    <div className="text-2xl font-bold text-orange-600">{currentStreak}</div>
+                                    <div className="text-sm text-gray-600">🔥 Sequência</div>
+                                </div>
+                                <div className="bg-white rounded-xl p-4 text-center shadow-lg">
+                                    <div className="text-2xl font-bold text-green-600">{currentQuestion}/5</div>
+                                    <div className="text-sm text-gray-600">📈 Progresso</div>
+                                </div>
+                                <div className="bg-white rounded-xl p-4 text-center shadow-lg">
+                                    <div className="text-2xl font-bold text-blue-600">
+                                        {questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 100}%
+                                    </div>
+                                    <div className="text-sm text-gray-600">🎯 Precisão</div>
+                                </div>
+                            </div>
+
+                            {/* Indicador de modo atual (não permite mudança) */}
+                            <div className="flex justify-center mb-6">
+                                <div className={`px-8 py-4 rounded-2xl font-bold text-xl shadow-xl ${
+                                    currentMode === 'montador' 
+                                        ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white' 
+                                        : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                                }`}>
+                                    {currentMode === 'montador' ? '🧮 CALCULADORA REAL' : '🔍 CALCULADORA DETECTORA'}
+                                    <div className="text-sm opacity-80 mt-1">
+                                        {currentMode === 'montador' ? 'Use os botões da calculadora!' : 'Resolva mentalmente!'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {currentQuestionData && (
+                                <>
+                                    {/* Contexto da questão */}
+                                    <div className="bg-gradient-to-r from-yellow-100 to-yellow-200 border-4 border-yellow-300 rounded-2xl p-6 mb-6 text-center">
+                                        <div className="text-xl font-bold text-gray-800">
+                                            {currentQuestionData.context}
+                                        </div>
+                                    </div>
+
+                                    {/* Interface do jogo */}
+                                    {currentMode === 'montador' ? (
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                            {/* Calculadora */}
+                                            <div className="bg-gray-800 rounded-2xl p-6 shadow-2xl">
+                                                <div className="text-center text-white text-xl font-bold mb-4">
+                                                    🧮 USE A CALCULADORA
+                                                </div>
+                                                <div className="bg-blue-500 text-white p-4 rounded-xl text-right text-3xl font-bold mb-4 min-h-20 flex items-center justify-end font-mono border-4 border-blue-600">
+                                                    {currentExpression !== '' ? currentExpression + calculatorDisplay : calculatorDisplay}
+                                                </div>
+                                                <div className="grid grid-cols-4 gap-3">
+                                                    <button onClick={clearAll} className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">C</button>
+                                                    <button onClick={clearAll} className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">CE</button>
+                                                    <button onClick={() => inputOperator('/')} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">/</button>
+                                                    <button onClick={() => inputOperator('*')} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">×</button>
+                                                    
+                                                    <button onClick={() => inputNumber('7')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">7</button>
+                                                    <button onClick={() => inputNumber('8')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">8</button>
+                                                    <button onClick={() => inputNumber('9')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">9</button>
+                                                    <button onClick={() => inputOperator('-')} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">-</button>
+                                                    
+                                                    <button onClick={() => inputNumber('4')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">4</button>
+                                                    <button onClick={() => inputNumber('5')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">5</button>
+                                                    <button onClick={() => inputNumber('6')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">6</button>
+                                                    <button onClick={() => inputOperator('+')} className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">+</button>
+                                                    
+                                                    <button onClick={() => inputNumber('1')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">1</button>
+                                                    <button onClick={() => inputNumber('2')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">2</button>
+                                                    <button onClick={() => inputNumber('3')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">3</button>
+                                                    <button onClick={calculate} className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105 row-span-2">=</button>
+                                                    
+                                                    <button onClick={() => inputNumber('0')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105 col-span-2">0</button>
+                                                    <button onClick={() => inputNumber('.')} className="bg-gray-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all duration-200 hover:scale-105">.</button>
+                                                </div>
+                                            </div>
+
+                                            {/* Área de resposta */}
+                                            <div className="bg-white rounded-2xl p-6 shadow-2xl">
+                                                <div className="text-2xl font-bold text-center mb-6 text-gray-800">
+                                                    {userAnswer === currentQuestionData.result ? '🎯 RESULTADO CORRETO' : '🤔 CALCULE O RESULTADO'}
+                                                </div>
+                                                <div className={`border-4 rounded-2xl p-6 text-center text-4xl font-bold mb-6 shadow-lg ${
+                                                    userAnswer === currentQuestionData.result 
+                                                        ? 'border-green-500 bg-green-50 text-green-600' 
+                                                        : 'border-gray-300 bg-gray-50 text-gray-400'
+                                                }`}>
+                                                    {userAnswer === currentQuestionData.result 
+                                                        ? currentQuestionData.result.toLocaleString()
+                                                        : '? ? ?'}
+                                                </div>
+                                                
+                                                <div className="text-xl font-bold text-center mb-4 text-gray-800">🤔 SUA RESPOSTA</div>
+                                                <div className={`border-4 rounded-2xl p-4 text-center text-3xl font-bold mb-4 min-h-20 flex items-center justify-center ${
+                                                    userAnswer === null ? 'border-gray-300 bg-gray-50 text-gray-500' :
+                                                    userAnswer === currentQuestionData.result ? 'border-green-500 bg-green-50 text-green-600' :
+                                                    'border-red-500 bg-red-50 text-red-600'
+                                                }`}>
+                                                    {userAnswer === null ? 'Calcule usando a calculadora' : userAnswer.toLocaleString()}
+                                                </div>
+                                                
+                                                <div className={`text-center p-6 rounded-2xl font-bold text-xl shadow-lg transition-all duration-300 ${
+                                                    userAnswer === null ? 'bg-blue-100 text-blue-700 border-2 border-blue-300' :
+                                                    userAnswer === currentQuestionData.result ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white border-2 border-green-400 animate-pulse' :
+                                                    'bg-gradient-to-r from-red-400 to-rose-500 text-white border-2 border-red-400'
+                                                }`}>
+                                                    {userAnswer === null ? (
+                                                        <div>
+                                                            <div className="text-3xl mb-2">⏳</div>
+                                                            <div>Aguardando cálculo...</div>
+                                                        </div>
+                                                    ) : userAnswer === currentQuestionData.result ? (
+                                                        <div className="transform scale-105">
+                                                            <div className="text-5xl mb-3 animate-bounce">🎉</div>
+                                                            <div className="text-2xl font-black mb-2">FANTÁSTICO!</div>
+                                                            <div className="text-lg">Você é um gênio da matemática!</div>
+                                                            <div className="text-sm opacity-90 mt-1">✨ Resposta correta descoberta! ✨</div>
+                                                        </div>
+                                                    ) : attempts === 1 ? (
+                                                        <div>
+                                                            <div className="text-4xl mb-2">💪</div>
+                                                            <div className="text-xl">Quase lá!</div>
+                                                            <div className="text-base">Tente mais uma vez - você consegue!</div>
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <div className="text-4xl mb-2">🎯</div>
+                                                            <div className="text-xl mb-1">A resposta era:</div>
+                                                            <div className="text-3xl font-black">{currentQuestionData.result.toLocaleString()}</div>
+                                                            <div className="text-sm opacity-90 mt-1">Continue tentando - você está aprendendo! 📚</div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="text-center text-gray-600 mt-4">
+                                                    Tentativa {attempts + 1} de 2
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        // Modo detector
+                                        <div className="max-w-2xl mx-auto">
+                                            <div className="bg-gray-800 rounded-2xl p-8 relative">
+                                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-6 py-2 rounded-full font-bold text-lg">
+                                                    ⚠️ CALCULADORA COM DEFEITO! ⚠️
+                                                </div>
+                                                <div className="bg-blue-500 text-white p-6 rounded-xl font-mono text-2xl text-right mt-4 mb-6">
+                                                    <div>{currentQuestionData.a.toLocaleString()}</div>
+                                                    <div>+ {currentQuestionData.b.toLocaleString()}</div>
+                                                    <div>___________</div>
+                                                    <div>= ???????</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="text-center text-2xl text-white font-bold my-6">
+                                                🤖 SISTEMA BUGADO! CALCULE MANUALMENTE! 🔧
+                                            </div>
+
+                                            <div className="flex justify-center items-center gap-6">
+                                                <input
+                                                    type="number"
+                                                    id="resultInput"
+                                                    className="w-32 h-16 text-3xl text-center border-4 border-blue-500 rounded-2xl font-bold bg-white"
+                                                    placeholder="?"
+                                                    maxLength="8"
+                                                    onKeyPress={(e) => e.key === 'Enter' && checkDetectorAnswer()}
+                                                />
+                                                <button
+                                                    onClick={checkDetectorAnswer}
+                                                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all duration-300 hover:scale-105"
+                                                >
+                                                    ✅ VERIFICAR RESPOSTA
+                                                </button>
+                                            </div>
+
+                                            <div className="text-center text-white text-lg mt-4">
+                                                Tentativa {attempts + 1} de 2
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Feedback Melhorado */}
+                            {showFeedback && (
+                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+                                    <div className={`p-12 rounded-3xl text-center max-w-lg mx-4 shadow-2xl transform transition-all duration-500 ${
+                                        isCorrect 
+                                            ? 'bg-gradient-to-br from-green-400 to-emerald-600 text-white animate-pulse' 
+                                            : 'bg-gradient-to-br from-red-400 to-rose-600 text-white'
+                                    }`}>
+                                        <div className={`text-9xl mb-6 ${isCorrect ? 'animate-bounce' : ''}`}>
+                                            {isCorrect ? '🎉' : '💪'}
+                                        </div>
+                                        <div className="text-4xl font-black mb-4">
+                                            {isCorrect ? 'SENSACIONAL!' : 'CONTINUE TENTANDO!'}
+                                        </div>
+                                        <div className="text-2xl font-bold mb-4">
+                                            {feedbackMessage}
+                                        </div>
+                                        {isCorrect && (
+                                            <div className="mt-6">
+                                                <div className="text-xl opacity-90 mb-2">✨ Você é INCRÍVEL! ✨</div>
+                                                <div className="text-lg opacity-80">🚀 Preparando próxima aventura... 🚀</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+
+            // Tela de resultado
+            if (currentScreen === 'result') {
+                const levelData = levels[currentLevel];
+                const accuracy = questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0;
+                
+                return (
+                    <div className={`min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
+                            <div className="text-8xl mb-6">{levelData.emoji}</div>
+                            <h2 className="text-4xl font-bold mb-4 text-gray-800">🎊 NÍVEL CONCLUÍDO! 🎊</h2>
+                            <p className="text-2xl mb-8 text-gray-700">
+                                Você dominou o nível <strong>{levelData.name}</strong>!
+                            </p>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                <div className="bg-purple-50 rounded-2xl p-6">
+                                    <div className="text-4xl font-bold text-purple-600">{totalScore.toLocaleString()}</div>
+                                    <div className="text-lg text-gray-700">🏆 Pontuação Final</div>
+                                </div>
+                                <div className="bg-orange-50 rounded-2xl p-6">
+                                    <div className="text-4xl font-bold text-orange-600">{currentStreak}</div>
+                                    <div className="text-lg text-gray-700">🔥 Maior Sequência</div>
+                                </div>
+                                <div className="bg-green-50 rounded-2xl p-6">
+                                    <div className="text-4xl font-bold text-green-600">{accuracy}%</div>
+                                    <div className="text-lg text-gray-700">🎯 Precisão</div>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <button
+                                    onClick={restartLevel}
+                                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all duration-300 hover:scale-105"
+                                >
+                                    🔄 JOGAR NOVAMENTE
+                                </button>
+                                <button
+                                    onClick={() => setCurrentScreen('selection')}
+                                    className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all duration-300 hover:scale-105"
+                                >
+                                    🎯 ESCOLHER NÍVEL
+                                </button>
+                                <button
+                                    onClick={finishSession}
+                                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-2xl text-xl transition-all duration-300 hover:scale-105"
+                                >
+                                    💾 FINALIZAR & BAIXAR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
+        };
+
+        ReactDOM.render(<CalculadoraDigitalIntegrada />, document.getElementById('root'));
+    </script>
+</body>
+</html>
