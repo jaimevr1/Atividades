@@ -1,0 +1,13 @@
+# pastas
+docs/old/
+docs/textos_para_audio/
+
+# Media files - Allow placeholders, exclude actual media
+# Uncomment below to exclude actual media files when replacing placeholders:
+# media/**/*.mp3
+# media/**/*.wav
+# media/**/*.ogg
+# media/**/*.png
+# media/**/*.jpg
+# media/**/*.jpeg
+# media/**/*.gif

@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Identificação de Operações Matemáticas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
+        }
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="loading">
+            <div class="spinner"></div>
+            Carregando Quiz...
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        const QuizOperacoes = () => {
+          const [studentName, setStudentName] = useState('');
+          const [fontSize, setFontSize] = useState(localStorage.getItem('selectedFont') || 'dyslexic');
+          const [selectedBlocks, setSelectedBlocks] = useState([0]);
+          const [quizStarted, setQuizStarted] = useState(false);
+          const [currentQuestion, setCurrentQuestion] = useState(0);
+          const [score, setScore] = useState(0);
+          const [selectedAnswer, setSelectedAnswer] = useState('');
+          const [showFeedback, setShowFeedback] = useState(false);
+          const [isCorrect, setIsCorrect] = useState(false);
+          const [quizCompleted, setQuizCompleted] = useState(false);
+          const [sessionActive, setSessionActive] = useState(false);
+          const [sessionResults, setSessionResults] = useState([]);
+          const [showBlockSelection, setShowBlockSelection] = useState(false);
+          const [selectedBlock, setSelectedBlock] = useState(0);
+          const [showCelebration, setShowCelebration] = useState(false);
+          const [celebrationMessage, setCelebrationMessage] = useState('');
+          const [selectedOperationIndex, setSelectedOperationIndex] = useState(0);
+          const [currentAudio, setCurrentAudio] = useState(null);
+          const [backgroundMusic, setBackgroundMusic] = useState(null);
+          const [musicPlaying, setMusicPlaying] = useState(true);
+
+          // Lista de músicas de fundo disponíveis
+          const backgroundMusicFiles = [
+            'musica_fundo_1.mp3',
+            'musica_fundo_2.mp3',
+            'musica_fundo_3.mp3',
+            'musica_fundo_4.mp3',
+            'musica_fundo_5.mp3'
+          ];
+
+          // Listas de sons de feedback
+          const feedbackSounds = {
+            acertos: [
+              'acerto_1.mp3',
+              'acerto_2.mp3', 
+              'acerto_3.mp3',
+              'acerto_4.mp3'
+            ],
+            erros: [
+              'erro_1.mp3',
+              'erro_2.mp3',
+              'erro_3.mp3', 
+              'erro_4.mp3'
+            ]
+          };
+
+          // Inicializar música de fundo
+          useEffect(() => {
+            const initBackgroundMusic = () => {
+              try {
+                // Escolher música aleatoriamente
+                const randomIndex = Math.floor(Math.random() * backgroundMusicFiles.length);
+                const musicPath = `../media/musicas/fundo/${backgroundMusicFiles[randomIndex]}`;
+                
+                const music = new Audio(musicPath);
+                music.volume = 0.15; // Volume baixo (15%)
+                music.loop = true; // Repetir infinitamente
+                
+                setBackgroundMusic(music);
+                
+                // Tentar tocar automaticamente
+                music.play().catch(error => {
+                  console.log('Música de fundo não pôde ser iniciada automaticamente:', error);
+                  // A música será iniciada na primeira interação do usuário
+                });
+
+                // Quando a música terminar (improvável com loop), escolher outra
+                music.addEventListener('ended', () => {
+                  initBackgroundMusic();
+                });
+
+              } catch (error) {
+                console.log('Erro ao inicializar música de fundo:', error);
+              }
+            };
+
+            initBackgroundMusic();
+            
+            // Cleanup ao desmontar o componente
+            return () => {
+              if (backgroundMusic) {
+                backgroundMusic.pause();
+                backgroundMusic.currentTime = 0;
+              }
+            };
+          }, []);
+
+          // Função para controlar música de fundo
+          const toggleBackgroundMusic = () => {
+            if (backgroundMusic) {
+              if (musicPlaying) {
+                backgroundMusic.pause();
+                setMusicPlaying(false);
+              } else {
+                backgroundMusic.play().catch(error => {
+                  console.log('Não foi possível tocar música de fundo:', error);
+                });
+                setMusicPlaying(true);
+              }
+            }
+          };
+
+          // Função para reduzir temporariamente o volume da música de fundo
+          const reduceBackgroundVolume = () => {
+            if (backgroundMusic && musicPlaying) {
+              backgroundMusic.volume = 0.05; // Reduz para 5% durante áudio educacional
+            }
+          };
+
+          // Função para restaurar o volume normal da música de fundo
+          const restoreBackgroundVolume = () => {
+            if (backgroundMusic && musicPlaying) {
+              setTimeout(() => {
+                backgroundMusic.volume = 0.15; // Volta para 15% após áudio
+              }, 500); // Pequeno delay para suavizar a transição
+            }
+          };
+
+          // Função para tocar som de feedback (acerto/erro)
+          const playFeedbackSound = (isCorrect) => {
+            try {
+              const soundType = isCorrect ? 'acertos' : 'erros';
+              const sounds = feedbackSounds[soundType];
+              const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+              const soundPath = `../media/sons/feedback/${soundType}/${randomSound}`;
+              
+              const feedbackAudio = new Audio(soundPath);
+              feedbackAudio.volume = 0.7; // Volume médio para feedback
+              feedbackAudio.play().catch(error => {
+                console.log('Som de feedback não encontrado:', soundPath);
+              });
+            } catch (error) {
+              console.log('Erro ao reproduzir som de feedback:', error);
+            }
+          };
+
+          // Função para garantir que a música de fundo toque após primeira interação
+          const ensureBackgroundMusicPlaying = () => {
+            if (backgroundMusic && backgroundMusic.paused && musicPlaying) {
+              backgroundMusic.play().catch(error => {
+                console.log('Não foi possível iniciar música de fundo:', error);
+              });
+            }
+          };
+
+          // Função para reproduzir áudio dos problemas com prevenção de sobreposição
+          const playAudio = (blockIndex, questionIndex, audioType = 'enunciado') => {
+            try {
+              // Garantir que a música de fundo está tocando
+              ensureBackgroundMusicPlaying();
+              
+              // Reduzir volume da música de fundo durante áudio educacional
+              reduceBackgroundVolume();
+
+              // Parar áudio anterior se estiver tocando
+              if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+              }
+
+              // Formato: bloco_XX_questao_X_enunciado.mp3 ou bloco_XX_questao_X_explicacao.mp3
+              const blockStr = String(blockIndex + 1).padStart(2, '0');
+              const questionStr = String(questionIndex + 1);
+              const audioPath = `../media/audios/matematica/bloco_${blockStr}/bloco_${blockStr}_questao_${questionStr}_${audioType}.mp3`;
+              
+              const audio = new Audio(audioPath);
+              audio.volume = 0.8; // Volume alto para áudio educacional (80%)
+              setCurrentAudio(audio);
+              
+              // Limpar referência e restaurar volume quando áudio terminar
+              audio.addEventListener('ended', () => {
+                setCurrentAudio(null);
+                restoreBackgroundVolume();
+              });
+
+              audio.play().catch(error => {
+                console.log('Áudio não encontrado ou erro na reprodução:', audioPath);
+                setCurrentAudio(null);
+                restoreBackgroundVolume();
+              });
+            } catch (error) {
+              console.log('Erro ao tentar reproduzir áudio:', error);
+              setCurrentAudio(null);
+              restoreBackgroundVolume();
+            }
+          };
+
+          const problemBlocks = [
+            // Bloco 1: Soma e Subtração (Fácil)
+            [
+              {
+                text: "João tem 3 carros de brinquedo no Roblox e ganhou mais 2. Quantos carros ele tem agora?",
+                operation: "adição",
+                explanation: "A palavra 'ganhou MAIS' indica que estamos SOMANDO.",
+                calculation: "3 + 2 = 5"
+              },
+              {
+                text: "Maria tinha 8 doces e comeu 3. Quantos doces sobraram?",
+                operation: "subtração",
+                explanation: "Ela COMEU alguns doces, então eles SAÍRAM.",
+                calculation: "8 - 3 = 5"
+              },
+              {
+                text: "Pedro viu 6 vídeos do Diário do Bananinha e sua irmã viu mais 4. Quantos vídeos eles viram juntos?",
+                operation: "adição",
+                explanation: "Estamos JUNTANDO os vídeos dos dois.",
+                calculation: "6 + 4 = 10"
+              },
+              {
+                text: "Ana tinha 9 pipas e 4 voaram no vento. Quantas pipas ficaram?",
+                operation: "subtração",
+                explanation: "As pipas VOARAM, então SAÍRAM.",
+                calculation: "9 - 4 = 5"
+              },
+              {
+                text: "Lucas tem 5 tênis e ganhou 3 novos. Quantos tênis ele possui agora?",
+                operation: "adição",
+                explanation: "Ele GANHOU mais tênis, então SOMAMOS.",
+                calculation: "5 + 3 = 8"
+              }
+            ],
+            // Bloco 2: Soma e Subtração (Médio)
+            [
+              {
+                text: "Julia construiu 12 casas no Minecraft e destruiu 5. Quantas casas restaram?",
+                operation: "subtração",
+                explanation: "Ela DESTRUIU casas, então TIRAMOS.",
+                calculation: "12 - 5 = 7"
+              },
+              {
+                text: "Carlos coleciona 15 carros de brinquedo e ganhou 8 novos na festa. Quantos carros ele tem?",
+                operation: "adição",
+                explanation: "Ele GANHOU mais carros, então SOMAMOS.",
+                calculation: "15 + 8 = 23"
+              },
+              {
+                text: "Beatriz tinha 20 doces de aniversário e distribuiu 12. Quantos doces sobraram?",
+                operation: "subtração",
+                explanation: "Ela DISTRIBUIU doces, então eles SAÍRAM.",
+                calculation: "20 - 12 = 8"
+              },
+              {
+                text: "Roberto assistiu 18 vídeos de motos no YouTube e sua mãe deixou ele ver mais 7. Quantos vídeos no total?",
+                operation: "adição",
+                explanation: "Somamos os vídeos que ele já viu com os novos.",
+                calculation: "18 + 7 = 25"
+              },
+              {
+                text: "Livia tinha 25 bicicletas no jogo e perdeu 9 na competição. Quantas bicicletas restaram?",
+                operation: "subtração",
+                explanation: "Ela PERDEU bicicletas, então TIRAMOS.",
+                calculation: "25 - 9 = 16"
+              }
+            ],
+            // Bloco 3: Soma e Subtração (Difícil)
+            [
+              {
+                text: "Gabriel coleta 125 moedas no Roblox e gastou 78 numa skin. Quantas moedas sobraram?",
+                operation: "subtração",
+                explanation: "Ele GASTOU moedas, então elas SAÍRAM.",
+                calculation: "125 - 78 = 47"
+              },
+              {
+                text: "Sofia juntou 89 diamantes no Minecraft com mais 156 que achou. Quantos diamantes ela tem?",
+                operation: "adição",
+                explanation: "Ela ACHOU mais diamantes, então SOMAMOS.",
+                calculation: "89 + 156 = 245"
+              },
+              {
+                text: "Mateus tinha 200 seguidores e 45 pararam de seguir. Quantos seguidores ficaram?",
+                operation: "subtração",
+                explanation: "Alguns PARARAM de seguir, então SAÍRAM.",
+                calculation: "200 - 45 = 155"
+              },
+              {
+                text: "Isadora dormiu 8 horas na segunda e 9 horas na terça. Quantas horas dormiu no total?",
+                operation: "adição",
+                explanation: "Somamos as horas dos dois dias.",
+                calculation: "8 + 9 = 17"
+              },
+              {
+                text: "Diego tinha 350 blocos no Minecraft e usou 127 para construir. Quantos blocos sobraram?",
+                operation: "subtração",
+                explanation: "Ele USOU blocos para construir, então SAÍRAM.",
+                calculation: "350 - 127 = 223"
+              }
+            ],
+            // Bloco 4: Soma, Subtração e Multiplicação
+            [
+              {
+                text: "Carolina tem 4 grupos de amigos no Roblox. Cada grupo tem 6 pessoas. Quantas pessoas no total?",
+                operation: "multiplicação",
+                explanation: "Temos GRUPOS IGUAIS (4 grupos com 6 pessoas cada). É MULTIPLICAÇÃO.",
+                calculation: "4 × 6 = 24"
+              },
+              {
+                text: "Vitor colecionou 35 cartas Pokémon e deu 12 para o amigo. Quantas cartas ficaram?",
+                operation: "subtração",
+                explanation: "Ele DEU cartas, então elas SAÍRAM.",
+                calculation: "35 - 12 = 23"
+              },
+              {
+                text: "Laura comprou 3 pacotes de doces. Cada pacote tem 8 doces. Quantos doces no total?",
+                operation: "multiplicação",
+                explanation: "Cada pacote tem a mesma quantidade de doces.",
+                calculation: "3 × 8 = 24"
+              },
+              {
+                text: "Rafael tinha 45 tênis de coleção e comprou mais 18. Quantos tênis ele possui agora?",
+                operation: "adição",
+                explanation: "Ele COMPROU mais tênis, então SOMAMOS.",
+                calculation: "45 + 18 = 63"
+              },
+              {
+                text: "Camila assiste 5 influencers diferentes. Cada um posta 7 vídeos por semana. Quantos vídeos por semana?",
+                operation: "multiplicação",
+                explanation: "Cada influencer posta a mesma quantidade.",
+                calculation: "5 × 7 = 35"
+              }
+            ],
+            // Bloco 5: Soma, Subtração e Multiplicação
+            [
+              {
+                text: "Artur tem 6 motos virtuais no jogo. Cada moto custa 15 moedas. Quanto gastou no total?",
+                operation: "multiplicação",
+                explanation: "Cada moto custa o mesmo valor.",
+                calculation: "6 × 15 = 90"
+              },
+              {
+                text: "Juliana tinha 80 seguidores no TikTok e ganhou 25 novos. Quantos seguidores tem agora?",
+                operation: "adição",
+                explanation: "Ela GANHOU novos seguidores, então SOMAMOS.",
+                calculation: "80 + 25 = 105"
+              },
+              {
+                text: "Guilherme tinha 120 blocos no Minecraft e usou 65 numa construção. Quantos blocos restam?",
+                operation: "subtração",
+                explanation: "Ele USOU blocos, então eles SAÍRAM.",
+                calculation: "120 - 65 = 55"
+              },
+              {
+                text: "Alice coleta 12 itens por fase do jogo. Ela passou 8 fases. Quantos itens coletou?",
+                operation: "multiplicação",
+                explanation: "Cada fase dá a mesma quantidade de itens.",
+                calculation: "12 × 8 = 96"
+              },
+              {
+                text: "Bruno dormiu 9 horas na sexta e 11 horas no sábado. Quantas horas dormiu no fim de semana?",
+                operation: "adição",
+                explanation: "Somamos as horas dos dois dias.",
+                calculation: "9 + 11 = 20"
+              }
+            ],
+            // Bloco 6: Soma, Subtração e Multiplicação
+            [
+              {
+                text: "Leticia comprou 4 pares de tênis novos. Cada par custou 25 reais. Quanto gastou no total?",
+                operation: "multiplicação",
+                explanation: "Cada par de tênis custa o mesmo valor.",
+                calculation: "4 × 25 = 100"
+              },
+              {
+                text: "Ricardo tinha 150 moedas no Roblox e comprou um carro por 89 moedas. Quantas moedas sobraram?",
+                operation: "subtração",
+                explanation: "Ele COMPROU algo, então as moedas SAÍRAM.",
+                calculation: "150 - 89 = 61"
+              },
+              {
+                text: "Mariana empinou 7 pipas ontem e 12 pipas hoje. Quantas pipas empinou no total?",
+                operation: "adição",
+                explanation: "Somamos as pipas dos dois dias.",
+                calculation: "7 + 12 = 19"
+              },
+              {
+                text: "Pedro tem 9 bicicletas de coleção. Cada bicicleta tem 2 rodas. Quantas rodas no total?",
+                operation: "multiplicação",
+                explanation: "Cada bicicleta tem a mesma quantidade de rodas.",
+                calculation: "9 × 2 = 18"
+              },
+              {
+                text: "Sara tinha 95 doces de Halloween e comeu 28. Quantos doces ainda tem?",
+                operation: "subtração",
+                explanation: "Ela COMEU doces, então eles SAÍRAM.",
+                calculation: "95 - 28 = 67"
+              }
+            ],
+            // Bloco 7: Soma, Subtração e Multiplicação
+            [
+              {
+                text: "João assiste 8 influencers. Cada um faz 12 vídeos por mês. Quantos vídeos por mês no total?",
+                operation: "multiplicação",
+                explanation: "Cada influencer faz a mesma quantidade de vídeos.",
+                calculation: "8 × 12 = 96"
+              },
+              {
+                text: "Valentina construiu 75 casas no Minecraft e destruiu 23. Quantas casas restaram?",
+                operation: "subtração",
+                explanation: "Ela DESTRUIU casas, então elas SAÍRAM.",
+                calculation: "75 - 23 = 52"
+              },
+              {
+                text: "Thago colecionou 45 carros de brinquedo e ganhou 37 no aniversário. Quantos carros tem agora?",
+                operation: "adição",
+                explanation: "Ele GANHOU mais carros, então SOMAMOS.",
+                calculation: "45 + 37 = 82"
+              },
+              {
+                text: "Beatriz dorme 11 horas por noite. Em 6 noites, quantas horas dormiu?",
+                operation: "multiplicação",
+                explanation: "Cada noite ela dorme a mesma quantidade de horas.",
+                calculation: "11 × 6 = 66"
+              },
+              {
+                text: "Gabriel tinha 200 seguidores e perdeu 45. Quantos seguidores ficaram?",
+                operation: "subtração",
+                explanation: "Ele PERDEU seguidores, então eles SAÍRAM.",
+                calculation: "200 - 45 = 155"
+              }
+            ],
+            // Bloco 8: Todas as 4 operações
+            [
+              {
+                text: "Luca dividiu 24 doces igualmente entre 6 amigos. Quantos doces cada amigo recebeu?",
+                operation: "divisão",
+                explanation: "A palavra 'dividiu igualmente' indica DIVISÃO.",
+                calculation: "24 ÷ 6 = 4"
+              },
+              {
+                text: "Sofia tem 7 grupos de seguidores. Cada grupo tem 45 pessoas. Quantos seguidores no total?",
+                operation: "multiplicação",
+                explanation: "Temos GRUPOS IGUAIS de seguidores.",
+                calculation: "7 × 45 = 315"
+              },
+              {
+                text: "Daniel tinha 180 blocos no Minecraft e comprou mais 95. Quantos blocos tem agora?",
+                operation: "adição",
+                explanation: "Ele COMPROU mais blocos, então SOMAMOS.",
+                calculation: "180 + 95 = 275"
+              },
+              {
+                text: "Isabella queria repartir 36 tênis da coleção em 9 caixas iguais. Quantos tênis em cada caixa?",
+                operation: "divisão",
+                explanation: "A palavra 'repartir' em caixas iguais é DIVISÃO.",
+                calculation: "36 ÷ 9 = 4"
+              },
+              {
+                text: "Matheus tinha 250 moedas no Roblox e gastou 89 numa skin. Quantas moedas restaram?",
+                operation: "subtração",
+                explanation: "Ele GASTOU moedas, então elas SAÍRAM.",
+                calculation: "250 - 89 = 161"
+              }
+            ],
+            // Bloco 9: Todas as 4 operações
+            [
+              {
+                text: "Ana Julia tem 72 doces e quer dividir igualmente entre 12 crianças. Quantos doces cada uma vai receber?",
+                operation: "divisão",
+                explanation: "A palavra 'dividir igualmente' indica DIVISÃO.",
+                calculation: "72 ÷ 12 = 6"
+              },
+              {
+                text: "Fernando coleciona motos. Ele tem 15 motos clássicas e comprou 28 motos modernas. Quantas motos tem no total?",
+                operation: "adição",
+                explanation: "Ele COMPROU mais motos, então SOMAMOS as duas coleções.",
+                calculation: "15 + 28 = 43"
+              },
+              {
+                text: "Caroline assiste o Diário do Bananinha 3 vezes por semana durante 8 semanas. Quantos episódios assistiu?",
+                operation: "multiplicação",
+                explanation: "Cada semana ela assiste a mesma quantidade.",
+                calculation: "3 × 8 = 24"
+              },
+              {
+                text: "Roberto tinha 300 seguidores no YouTube e perdeu 125 porque ficou sem postar. Quantos seguidores ficaram?",
+                operation: "subtração",
+                explanation: "Ele PERDEU seguidores, então eles SAÍRAM.",
+                calculation: "300 - 125 = 175"
+              },
+              {
+                text: "Maria tem 60 pipas para repartir igualmente entre 5 amigas. Quantas pipas cada amiga vai receber?",
+                operation: "divisão",
+                explanation: "A palavra 'repartir igualmente' indica DIVISÃO.",
+                calculation: "60 ÷ 5 = 12"
+              }
+            ],
+            // Bloco 10: Operações Simples com Contexto Avançado
+            [
+              {
+                text: "Lucas joga Roblox há 3 anos e coleciona skins. Ele tem 24 skins raras e 18 skins comuns. Quantas skins ele possui no total?",
+                operation: "adição",
+                explanation: "Somamos skins raras com skins comuns para encontrar o total.",
+                calculation: "24 + 18 = 42"
+              },
+              {
+                text: "Sofia construiu uma cidade no Minecraft com 156 blocos. Durante uma explosão, ela perdeu 67 blocos. Quantos blocos sobraram na construção?",
+                operation: "subtração", 
+                explanation: "Subtraímos os blocos perdidos do total original.",
+                calculation: "156 - 67 = 89"
+              },
+              {
+                text: "Pedro assiste 6 YouTubers diferentes. Cada um posta 4 vídeos por semana. Quantos vídeos Pedro pode assistir semanalmente?",
+                operation: "multiplicação",
+                explanation: "Multiplicamos número de YouTubers pela quantidade de vídeos de cada um.",
+                calculation: "6 × 4 = 24"
+              },
+              {
+                text: "Ana comprou 84 cartas Pokémon e quer organizar em grupos de 12 cartas cada. Quantos grupos completos ela conseguirá formar?",
+                operation: "divisão",
+                explanation: "Dividimos total de cartas pela quantidade por grupo.",
+                calculation: "84 ÷ 12 = 7"
+              },
+              {
+                text: "Mateus coleciona tênis há 2 anos. Começou com 15 pares e a cada mês comprava 3 pares novos. Quantos pares possui após 8 meses?",
+                operation: "adição",
+                explanation: "Somamos os tênis iniciais com os comprados em 8 meses (8 × 3).",
+                calculation: "15 + (8 × 3) = 15 + 24 = 39"
+              }
+            ],
+            // Bloco 11: Problemas com Duas Etapas
+            [
+              {
+                text: "Giulia tinha 145 moedas no Roblox. Comprou uma skin por 89 moedas e depois ganhou 56 moedas numa competição. Quantas moedas ela tem agora?",
+                operation: "adição",
+                explanation: "Calculamos: moedas iniciais - gasto + ganho.",
+                calculation: "(145 - 89) + 56 = 56 + 56 = 112"
+              },
+              {
+                text: "Roberto construiu 3 casas no Minecraft. A primeira usou 78 blocos, a segunda 92 blocos, a terceira 65 blocos. Quantos blocos ele usou no total?",
+                operation: "adição",
+                explanation: "Somamos os blocos das três casas.",
+                calculation: "78 + 92 + 65 = 235"
+              },
+              {
+                text: "Marina comprou 5 pacotes de figurinhas com 12 figurinhas cada. Ela já tinha 38 figurinhas. Quantas figurinhas possui agora?",
+                operation: "adição",
+                explanation: "Calculamos figurinhas compradas (5 × 12) e somamos com as que já tinha.",
+                calculation: "(5 × 12) + 38 = 60 + 38 = 98"
+              },
+              {
+                text: "Diego tinha 240 seguidores no TikTok. Ganhou 95 novos seguidores mas 23 pararam de seguir. Quantos seguidores tem agora?",
+                operation: "adição",
+                explanation: "Somamos novos seguidores e subtraímos os que pararam de seguir.",
+                calculation: "240 + 95 - 23 = 312"
+              },
+              {
+                text: "Beatriz empacotou 96 doces em caixas de 8 doces cada. Vendeu 7 caixas completas. Quantas caixas ainda possui?",
+                operation: "subtração",
+                explanation: "Calculamos total de caixas (96 ÷ 8) e subtraímos as vendidas.",
+                calculation: "(96 ÷ 8) - 7 = 12 - 7 = 5"
+              }
+            ],
+            // Bloco 12: Problemas com Frações Simples
+            [
+              {
+                text: "João tem 60 carros de brinquedo. Ele deu metade para seu irmão. Quantos carros João deu?",
+                operation: "divisão",
+                explanation: "Metade significa dividir por 2.",
+                calculation: "60 ÷ 2 = 30"
+              },
+              {
+                text: "Sofia fez 80 brigadeiros para festa. Vendeu três quartos da quantidade. Quantos brigadeiros ela vendeu?",
+                operation: "multiplicação",
+                explanation: "Três quartos = 3/4. Calculamos (80 ÷ 4) × 3.",
+                calculation: "(80 ÷ 4) × 3 = 20 × 3 = 60"
+              },
+              {
+                text: "Lucas joga videogame 4 horas por dia. Se reduzir um terço desse tempo, quantas horas jogará?",
+                operation: "subtração",
+                explanation: "Um terço de 4 = 4 ÷ 3 ≈ 1,3. Subtraímos do tempo total.",
+                calculation: "4 - (4 ÷ 3) = 4 - 1,33 = 2,67 horas"
+              },
+              {
+                text: "Ana tinha 90 adesivos. Usou dois quintos para decorar o caderno. Quantos adesivos ela usou?",
+                operation: "multiplicação",
+                explanation: "Dois quintos = 2/5. Calculamos (90 ÷ 5) × 2.",
+                calculation: "(90 ÷ 5) × 2 = 18 × 2 = 36"
+              },
+              {
+                text: "Pedro economizou 120 reais. Gastou um quarto com jogos e outro quarto com lanche. Quanto dinheiro sobrou?",
+                operation: "subtração",
+                explanation: "Gastou 1/4 + 1/4 = 2/4 = metade. Sobrou a outra metade.",
+                calculation: "120 - (120 ÷ 2) = 120 - 60 = 60"
+              }
+            ],
+            // Bloco 13: Problemas com Proporções
+            [
+              {
+                text: "Se 3 pacotes de cartas custam 45 reais, quanto custam 7 pacotes?",
+                operation: "multiplicação",
+                explanation: "Cada pacote custa 45 ÷ 3 = 15 reais. Então 7 × 15.",
+                calculation: "(45 ÷ 3) × 7 = 15 × 7 = 105"
+              },
+              {
+                text: "Marina lê 25 páginas em 5 dias. Mantendo esse ritmo, quantas páginas lerá em 12 dias?",
+                operation: "multiplicação",
+                explanation: "Lê 25 ÷ 5 = 5 páginas por dia. Em 12 dias: 5 × 12.",
+                calculation: "(25 ÷ 5) × 12 = 5 × 12 = 60"
+              },
+              {
+                text: "Diego fez 24 gols em 6 jogos. Se continuar nesse desempenho, quantos gols fará em 15 jogos?",
+                operation: "multiplicação",
+                explanation: "Faz 24 ÷ 6 = 4 gols por jogo. Em 15 jogos: 4 × 15.",
+                calculation: "(24 ÷ 6) × 15 = 4 × 15 = 60"
+              },
+              {
+                text: "Se 8 crianças comem 32 doces, quantos doces comerão 12 crianças?",
+                operation: "multiplicação", 
+                explanation: "Cada criança come 32 ÷ 8 = 4 doces. Então 12 × 4.",
+                calculation: "(32 ÷ 8) × 12 = 4 × 12 = 48"
+              },
+              {
+                text: "Júlia economiza 15 reais em 3 semanas. Em quantas semanas economizará 60 reais?",
+                operation: "divisão",
+                explanation: "Economiza 15 ÷ 3 = 5 reais por semana. Para 60 reais: 60 ÷ 5.",
+                calculation: "60 ÷ (15 ÷ 3) = 60 ÷ 5 = 12"
+              }
+            ],
+            // Bloco 14: Problemas de Porcentagem Básica
+            [
+              {
+                text: "Gustavo tinha 200 seguidores. Se ganhou 50% a mais, quantos seguidores tem agora?",
+                operation: "adição",
+                explanation: "50% de 200 = 100. Somamos: 200 + 100.",
+                calculation: "200 + (200 × 0,5) = 200 + 100 = 300"
+              },
+              {
+                text: "Sofia comprou uma mochila de 80 reais com 25% de desconto. Quanto ela pagou?",
+                operation: "subtração",
+                explanation: "25% de 80 = 20 reais de desconto. Pagou 80 - 20.",
+                calculation: "80 - (80 × 0,25) = 80 - 20 = 60"
+              },
+              {
+                text: "Pedro acertou 75% de um teste com 40 questões. Quantas questões ele acertou?",
+                operation: "multiplicação",
+                explanation: "75% de 40 questões = 0,75 × 40.",
+                calculation: "40 × 0,75 = 30"
+              },
+              {
+                text: "Ana comeu 30% de uma pizza de 8 pedaços. Quantos pedaços ela comeu?",
+                operation: "multiplicação",
+                explanation: "30% de 8 = 0,3 × 8.",
+                calculation: "8 × 0,3 = 2,4 ≈ 2 pedaços"
+              },
+              {
+                text: "Lucas tinha 120 moedas no jogo e perdeu 40% delas. Quantas moedas ele perdeu?",
+                operation: "multiplicação",
+                explanation: "40% de 120 = 0,4 × 120.",
+                calculation: "120 × 0,4 = 48"
+              }
+            ],
+            // Bloco 15: Problemas com Tempo e Medidas
+            [
+              {
+                text: "Beatriz estuda 2 horas e 45 minutos por dia. Quantos minutos ela estuda por semana?",
+                operation: "multiplicação",
+                explanation: "2h45min = 165 minutos por dia. Em 7 dias: 165 × 7.",
+                calculation: "165 × 7 = 1155 minutos"
+              },
+              {
+                text: "Diego percorre 1,8 km para ir à escola. Indo e voltando 5 vezes por semana, quantos km percorre?",
+                operation: "multiplicação",
+                explanation: "Ida e volta = 1,8 × 2 = 3,6 km por dia. Em 5 dias: 3,6 × 5.",
+                calculation: "(1,8 × 2) × 5 = 3,6 × 5 = 18 km"
+              },
+              {
+                text: "Marina começou a jogar às 14h30 e parou às 17h15. Por quanto tempo ela jogou?",
+                operation: "subtração",
+                explanation: "Calculamos a diferença: 17h15 - 14h30.",
+                calculation: "17:15 - 14:30 = 2h45min"
+              },
+              {
+                text: "João assiste vídeos de 12 minutos cada. Se assistiu por 1 hora e 36 minutos, quantos vídeos viu?",
+                operation: "divisão",
+                explanation: "1h36min = 96 minutos. Dividimos por 12 minutos por vídeo.",
+                calculation: "96 ÷ 12 = 8"
+              },
+              {
+                text: "Sofia dorme 8 horas e 20 minutos por noite durante uma semana. Quantas horas dormiu no total?",
+                operation: "multiplicação",
+                explanation: "8h20min = 8,33 horas por noite. Em 7 noites: 8,33 × 7.",
+                calculation: "8,33 × 7 = 58,33 horas"
+              }
+            ],
+            // Bloco 16: Problemas Lógicos Intermediários
+            [
+              {
+                text: "Carlos tem o triplo de cartas que Bruno. Juntos têm 180 cartas. Quantas cartas Carlos possui?",
+                operation: "multiplicação",
+                explanation: "Bruno = X, Carlos = 3X. Total: X + 3X = 180, então 4X = 180.",
+                calculation: "180 ÷ 4 × 3 = 45 × 3 = 135"
+              },
+              {
+                text: "Ana e Júlia colecionam adesivos. Ana tem 15 a mais que Júlia. Se Ana der 8 adesivos para Júlia, quem terá mais?",
+                operation: "subtração",
+                explanation: "Diferença inicial: 15. Ana perde 8, Júlia ganha 8. Nova diferença: 15 - 16 = -1.",
+                calculation: "Júlia terá 1 adesivo a mais"
+              },
+              {
+                text: "Pedro tinha algumas moedas. Gastou metade, depois ganhou 20, ficando com 35. Quantas moedas tinha inicialmente?",
+                operation: "subtração",
+                explanation: "Se ficou com 35 após ganhar 20, tinha 15 antes. Se 15 é metade, o total inicial era 30.",
+                calculation: "(35 - 20) × 2 = 15 × 2 = 30"
+              },
+              {
+                text: "Marina organizou seus livros: 1/3 são de aventura, 1/4 são de mistério, o resto são romances. Se tem 60 livros, quantos são romances?",
+                operation: "subtração",
+                explanation: "Aventura: 60 ÷ 3 = 20. Mistério: 60 ÷ 4 = 15. Romances: 60 - 20 - 15.",
+                calculation: "60 - 20 - 15 = 25"
+              },
+              {
+                text: "Diego fez um teste com questões valendo 2, 3 e 5 pontos. Acertou 4 de 2 pontos, 3 de 3 pontos e 2 de 5 pontos. Qual sua pontuação total?",
+                operation: "adição",
+                explanation: "Soma: (4 × 2) + (3 × 3) + (2 × 5).",
+                calculation: "8 + 9 + 10 = 27"
+              }
+            ],
+            // Bloco 17: Problemas Multi-Etapa Avançados
+            [
+              {
+                text: "Sofia comprou 4 jogos: o primeiro custou 25 reais, o segundo 30% a mais que o primeiro, o terceiro metade do segundo, o quarto o dobro do terceiro. Quanto gastou no total?",
+                operation: "adição",
+                explanation: "1º: 25, 2º: 25 + 7,5 = 32,5, 3º: 16,25, 4º: 32,5. Total: 25 + 32,5 + 16,25 + 32,5.",
+                calculation: "25 + 32,5 + 16,25 + 32,5 = 106,25"
+              },
+              {
+                text: "Lucas organizou torneio com 64 jogadores. A cada rodada elimina-se metade. Após quantas rodadas restará apenas 1 campeão?",
+                operation: "divisão",
+                explanation: "64 → 32 → 16 → 8 → 4 → 2 → 1. São 6 rodadas.",
+                calculation: "6 rodadas"
+              },
+              {
+                text: "Ana investiu 200 reais. No 1º mês rendeu 10%, no 2º mês perdeu 5% do total. Quanto tem agora?",
+                operation: "multiplicação",
+                explanation: "Após 1º mês: 200 × 1,1 = 220. Após 2º mês: 220 × 0,95 = 209.",
+                calculation: "200 × 1,1 × 0,95 = 209"
+              },
+              {
+                text: "Pedro comprou ações de uma empresa por 150 reais. O valor subiu 20%, depois caiu 15%. Qual o valor atual?",
+                operation: "multiplicação",
+                explanation: "Após subida: 150 × 1,2 = 180. Após queda: 180 × 0,85 = 153.",
+                calculation: "150 × 1,2 × 0,85 = 153"
+              },
+              {
+                text: "Beatriz tem uma coleção que cresce 25% a cada mês. Começou com 40 itens. Quantos terá após 3 meses?",
+                operation: "multiplicação",
+                explanation: "Após cada mês multiplica por 1,25: 40 × 1,25³.",
+                calculation: "40 × 1,25³ = 40 × 1,953 = 78,12"
+              }
+            ],
+            // Bloco 18: Desafios Supremos para 5º-6º Ano
+            [
+              {
+                text: "Uma escola tem 480 alunos. 40% são meninas, e dessas, 25% praticam esportes. Quantas meninas praticam esportes?",
+                operation: "multiplicação",
+                explanation: "Meninas: 480 × 0,4 = 192. Que praticam esporte: 192 × 0,25 = 48.",
+                calculation: "480 × 0,4 × 0,25 = 48"
+              },
+              {
+                text: "Carlos economiza R$ 50 por mês durante um ano. No final, gasta 60% do total numa bike. Quanto sobrou?",
+                operation: "subtração",
+                explanation: "Total economizado: 50 × 12 = 600. Gastou: 600 × 0,6 = 360. Sobrou: 600 - 360.",
+                calculation: "(50 × 12) - (600 × 0,6) = 600 - 360 = 240"
+              },
+              {
+                text: "Marina faz bolos para vender. Cada bolo usa 3 ovos e rende R$ 15 de lucro. Se ela tem 84 ovos, qual será seu lucro total?",
+                operation: "multiplicação",
+                explanation: "Bolos possíveis: 84 ÷ 3 = 28. Lucro total: 28 × 15.",
+                calculation: "(84 ÷ 3) × 15 = 28 × 15 = 420"
+              },
+              {
+                text: "Diego tem 3 vezes mais jogos que Felipe, e Felipe tem 12 jogos a mais que Bruno. Se Bruno tem 18 jogos, quantos jogos Diego possui?",
+                operation: "multiplicação",
+                explanation: "Bruno: 18, Felipe: 18 + 12 = 30, Diego: 30 × 3 = 90.",
+                calculation: "(18 + 12) × 3 = 30 × 3 = 90"
+              },
+              {
+                text: "Uma receita para 4 pessoas usa 200g de farinha e 150ml de leite. Para fazer para 14 pessoas, quanto precisarei de cada ingrediente?",
+                operation: "multiplicação",
+                explanation: "Proporção: 14 ÷ 4 = 3,5 vezes mais. Farinha: 200 × 3,5, Leite: 150 × 3,5.",
+                calculation: "Farinha: 700g, Leite: 525ml"
+              }
+            ],
+            // Bloco 19: Operações Sequenciais (Difícil)
+            [
+              {
+                text: "Lucas comprou 3 skins no Roblox por 50 moedas cada uma, depois vendeu 1 skin por 45 moedas. Quantas moedas ele gastou no total?",
+                operation: "subtração",
+                explanation: "Primeiro calculamos o gasto total (3 × 50 = 150), depois subtraímos o que ele recuperou (150 - 45).",
+                calculation: "(3 × 50) - 45 = 150 - 45 = 105"
+              },
+              {
+                text: "Sofia construiu 4 casas no Minecraft, cada uma com 12 blocos. Depois destruiu 2 casas completas. Quantos blocos sobraram?",
+                operation: "subtração", 
+                explanation: "Calculamos total de blocos (4 × 12 = 48), depois subtraímos os blocos destruídos (2 × 12 = 24).",
+                calculation: "(4 × 12) - (2 × 12) = 48 - 24 = 24"
+              },
+              {
+                text: "Pedro assistiu o Diário do Bananinha por 5 dias, 3 episódios por dia. No 6º dia assistiu mais 4 episódios. Quantos episódios assistiu no total?",
+                operation: "adição",
+                explanation: "Primeiro calculamos episódios dos 5 dias (5 × 3 = 15), depois somamos os 4 do último dia.",
+                calculation: "(5 × 3) + 4 = 15 + 4 = 19"
+              },
+              {
+                text: "Ana empinou pipas por 3 semanas. Na primeira semana empinou 8 pipas, na segunda 12, na terceira perdeu metade das que tinha empinado. Quantas pipas perdeu?",
+                operation: "divisão",
+                explanation: "Somamos pipas das duas primeiras semanas (8 + 12 = 20), depois calculamos metade.",
+                calculation: "(8 + 12) ÷ 2 = 20 ÷ 2 = 10"
+              },
+              {
+                text: "Ricardo coleciona 150 cartas Pokémon em 6 pacotes iguais, depois doa 2 pacotes completos para amigos. Quantas cartas ficaram com ele?",
+                operation: "subtração",
+                explanation: "Calculamos cartas por pacote (150 ÷ 6 = 25), depois subtraímos 2 pacotes doados (2 × 25 = 50).",
+                calculation: "150 - (2 × 25) = 150 - 50 = 100"
+              }
+            ],
+            // Bloco 11: Problemas com Porcentagens Simples (Muito Difícil)
+            [
+              {
+                text: "Guilherme tinha 200 seguidores no TikTok. No primeiro mês ganhou metade a mais, no segundo mês perdeu metade dos que tinha. Quantos seguidores tem agora?",
+                operation: "multiplicação",
+                explanation: "Primeiro mês: 200 + (200 ÷ 2) = 300. Segundo mês: 300 ÷ 2 = 150.",
+                calculation: "200 + 100 = 300, depois 300 ÷ 2 = 150"
+              },
+              {
+                text: "Beatriz comprou tênis com desconto. O preço era 120 reais, mas pagou apenas três quartos do valor. Quanto pagou?",
+                operation: "multiplicação",
+                explanation: "Três quartos significa 3 partes de 4. Calculamos 120 ÷ 4 = 30, depois 30 × 3.",
+                calculation: "(120 ÷ 4) × 3 = 30 × 3 = 90"
+              },
+              {
+                text: "Carlos joga Minecraft 8 horas por semana. Se ele reduzir pela metade, quantas horas jogará em 4 semanas?",
+                operation: "multiplicação",
+                explanation: "Metade de 8 é 4 horas por semana. Em 4 semanas: 4 × 4.",
+                calculation: "(8 ÷ 2) × 4 = 4 × 4 = 16"
+              },
+              {
+                text: "Laura tinha 80 doces e comeu um quarto no primeiro dia, um quarto no segundo dia. Quantos doces sobraram?",
+                operation: "subtração",
+                explanation: "Um quarto de 80 = 20. Comeu 20 + 20 = 40. Sobraram 80 - 40.",
+                calculation: "80 - (20 + 20) = 80 - 40 = 40"
+              },
+              {
+                text: "Diego construiu uma torre de 60 blocos no Minecraft. Se cada andar tem um quinto dos blocos totais, quantos andares tem a torre?",
+                operation: "divisão",
+                explanation: "Um quinto de 60 é 12 blocos por andar. Dividimos total por blocos por andar.",
+                calculation: "60 ÷ (60 ÷ 5) = 60 ÷ 12 = 5"
+              }
+            ],
+            // Bloco 12: Operações com Tempo e Medidas (Complexo)
+            [
+              {
+                text: "Valentina joga Roblox 2 horas e 30 minutos por dia. Em quantos minutos ela joga em uma semana completa?",
+                operation: "multiplicação",
+                explanation: "2h30min = 150 minutos por dia. Em 7 dias: 150 × 7.",
+                calculation: "150 × 7 = 1050 minutos"
+              },
+              {
+                text: "João dorme 9 horas por noite. Se ele for dormir às 22h30, a que horas vai acordar?",
+                operation: "adição",
+                explanation: "22h30 + 9h = 31h30. Como passou de 24h, subtraímos 24h = 7h30.",
+                calculation: "22:30 + 9:00 = 7:30 (do dia seguinte)"
+              },
+              {
+                text: "Marina percorre 1,5 km para ir à escola. Se ela vai e volta 5 vezes por semana, quantos quilômetros percorre?",
+                operation: "multiplicação",
+                explanation: "Ida e volta = 1,5 × 2 = 3 km por dia. Em 5 dias: 3 × 5.",
+                calculation: "(1,5 × 2) × 5 = 3 × 5 = 15 km"
+              },
+              {
+                text: "Thiago assistiu 4 filmes, cada um com 1 hora e 45 minutos. Quantas horas assistiu no total?",
+                operation: "multiplicação",
+                explanation: "1h45min = 105 minutos cada filme. 4 filmes = 420 minutos = 7 horas.",
+                calculation: "105 × 4 = 420 min = 7 horas"
+              },
+              {
+                text: "Isabel empina pipa das 15h às 17h30 todos os sábados por 4 semanas. Quantas horas empinou no total?",
+                operation: "multiplicação",
+                explanation: "De 15h às 17h30 = 2h30 = 2,5 horas por sábado. Em 4 semanas: 2,5 × 4.",
+                calculation: "2,5 × 4 = 10 horas"
+              }
+            ],
+            // Bloco 13: Problemas de Lógica com Operações (Expert)
+            [
+              {
+                text: "Gabriel tem o dobro de moedas no Roblox que Ana. Se juntos têm 180 moedas, quantas moedas Gabriel possui?",
+                operation: "divisão",
+                explanation: "Se Gabriel tem o dobro, Ana tem X e Gabriel tem 2X. X + 2X = 180, então 3X = 180.",
+                calculation: "180 ÷ 3 = 60 (Ana), 60 × 2 = 120 (Gabriel)"
+              },
+              {
+                text: "Sofia comprou 3 jogos por preços diferentes: o segundo custou 20 reais a mais que o primeiro, o terceiro custou metade do segundo. Se gastou 110 reais no total, quanto custou o primeiro jogo?",
+                operation: "subtração",
+                explanation: "Primeiro jogo = X, segundo = X + 20, terceiro = (X + 20) ÷ 2. Total = 110.",
+                calculation: "Resolvendo: X = 30 reais"
+              },
+              {
+                text: "Pedro e Lucas colecionam carros de brinquedo. Pedro tem 12 carros a mais que Lucas. Se Pedro der 8 carros para Lucas, quem terá mais carros?",
+                operation: "subtração",
+                explanation: "Diferença inicial: 12 carros. Pedro perde 8, Lucas ganha 8. Diferença final: 12 - 16 = -4.",
+                calculation: "Lucas terá 4 carros a mais que Pedro"
+              },
+              {
+                text: "Em um servidor de Minecraft, há 3 vezes mais jogadores de manhã que à tarde. Se à tarde há 45 jogadores, quantos há de manhã?",
+                operation: "multiplicação",
+                explanation: "Se há 3 vezes mais de manhã, multiplicamos jogadores da tarde por 3.",
+                calculation: "45 × 3 = 135 jogadores"
+              },
+              {
+                text: "Camila divide suas 60 figurinhas igualmente entre suas amigas. Se cada amiga recebeu 12 figurinhas, quantas amigas ela tem?",
+                operation: "divisão",
+                explanation: "Dividimos total de figurinhas pela quantidade que cada uma recebeu.",
+                calculation: "60 ÷ 12 = 5 amigas"
+              }
+            ],
+            // Bloco 14: Situações do Cotidiano Escolar (Aplicado)
+            [
+              {
+                text: "Na sala de informática há 15 computadores. Se 3 estão quebrados e os alunos trabalham em duplas, quantas duplas podem usar os computadores?",
+                operation: "divisão",
+                explanation: "Computadores funcionando: 15 - 3 = 12. Duplas que podem usar: 12 ÷ 2.",
+                calculation: "(15 - 3) ÷ 2 = 12 ÷ 2 = 6 duplas"
+              },
+              {
+                text: "A merenda escolar serve 240 alunos por dia. Se cada bandeja comporta 8 pratos, quantas bandejas são necessárias?",
+                operation: "divisão",
+                explanation: "Dividimos total de alunos pela capacidade de cada bandeja.",
+                calculation: "240 ÷ 8 = 30 bandejas"
+              },
+              {
+                text: "Para a festa junina, cada turma deve arrecadar 150 reais. Se a turma do 4º ano já arrecadou dois terços do valor, quanto ainda falta?",
+                operation: "subtração",
+                explanation: "Dois terços de 150 = (150 ÷ 3) × 2 = 100. Falta: 150 - 100.",
+                calculation: "150 - 100 = 50 reais"
+              },
+              {
+                text: "Na biblioteca escolar há 8 estantes com 45 livros cada. Se 60 livros foram emprestados, quantos livros restaram?",
+                operation: "subtração",
+                explanation: "Total de livros: 8 × 45 = 360. Livros restantes: 360 - 60.",
+                calculation: "(8 × 45) - 60 = 360 - 60 = 300"
+              },
+              {
+                text: "O recreio dura 20 minutos. Se já se passaram três quartos do tempo, quantos minutos ainda restam?",
+                operation: "subtração",
+                explanation: "Três quartos de 20 = (20 ÷ 4) × 3 = 15. Restam: 20 - 15.",
+                calculation: "20 - 15 = 5 minutos"
+              }
+            ],
+            // Bloco 15: Problemas com Dinheiro e Comércio (Prático)
+            [
+              {
+                text: "Mateus quer comprar um jogo que custa 89 reais. Ele economiza 12 reais por semana. Em quantas semanas terá dinheiro suficiente?",
+                operation: "divisão",
+                explanation: "Dividimos o preço do jogo pela quantia economizada por semana.",
+                calculation: "89 ÷ 12 = 7,4... ≈ 8 semanas"
+              },
+              {
+                text: "Ana comprou 3 doces por 2,50 reais cada e pagou com uma nota de 10 reais. Quanto recebeu de troco?",
+                operation: "subtração",
+                explanation: "Gasto total: 3 × 2,50 = 7,50. Troco: 10,00 - 7,50.",
+                calculation: "10,00 - (3 × 2,50) = 10,00 - 7,50 = 2,50"
+              },
+              {
+                text: "Julia vende pipas por 15 reais cada. Se ela vendeu 8 pipas e gastou 45 reais com materiais, qual foi seu lucro?",
+                operation: "subtração",
+                explanation: "Receita: 8 × 15 = 120. Lucro: receita - gastos = 120 - 45.",
+                calculation: "(8 × 15) - 45 = 120 - 45 = 75 reais"
+              },
+              {
+                text: "Roberto compra cartas Pokémon em pacotes de 24 reais com 6 cartas cada. Quantos reais ele paga por carta?",
+                operation: "divisão",
+                explanation: "Dividimos o preço do pacote pela quantidade de cartas.",
+                calculation: "24 ÷ 6 = 4 reais por carta"
+              },
+              {
+                text: "Beatriz tinha 85 reais, gastou 1/3 com tênis e 1/5 com roupas. Quanto dinheiro sobrou?",
+                operation: "subtração",
+                explanation: "1/3 de 85 ≈ 28, 1/5 de 85 = 17. Gasto total: 28 + 17 = 45. Sobrou: 85 - 45.",
+                calculation: "85 - (28 + 17) = 85 - 45 = 40 reais"
+              }
+            ],
+            // Bloco 16: Desafios com Padrões e Sequências (Analítico)
+            [
+              {
+                text: "Pedro constrói torres no Minecraft seguindo um padrão: 1ª torre tem 5 blocos, 2ª tem 8 blocos, 3ª tem 11 blocos. Quantos blocos terá a 5ª torre?",
+                operation: "adição",
+                explanation: "O padrão aumenta 3 blocos por torre. 4ª torre: 11 + 3 = 14, 5ª torre: 14 + 3 = 17.",
+                calculation: "5, 8, 11, 14, 17 (padrão +3)"
+              },
+              {
+                text: "Sofia coleciona moedas do Roblox: no 1º dia ganhou 10, no 2º dia ganhou 20, no 3º dia ganhou 40. Se continuar esse padrão, quantas moedas ganhará no 5º dia?",
+                operation: "multiplicação", 
+                explanation: "O padrão dobra a cada dia. 4º dia: 40 × 2 = 80, 5º dia: 80 × 2 = 160.",
+                calculation: "10, 20, 40, 80, 160 (padrão ×2)"
+              },
+              {
+                text: "Lucas organiza seus tênis em fileiras: 1ª fileira tem 2 pares, 2ª tem 4, 3ª tem 8. Quantos pares terá na 6ª fileira?",
+                operation: "multiplicação",
+                explanation: "Padrão dobra: 4ª fileira = 16, 5ª = 32, 6ª = 64.",
+                calculation: "2, 4, 8, 16, 32, 64"
+              },
+              {
+                text: "Marina planta flores seguindo sequência: 1º canteiro tem 3 flores, 2º tem 7, 3º tem 11, 4º tem 15. Quantas flores terá o 7º canteiro?",
+                operation: "adição",
+                explanation: "Padrão +4: 5º = 19, 6º = 23, 7º = 27.",
+                calculation: "3, 7, 11, 15, 19, 23, 27"
+              },
+              {
+                text: "Diego assiste vídeos por semana: 1ª semana 2 vídeos, 2ª semana 6, 3ª semana 18. Se continuar multiplicando por 3, quantos vídeos assistirá na 5ª semana?",
+                operation: "multiplicação",
+                explanation: "Padrão ×3: 4ª semana = 18 × 3 = 54, 5ª semana = 54 × 3 = 162.",
+                calculation: "2, 6, 18, 54, 162"
+              }
+            ],
+            // Bloco 17: Problemas Mistos Avançados (Master)
+            [
+              {
+                text: "Um torneio de Roblox tem 64 jogadores. A cada rodada, metade é eliminada. Após 4 rodadas, quantos jogadores restam?",
+                operation: "divisão",
+                explanation: "1ª rodada: 64÷2=32, 2ª: 32÷2=16, 3ª: 16÷2=8, 4ª: 8÷2=4.",
+                calculation: "64 → 32 → 16 → 8 → 4 jogadores"
+              },
+              {
+                text: "Carolina tem 3 vezes mais seguidores que Bruno. Se Carolina perdesse 200 seguidores e Bruno ganhasse 200, eles teriam o mesmo número. Quantos seguidores Carolina tem?",
+                operation: "adição",
+                explanation: "C = 3B. Depois das mudanças: C - 200 = B + 200, então C = B + 400. Substituindo: B + 400 = 3B.",
+                calculation: "Carolina: 600, Bruno: 200"
+              },
+              {
+                text: "Artur compra, vende e troca cartas. Começou com 50, comprou 30, vendeu 1/4 do total, depois trocou 20 por 35 novas. Quantas cartas tem agora?",
+                operation: "adição",
+                explanation: "Início: 50, após compra: 80, vendeu 20 (1/4 de 80): ficou com 60, trocou 20 por 35: 60 - 20 + 35.",
+                calculation: "50 + 30 - 20 - 20 + 35 = 75"
+              },
+              {
+                text: "Isabel empina pipas há 6 semanas. Nas primeiras 3 semanas empinou 4 por semana, nas últimas 3 empinou o dobro por semana. Quantas pipas empinou no total?",
+                operation: "adição",
+                explanation: "Primeiras 3 semanas: 3 × 4 = 12. Últimas 3 semanas: 3 × 8 = 24. Total: 12 + 24.",
+                calculation: "(3 × 4) + (3 × 8) = 12 + 24 = 36"
+              },
+              {
+                text: "Gustavo divide sua coleção de 120 carros entre 3 amigos de forma que o primeiro receba o dobro do segundo, e o terceiro receba metade do primeiro. Quantos carros recebe o segundo amigo?",
+                operation: "divisão",
+                explanation: "2º amigo = X, 1º = 2X, 3º = X. Total: 2X + X + X = 120, então 4X = 120.",
+                calculation: "120 ÷ 4 = 30 carros"
+              }
+            ],
+            // Bloco 18: Desafios Supremos (Champion)
+            [
+              {
+                text: "Uma escola organizou gincana: 5 times, cada time perdeu 1/5 dos integrantes na 1ª prova. Se sobraram 240 alunos no total, quantos alunos havia inicialmente?",
+                operation: "multiplicação",
+                explanation: "Se perderam 1/5, sobraram 4/5. Se 240 representa 4/5 do total, o total inicial era 240 ÷ 4 × 5.",
+                calculation: "(240 ÷ 4) × 5 = 60 × 5 = 300"
+              },
+              {
+                text: "Marina e Julia colecionam tênis. Marina tem 2/3 da quantidade de Julia. Se Marina comprasse 15 pares e Julia vendesse 25, elas teriam quantidades iguais. Quantos tênis Marina possui?",
+                operation: "subtração",
+                explanation: "M = 2J/3. Após mudanças: M + 15 = J - 25, então 2J/3 + 15 = J - 25. Resolvendo: J = 120, M = 80.",
+                calculation: "Marina: 80 tênis"
+              },
+              {
+                text: "Pedro construiu cidade no Minecraft em formato quadrado. Aumentou cada lado em 50%, e a área aumentou em quantos por cento?",
+                operation: "multiplicação",
+                explanation: "Lado original = L, área = L². Novo lado = 1,5L, nova área = 2,25L². Aumento: 125%.",
+                calculation: "Área aumentou 125%"
+              },
+              {
+                text: "Torneio de videogame: 128 participantes, taxa de inscrição 25 reais. Prêmios: 1º lugar 40% do total, 2º lugar 25%, 3º lugar 15%, organização fica com resto. Quanto a organização recebeu?",
+                operation: "multiplicação",
+                explanation: "Total arrecadado: 128 × 25 = 3200. Prêmios: 40% + 25% + 15% = 80%. Organização: 20%.",
+                calculation: "3200 × 20% = 640 reais"
+              },
+              {
+                text: "Sofia economiza dinheiro: no 1º mês guardou 50 reais, nos meses seguintes sempre guardou 20% a mais que o mês anterior. Quanto guardou no 4º mês?",
+                operation: "multiplicação",
+                explanation: "1º mês: 50, 2º: 50 × 1,2 = 60, 3º: 60 × 1,2 = 72, 4º: 72 × 1,2 = 86,4.",
+                calculation: "50 × 1,2³ = 86,40 reais"
+              }
+            ]
+          ];
+
+          const blockTitles = [
+            '🎮 Nível Iniciante',
+            '🏆 Nível Aventureiro',
+            '⭐ Nível Explorador',
+            '🎯 Nível Estrategista',
+            '🚀 Nível Construtor',
+            '💎 Nível Colecionador',
+            '🎪 Nível Mestre',
+            '🎭 Nível Expert',
+            '👑 Nível Champion',
+            '🎨 Contexto Avançado',
+            '🔧 Duas Etapas',
+            '🍰 Frações Simples',
+            '⚖️ Proporções',
+            '📊 Porcentagem Básica',
+            '⏱️ Tempo e Medidas',
+            '🧩 Lógica Intermediária',
+            '🔄 Multi-Etapa Avançado',
+            '🎆 Desafios 5º-6º Ano',
+            '⚡ Operações Sequenciais',
+            '🧮 Porcentagens Simples',
+            '⏰ Tempo e Medidas',
+            '🧠 Lógica Expert',
+            '🏫 Cotidiano Escolar',
+            '💰 Dinheiro e Comércio',
+            '🔄 Padrões e Sequências',
+            '🎯 Mistos Avançados',
+            '🔥 Desafios Supremos'
+          ];
+
+          const [showMestre, setShowMestre] = useState(false);
+          const [showImperador, setShowImperador] = useState(false);
+          const [showDeuses, setShowDeuses] = useState(false);
+
+          const operations = [
+            { value: 'adição', label: 'Adição (+)', emoji: '➕' },
+            { value: 'subtração', label: 'Subtração (-)', emoji: '➖' },
+            { value: 'multiplicação', label: 'Multiplicação (×)', emoji: '✖️' },
+            { value: 'divisão', label: 'Divisão (÷)', emoji: '➗' }
+          ];
+
+          // Keyboard navigation (apenas Enter nas telas iniciais)
+          React.useEffect(() => {
+            const handleKeyDown = (e) => {
+              // Navegação na tela inicial
+              if (!quizStarted && !showBlockSelection && e.key === 'Enter' && studentName.trim()) {
+                e.preventDefault();
+                handleStartName();
+              }
+            };
+
+            document.addEventListener('keydown', handleKeyDown);
+            return () => document.removeEventListener('keydown', handleKeyDown);
+          }, [quizStarted, showBlockSelection, studentName]);
+
+          const getFontStyle = () => ({
+            fontSize: fontSize === 'large' ? '28px' : '20px',
+            fontFamily: fontSize === 'dyslexic' ? "'Comic Neue', sans-serif" : 
+                       fontSize === 'comic' ? "'Comic Sans MS', cursive" :
+                       fontSize === 'cursive' ? "'Fuzzy Bubbles', cursive" :
+                       "'Comic Neue', 'Comic Sans MS', cursive"
+          });
+
+          // Componente do botão flutuante de controle de música
+          const MusicToggleButton = () => (
+            React.createElement('button', {
+              onClick: toggleBackgroundMusic,
+              className: "fixed top-4 right-4 w-14 h-14 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl transition-all duration-200 hover:scale-110 shadow-lg z-50 border-2 border-white",
+              title: musicPlaying ? "Pausar música de fundo" : "Tocar música de fundo"
+            }, musicPlaying ? "🎵" : "🔇")
+          );
+          
+          const exportToCSV = () => {
+            const results = loadSessionResults();
+            const csvContent = results.map(result => {
+              const timeInSeconds = Math.round((new Date(result.time) - new Date()) / 1000);
+              return `${result.name},Matematica,Quiz de Operacoes,${result.block},Questao_${result.blockId + 1},${timeInSeconds > 0 ? timeInSeconds : 60}s,${result.score},${5 - result.score},${result.percentage}%`;
+            }).join('\n');
+            
+            const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+            const fullContent = header + csvContent;
+            
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pt-BR').replace(/\//g, '-');
+            const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+            const filename = `resultados-quiz_de_operacoes-${dateStr}-${studentNameForFile}.csv`;
+            
+            const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          };
+          
+          const finishSession = () => {
+            exportToCSV();
+            localStorage.removeItem('quizSessionResults');
+            setSessionResults([]);
+            setSessionActive(false);
+            setStudentName('');
+            setShowBlockSelection(false);
+            setQuizStarted(false);
+            setQuizCompleted(false);
+            setCurrentQuestion(0);
+            setScore(0);
+            setSelectedAnswer('');
+            setShowFeedback(false);
+            setIsCorrect(false);
+          };
+
+          const handleStartName = () => {
+            if (studentName.trim()) {
+              if (!sessionActive) {
+                setSessionActive(true);
+              }
+              setShowBlockSelection(true);
+            }
+          };
+          
+          const handleStartQuiz = (blockIndex) => {
+            setSelectedBlock(blockIndex);
+            setQuizStarted(true);
+            setShowBlockSelection(false);
+          };
+          
+          const loadSessionResults = () => {
+            const saved = localStorage.getItem('quizSessionResults');
+            return saved ? JSON.parse(saved) : [];
+          };
+          
+          const saveSessionResults = (results) => {
+            localStorage.setItem('quizSessionResults', JSON.stringify(results));
+          };
+
+          const celebrationMessages = [
+              '🎉 Fantástico! Bate palma bem suave! 👏',
+              '⭐ Sensacional! Mãos ao alto comemorando! 🙌', 
+              '🏆 Incrível! Faz um soquinho no ar! ✊',
+              '🚀 Arrasou! Dá um sorriso enorme! 😄',
+              '✨ Perfeito! Bate o pé no chão de alegria! 🦶',
+              '🎯 Acertou em cheio! Faz a dança da vitória! 💃',
+              '🌟 Genial! Diga "consegui" bem baixinho! 🤫',
+              '🎪 Show! Faz um joinha duplo! 👍👍',
+              '🔥 Mandou bem! Coloca o linguão pra fora! 😝',
+              '💫 Extraordinário! Fecha o punho e puxa para baixo! ✊',
+              '🎈 Maravilhoso! Faz um coração com as mãos! ❤️',
+              '🌈 Espetacular! Bate palma 3 vezes rapidinho! 👏👏👏',
+              '🎭 Impressionante! Levanta os dois braços! 🙌',
+              '💎 Brilhante! Reverência ao conhecimento! 🙏',
+              '🎊 Excepcional! Faz um "sim" balançando a cabeça! 👍',
+              '⚡ Incrível! Esfrega as mãos de satisfação! 🤲',
+              '🎁 Perfeito! Você merece um cumprimento! 🤝',
+              '🏅 Campeão! Mostra o muqui! 💪',
+              '🌺 Lindo! Faz um "shiu" de tão bom que foi! 🤫',
+              '🎖️ Top! Aponta para cima comemorando! ☝️'
+          ];
+          
+          const handleAnswerClick = (operation) => {
+            const currentProblem = problemBlocks[selectedBlock][currentQuestion];
+            const correct = operation === currentProblem.operation;
+            setSelectedAnswer(operation);
+            setIsCorrect(correct);
+            setShowFeedback(true);
+            
+            // Tocar som de feedback imediatamente
+            playFeedbackSound(correct);
+            
+            // Reproduzir áudio de explicação automaticamente após a resposta
+            setTimeout(() => {
+              playAudio(selectedBlock, currentQuestion, 'explicacao');
+            }, 1000); // Aguarda 1 segundo para dar tempo do usuário ver o feedback visual
+            
+            if (correct) {
+              setScore(score + 1);
+              const randomMessage = celebrationMessages[Math.floor(Math.random() * celebrationMessages.length)];
+              setCelebrationMessage(randomMessage);
+              setShowCelebration(true);
+              setTimeout(() => setShowCelebration(false), 2500);
+            }
+          };
+
+          const handleNext = () => {
+            if (currentQuestion < 4) {
+              setCurrentQuestion(currentQuestion + 1);
+              setSelectedAnswer('');
+              setShowFeedback(false);
+              setIsCorrect(false);
+            } else {
+              setQuizCompleted(true);
+            }
+          };
+
+          const resetQuiz = () => {
+            if (!sessionActive) {
+              setStudentName('');
+              setShowBlockSelection(false);
+            } else {
+              setShowBlockSelection(true);
+            }
+            setQuizStarted(false);
+            setCurrentQuestion(0);
+            setScore(0);
+            setSelectedAnswer('');
+            setShowFeedback(false);
+            setIsCorrect(false);
+            setQuizCompleted(false);
+          };
+          
+          const saveResult = () => {
+            const result = {
+              name: studentName,
+              block: blockTitles[selectedBlock],
+              blockId: selectedBlock,
+              score: score,
+              total: 5,
+              percentage: Math.round((score / 5) * 100),
+              date: new Date().toLocaleDateString('pt-BR'),
+              time: new Date().toLocaleTimeString('pt-BR')
+            };
+            const currentResults = loadSessionResults();
+            const updatedResults = [...currentResults, result];
+            saveSessionResults(updatedResults);
+            setSessionResults(updatedResults);
+          };
+
+          // Block Selection Screen
+          if (showBlockSelection && !quizStarted) {
+            return React.createElement('div', {
+              className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
+              style: getFontStyle()
+            },
+              React.createElement('div', {
+                className: "max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8"
+              },
+                React.createElement('div', { className: "text-center mb-8" },
+                  React.createElement('h1', {
+                    className: "text-4xl font-bold text-gray-800 mb-4"
+                  }, `Olá, ${studentName}! 👋`),
+                  React.createElement('p', {
+                    className: "text-xl text-gray-600"
+                  }, "Escolha o nível que deseja jogar:")
+                ),
+                
+                // Seção Mestre (Blocos 1-9)
+                React.createElement('div', { className: "mb-8" },
+                  React.createElement('button', {
+                    onClick: () => setShowMestre(!showMestre),
+                    className: "w-full text-xl font-bold text-center mb-4 text-purple-700 bg-purple-100 py-2 rounded-lg hover:bg-purple-200 transition-colors cursor-pointer flex items-center justify-center"
+                  }, 
+                    React.createElement('span', { className: "mr-2" }, showMestre ? '▼' : '▶'),
+                    "🏆 NÍVEIS MESTRE 🏆"
+                  ),
+                  showMestre &&
+                    React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
+                      blockTitles.slice(0, 9).map((title, index) => 
+                        React.createElement('button', {
+                          key: index,
+                          onClick: () => handleStartQuiz(index),
+                          className: "p-3 bg-gradient-to-r from-blue-100 to-purple-100 rounded-lg border-2 border-gray-200 hover:border-purple-500 hover:from-blue-200 hover:to-purple-200 transition-all duration-300 transform hover:scale-105 text-center"
+                        },
+                          React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
+                          React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
+                          React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões`)
+                        )
+                      )
+                    )
+                ),
+                
+                // Seção Imperador-Imperatriz (Blocos 10-18)
+                React.createElement('div', { className: "mb-8" },
+                  React.createElement('button', {
+                    onClick: () => setShowImperador(!showImperador),
+                    className: "w-full text-xl font-bold text-center mb-4 text-yellow-700 bg-yellow-100 py-2 rounded-lg hover:bg-yellow-200 transition-colors cursor-pointer flex items-center justify-center"
+                  }, 
+                    React.createElement('span', { className: "mr-2" }, showImperador ? '▼' : '▶'),
+                    "👑 NÍVEIS IMPERADOR-IMPERATRIZ 👑"
+                  ),
+                  showImperador &&
+                    React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
+                      blockTitles.slice(9, 18).map((title, index) => 
+                        React.createElement('button', {
+                          key: index + 9,
+                          onClick: () => handleStartQuiz(index + 9),
+                          className: "p-3 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-gray-200 hover:border-yellow-500 hover:from-yellow-200 hover:to-amber-200 transition-all duration-300 transform hover:scale-105 text-center"
+                        },
+                          React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
+                          React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
+                          React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões intermediárias`)
+                        )
+                      )
+                    )
+                ),
+                
+                // Seção Deuses (Blocos 19-27)
+                React.createElement('div', { className: "mb-8" },
+                  React.createElement('button', {
+                    onClick: () => setShowDeuses(!showDeuses),
+                    className: "w-full text-xl font-bold text-center mb-4 text-red-700 bg-red-100 py-2 rounded-lg hover:bg-red-200 transition-colors cursor-pointer flex items-center justify-center"
+                  }, 
+                    React.createElement('span', { className: "mr-2" }, showDeuses ? '▼' : '▶'),
+                    "⚡ NÍVEIS DEUSES ⚡"
+                  ),
+                  showDeuses &&
+                    React.createElement('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" },
+                      blockTitles.slice(18, 27).map((title, index) => 
+                        React.createElement('button', {
+                          key: index + 18,
+                          onClick: () => handleStartQuiz(index + 18),
+                          className: "p-3 bg-gradient-to-r from-red-100 to-orange-100 rounded-lg border-2 border-gray-200 hover:border-red-500 hover:from-red-200 hover:to-orange-200 transition-all duration-300 transform hover:scale-105 text-center"
+                        },
+                          React.createElement('div', { className: "text-2xl mb-1" }, title.split(' ')[0]),
+                          React.createElement('h3', { className: "font-bold text-xs text-gray-800 mb-1" }, title),
+                          React.createElement('p', { className: "text-xs text-gray-600" }, `5 questões avançadas`)
+                        )
+                      )
+                    )
+                ),
+                
+                sessionActive && 
+                  React.createElement('div', { className: "text-center mt-8 pt-6 border-t-2 border-gray-200" },
+                    React.createElement('div', { className: "bg-yellow-50 p-4 rounded-lg mb-4" },
+                      React.createElement('p', { className: "text-yellow-800 font-semibold mb-2" }, "📊 Sessão Ativa"),
+                      React.createElement('p', { className: "text-sm text-yellow-700" }, 
+                        `${loadSessionResults().length} resultado(s) salvos para ${studentName}`
+                      )
+                    ),
+                    React.createElement('button', {
+                      onClick: finishSession,
+                      className: "px-8 py-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold text-lg transform hover:scale-105"
+                    }, "📊 Finalizar Sessão e Baixar CSV")
+                  )
+              )
+            );
+          }
+          
+          // Setup Screen
+          if (!quizStarted && !showBlockSelection) {
+            return React.createElement('div', {
+              className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
+              style: getFontStyle()
+            }, 
+              MusicToggleButton(),
+              React.createElement('div', {
+                className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8"
+              },
+                React.createElement('h1', {
+                  className: "text-4xl font-bold text-center mb-8 text-gray-800"
+                }, "🎯 Quiz de Operações Matemáticas"),
+                
+                React.createElement('div', { className: "mb-6" },
+                  React.createElement('label', {
+                    className: "block text-lg font-semibold text-gray-700 mb-3"
+                  }, "👤 Digite seu nome:"),
+                  React.createElement('input', {
+                    type: "text",
+                    value: studentName,
+                    onChange: (e) => setStudentName(e.target.value),
+                    className: "w-full p-4 border-2 border-gray-300 rounded-lg text-lg focus:border-blue-500 focus:outline-none",
+                    placeholder: "Seu nome aqui..."
+                  })
+                ),
+                
+                
+                React.createElement('div', { className: "space-y-4" },
+                  React.createElement('button', {
+                    onClick: handleStartName,
+                    disabled: !studentName.trim(),
+                    className: `w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
+                      studentName.trim()
+                        ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`
+                  }, "🚀 Próximo!"),
+                  React.createElement('a', {
+                    href: '../index.html',
+                    className: 'block w-full px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold'
+                  }, "← Voltar ao Portal")
+                )
+              )
+            );
+          }
+
+          // Final Results
+          if (quizCompleted) {
+            const percentage = Math.round((score / 5) * 100);
+            
+            return React.createElement('div', {
+              className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
+              style: getFontStyle()
+            },
+              React.createElement('div', {
+                className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 text-center"
+              },
+                React.createElement('h1', {
+                  className: "text-4xl font-bold mb-4 text-gray-800"
+                }, `🎊 Parabéns, ${studentName}! 🎊`),
+                
+                React.createElement('div', { className: "mb-4" },
+                  React.createElement('p', { className: "text-lg text-purple-600 font-semibold" },
+                    blockTitles[selectedBlock]
+                  )
+                ),
+                
+                React.createElement('div', { className: "text-8xl mb-6" },
+                  percentage >= 80 ? '🏆' : percentage >= 60 ? '🌟' : '💪'
+                ),
+                
+                React.createElement('div', { className: "bg-gray-50 rounded-lg p-6 mb-6" },
+                  React.createElement('p', { className: "text-3xl font-bold text-gray-800 mb-2" },
+                    `${score} de 5 acertos`
+                  ),
+                  React.createElement('p', { className: "text-xl text-gray-600 mb-4" },
+                    `${percentage}% de aproveitamento`
+                  ),
+                  React.createElement('p', { className: "text-lg font-semibold text-blue-600" },
+                    percentage >= 80 ? 'Fantástico! Você é um expert!' :
+                    percentage >= 60 ? 'Muito bem! Continue praticando!' :
+                    'Continue tentando! Você consegue!'
+                  )
+                ),
+                
+                React.createElement('div', { className: "mb-2 text-sm text-gray-600 text-center" },
+                  "Pressione Enter para continuar"
+                ),
+                React.createElement('button', {
+                  onClick: () => {
+                    setTimeout(saveResult, 100);
+                    resetQuiz();
+                  },
+                  className: "w-full px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-xl font-bold transform hover:scale-105"
+                }, "🎯 Escolher Novo Bloco")
+              )
+            );
+          }
+
+          // Quiz Question Screen
+          const currentProblem = problemBlocks[selectedBlock][currentQuestion];
+          
+          return React.createElement('div', {
+            className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
+            style: getFontStyle()
+          },
+            React.createElement('div', {
+              className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6"
+            },
+              // Header
+              React.createElement('div', { className: "mb-6" },
+                React.createElement('div', { className: "flex justify-between items-center mb-4" },
+                  React.createElement('div', {},
+                    React.createElement('div', {
+                      className: "font-semibold text-gray-800"
+                    }, `Aluno: ${studentName}`),
+                    React.createElement('div', {
+                      className: "text-sm text-blue-600 font-medium"
+                    }, blockTitles[selectedBlock])
+                  ),
+                  React.createElement('span', {
+                    className: "text-sm text-gray-600"
+                  }, `Questão ${currentQuestion + 1} de 5`)
+                ),
+                
+                React.createElement('div', { className: "w-full bg-gray-200 rounded-full h-3" },
+                  React.createElement('div', {
+                    className: "bg-blue-500 h-3 rounded-full transition-all duration-300",
+                    style: { width: `${((currentQuestion + 1) / 5) * 100}%` }
+                  })
+                )
+              ),
+              
+              // Question
+              React.createElement('div', { className: "mb-6" },
+                React.createElement('h3', {
+                  className: "text-xl font-bold mb-4 text-gray-800"
+                }, "🤔 Que tipo de operação resolve este problema?"),
+                React.createElement('div', {
+                  className: "p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500"
+                },
+                  React.createElement('div', { className: "flex items-start justify-between" },
+                    React.createElement('p', {
+                      className: "text-lg leading-relaxed text-gray-800 flex-1 mr-4"
+                    }, currentProblem.text),
+                    React.createElement('button', {
+                      onClick: () => playAudio(selectedBlock, currentQuestion, 'enunciado'),
+                      className: "flex-shrink-0 w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center text-xl transition-all duration-200 hover:scale-110",
+                      title: "Ouvir enunciado do problema"
+                    }, "🔊")
+                  )
+                )
+              ),
+              
+              // Celebration Message
+              showCelebration &&
+                React.createElement('div', {
+                  className: "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white p-6 rounded-lg shadow-2xl z-50 animate-bounce text-center"
+                },
+                  React.createElement('div', { className: "text-2xl font-bold" }, celebrationMessage)
+                ),
+              
+              // Answer options or feedback
+              !showFeedback ? 
+                React.createElement('div', {},
+                  React.createElement('div', { className: "mb-4" },
+                    React.createElement('div', { className: "grid grid-cols-1 gap-4" },
+                      operations.map((operation, index) => 
+                        React.createElement('button', {
+                          key: operation.value,
+                          onClick: () => handleAnswerClick(operation.value),
+                          className: `p-4 border-2 rounded-lg transition-all duration-200 text-left transform hover:scale-105 ${
+                            selectedOperationIndex === index 
+                              ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-200' 
+                              : 'bg-white border-gray-300 hover:border-blue-500 hover:bg-blue-50'
+                          }`
+                        },
+                          React.createElement('div', { className: "flex items-center" },
+                            React.createElement('span', { className: "text-2xl mr-3" }, operation.emoji),
+                            React.createElement('span', { className: "font-semibold text-lg" }, 
+                              `${index + 1}. ${operation.label}`
+                            )
+                          )
+                        )
+                      )
+                    )
+                  ),
+                  React.createElement('div', { className: "mt-4" },
+                    React.createElement('button', {
+                      onClick: resetQuiz,
+                      className: "w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold transform hover:scale-105"
+                    }, '← Voltar')
+                  )
+                ) :
+                React.createElement('div', { className: "mb-6" },
+                  React.createElement('div', {
+                    className: `p-4 rounded-lg border-2 ${
+                      isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+                    }`
+                  },
+                    React.createElement('div', { className: "flex items-center mb-3" },
+                      React.createElement('span', { className: "text-3xl mr-3" }, isCorrect ? '✅' : '❌'),
+                      React.createElement('span', {
+                        className: `font-bold text-xl ${
+                          isCorrect ? 'text-green-700' : 'text-red-700'
+                        }`
+                      }, isCorrect ? 'Correto!' : 'Não é essa operação...')
+                    ),
+                    
+                    React.createElement('div', { className: "mb-3" },
+                      React.createElement('p', { className: "text-gray-700 mb-2" },
+                        React.createElement('strong', {}, "Resposta correta: "),
+                        operations.find(op => op.value === currentProblem.operation)?.label
+                      ),
+                      React.createElement('p', { className: "text-gray-600 leading-relaxed" },
+                        React.createElement('strong', {}, "Explicação: "),
+                        currentProblem.explanation
+                      )
+                    ),
+                    
+                    React.createElement('div', { className: "bg-white p-3 rounded border" },
+                      React.createElement('p', { className: "text-gray-700" },
+                        React.createElement('strong', {}, "Cálculo: "),
+                        currentProblem.calculation
+                      )
+                    )
+                  ),
+                  
+                  React.createElement('div', { className: "mt-4" },
+                    React.createElement('button', {
+                      onClick: handleNext,
+                      className: "w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold transform hover:scale-105 mb-3"
+                    }, currentQuestion < 4 ? '➡️ Próxima Questão' : '🏁 Ver Resultado'),
+                    React.createElement('button', {
+                      onClick: resetQuiz,
+                      className: "w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold transform hover:scale-105"
+                    }, '← Voltar')
+                  )
+                )
+            )
+          );
+        };
+
+        // Render the app
+        ReactDOM.render(React.createElement(QuizOperacoes), document.getElementById('root'));
+    </script>
+</body>
+</html>

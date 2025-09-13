@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Identificação de Operações Matemáticas</title>
+    <title>Atividades Educativas - Portal Principal</title>
+    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -12,7 +14,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
         }
         .loading {
             display: flex;
@@ -37,330 +39,368 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        .activity-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            min-width: 300px;
+            flex-shrink: 0;
+        }
+        .activity-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        .icon-placeholder {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 48px;
+        }
+        .carousel-container {
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .carousel-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.7);
+        }
+        .filter-button {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .filter-button:hover {
+            transform: scale(1.05);
+        }
+        .filter-button.active {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
     <div id="root">
         <div class="loading">
             <div class="spinner"></div>
-            Carregando Quiz...
+            Carregando Portal de Atividades...
         </div>
     </div>
 
     <script type="text/babel">
         const { useState } = React;
         
-        const QuizOperacoes = () => {
-          const [studentName, setStudentName] = useState('');
-          const [fontSize, setFontSize] = useState('normal');
-          const [selectedBlocks, setSelectedBlocks] = useState([0]);
-          const [quizStarted, setQuizStarted] = useState(false);
-          const [currentQuestion, setCurrentQuestion] = useState(0);
-          const [score, setScore] = useState(0);
-          const [selectedAnswer, setSelectedAnswer] = useState('');
-          const [showFeedback, setShowFeedback] = useState(false);
-          const [isCorrect, setIsCorrect] = useState(false);
-          const [quizCompleted, setQuizCompleted] = useState(false);
+        const PortalAtividades = () => {
+          const [selectedFont, setSelectedFont] = useState('comic');
+          const [selectedCategory, setSelectedCategory] = useState('Todas');
 
-          const problemBlocks = [
-            [
-              {
-                text: "João tem 3 carros de brinquedo no Roblox e ganhou mais 2. Quantos carros ele tem agora?",
-                operation: "adição",
-                explanation: "A palavra 'ganhou MAIS' indica que estamos SOMANDO.",
-                calculation: "3 + 2 = 5"
-              },
-              {
-                text: "Maria tinha 8 doces e comeu 3. Quantos doces sobraram?",
-                operation: "subtração",
-                explanation: "Ela COMEU alguns doces, então eles SAÍRAM.",
-                calculation: "8 - 3 = 5"
-              },
-              {
-                text: "Pedro viu 6 vídeos do Diário do Bananinha e sua irmã viu mais 4. Quantos vídeos eles viram juntos?",
-                operation: "adição",
-                explanation: "Estamos JUNTANDO os vídeos dos dois.",
-                calculation: "6 + 4 = 10"
-              },
-              {
-                text: "Ana tinha 9 pipas e 4 voaram no vento. Quantas pipas ficaram?",
-                operation: "subtração",
-                explanation: "As pipas VOARAM, então SAÍRAM.",
-                calculation: "9 - 4 = 5"
-              },
-              {
-                text: "Lucas tem 5 tênis e ganhou 3 novos. Quantos tênis ele possui agora?",
-                operation: "adição",
-                explanation: "Ele GANHOU mais tênis, então SOMAMOS.",
-                calculation: "5 + 3 = 8"
-              }
-            ]
+          const activities = [
+            {
+              id: 'operacoes-matematicas',
+              title: 'Quiz de Operações Matemáticas',
+              description: 'Identifique qual operação matemática resolver diferentes problemas',
+              icon: '🧮',
+              color: 'from-blue-500 to-purple-600',
+              link: 'pages/operacoes_matematicas.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '15-20 min'
+            },
+            {
+              id: 'historia-brasil',
+              title: 'Construtor de História do Brasil',
+              description: 'Organize eventos históricos na linha do tempo correta',
+              icon: '📚',
+              color: 'from-orange-500 to-red-600',
+              link: 'pages/construtor_historia_brasil.html',
+              category: 'História',
+              difficulty: 'Intermediário',
+              estimatedTime: '20-30 min'
+            },
+            {
+              id: 'corrida-historia',
+              title: 'Corrida da História do Brasil',
+              description: 'Corra contra o tempo identificando anos de eventos históricos',
+              icon: '🏃‍♂️',
+              color: 'from-purple-500 to-pink-600',
+              link: 'pages/corrida_historia_brasil.html',
+              category: 'História',
+              difficulty: 'Avançado',
+              estimatedTime: '10-15 min'
+            },
+            {
+              id: 'detective-historia',
+              title: 'Detective da História - Independência',
+              description: 'Investigate pistas e resolva mistérios da Independência do Brasil',
+              icon: '🕵️‍♂️',
+              color: 'from-amber-500 to-orange-600',
+              link: 'pages/detective_historia_independencia.html',
+              category: 'História',
+              difficulty: 'Intermediário',
+              estimatedTime: '20-25 min'
+            },
+            {
+              id: 'loja-roblox-nivel2',
+              title: 'Loja do Roblox - Nível 2',
+              description: 'Resolva problemas e gerencie seu orçamento de Robux em desafios de compra.',
+              icon: '🛒',
+              color: 'from-pink-500 to-yellow-500',
+              link: 'pages/loja_roblox_nivel2.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '15-25 min'
+            },
+            {
+              id: 'minecraft-constructor',
+              title: 'Construtor Minecraft',
+              description: 'Construa estruturas com blocos para resolver desafios de soma e agrupamento.',
+              icon: '🧱',
+              color: 'from-green-500 to-teal-500',
+              link: 'pages/minecraft_constructor.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '15-25 min'
+            },
+            {
+              id: 'fazenda-mobs',
+              title: 'Fazenda de Mobs',
+              description: 'Aprenda multiplicação gerenciando sua fazenda de mobs do Roblox!',
+              icon: '🐄',
+              color: 'from-green-400 to-blue-500',
+              link: 'pages/fazenda_mobs.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '10-20 min'
+            },
+            {
+              id: 'calculadora-digital-integrada',
+              title: '🧮 Calculadora Digital Expert',
+              description: 'Domine a matemática com desafios épicos! Use calculadora real ou resolva mentalmente problemas contextualizados.',
+              icon: '🧮',
+              color: 'from-indigo-500 via-purple-500 to-pink-500',
+              link: 'pages/calculadora_digital_integrada.html',
+              category: 'Matemática',
+              difficulty: 'Variado',
+              estimatedTime: '15-25 min'
+            }
           ];
 
-          const blockTitles = ["🎮 Nível Iniciante"];
-          const operations = [
-            { value: 'adição', label: 'Adição (+)', emoji: '➕' },
-            { value: 'subtração', label: 'Subtração (-)', emoji: '➖' },
-            { value: 'multiplicação', label: 'Multiplicação (×)', emoji: '✖️' }
-          ];
+          const categories = ['Todas', 'Matemática', 'História'];
+          
+          const filteredActivities = selectedCategory === 'Todas' 
+            ? activities 
+            : activities.filter(activity => activity.category === selectedCategory);
 
           const getFontStyle = () => ({
-            fontSize: fontSize === 'large' ? '28px' : '20px',
-            fontFamily: "'Comic Sans MS', cursive"
+            fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
+                       selectedFont === 'comic' ? "'Comic Sans MS', cursive" :
+                       "'OpenDyslexic', sans-serif"
           });
 
-          const handleStartQuiz = () => {
-            if (studentName.trim()) {
-              setQuizStarted(true);
-            }
-          };
-
-          const handleAnswerClick = (operation) => {
-            const currentProblem = problemBlocks[0][currentQuestion];
-            const correct = operation === currentProblem.operation;
-            setSelectedAnswer(operation);
-            setIsCorrect(correct);
-            setShowFeedback(true);
-            
-            if (correct) {
-              setScore(score + 1);
-            }
-          };
-
-          const handleNext = () => {
-            if (currentQuestion < 4) {
-              setCurrentQuestion(currentQuestion + 1);
-              setSelectedAnswer('');
-              setShowFeedback(false);
-              setIsCorrect(false);
-            } else {
-              setQuizCompleted(true);
-            }
-          };
-
-          const resetQuiz = () => {
-            setStudentName('');
-            setQuizStarted(false);
-            setCurrentQuestion(0);
-            setScore(0);
-            setSelectedAnswer('');
-            setShowFeedback(false);
-            setIsCorrect(false);
-            setQuizCompleted(false);
-          };
-
-          // Setup Screen
-          if (!quizStarted) {
-            return React.createElement('div', {
-              className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
-              style: getFontStyle()
-            }, 
-              React.createElement('div', {
-                className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8"
-              },
-                React.createElement('h1', {
-                  className: "text-4xl font-bold text-center mb-8 text-gray-800"
-                }, "🎯 Quiz de Operações Matemáticas"),
-                
-                React.createElement('div', { className: "mb-6" },
-                  React.createElement('label', {
-                    className: "block text-lg font-semibold text-gray-700 mb-3"
-                  }, "👤 Digite seu nome:"),
-                  React.createElement('input', {
-                    type: "text",
-                    value: studentName,
-                    onChange: (e) => setStudentName(e.target.value),
-                    className: "w-full p-4 border-2 border-gray-300 rounded-lg text-lg focus:border-blue-500 focus:outline-none",
-                    placeholder: "Seu nome aqui..."
-                  })
-                ),
-                
-                React.createElement('div', { className: "mb-6" },
-                  React.createElement('h3', {
-                    className: "text-lg font-semibold text-gray-700 mb-3"
-                  }, "📏 Tamanho da Fonte:"),
-                  React.createElement('div', { className: "flex gap-4" },
-                    React.createElement('button', {
-                      onClick: () => setFontSize('normal'),
-                      className: `px-4 py-2 rounded font-semibold transition-colors ${
-                        fontSize === 'normal' 
-                          ? 'bg-blue-500 text-white' 
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`
-                    }, "Normal"),
-                    React.createElement('button', {
-                      onClick: () => setFontSize('large'),
-                      className: `px-4 py-2 rounded font-semibold transition-colors ${
-                        fontSize === 'large' 
-                          ? 'bg-blue-500 text-white' 
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`
-                    }, "Grande")
-                  )
-                ),
-                
-                React.createElement('button', {
-                  onClick: handleStartQuiz,
-                  disabled: !studentName.trim(),
-                  className: `w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
-                    studentName.trim()
-                      ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`
-                }, "🚀 Começar Quiz!")
-              )
-            );
-          }
-
-          // Final Results
-          if (quizCompleted) {
-            const percentage = Math.round((score / 5) * 100);
-            
-            return React.createElement('div', {
-              className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
-              style: getFontStyle()
-            },
-              React.createElement('div', {
-                className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 text-center"
-              },
-                React.createElement('h1', {
-                  className: "text-4xl font-bold mb-4 text-gray-800"
-                }, `🎊 Parabéns, ${studentName}! 🎊`),
-                
-                React.createElement('div', { className: "text-8xl mb-6" },
-                  percentage >= 80 ? '🏆' : percentage >= 60 ? '🌟' : '💪'
-                ),
-                
-                React.createElement('div', { className: "bg-gray-50 rounded-lg p-6 mb-6" },
-                  React.createElement('p', { className: "text-3xl font-bold text-gray-800 mb-2" },
-                    `${score} de 5 acertos`
-                  ),
-                  React.createElement('p', { className: "text-xl text-gray-600 mb-4" },
-                    `${percentage}% de aproveitamento`
-                  ),
-                  React.createElement('p', { className: "text-lg font-semibold text-blue-600" },
-                    percentage >= 80 ? 'Fantástico! Você é um expert!' :
-                    percentage >= 60 ? 'Muito bem! Continue praticando!' :
-                    'Continue tentando! Você consegue!'
-                  )
-                ),
-                
-                React.createElement('button', {
-                  onClick: resetQuiz,
-                  className: "px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-xl font-bold transform hover:scale-105"
-                }, "🏠 Tentar Novamente")
-              )
-            );
-          }
-
-          // Quiz Question Screen
-          const currentProblem = problemBlocks[0][currentQuestion];
-          
-          return React.createElement('div', {
-            className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
-            style: getFontStyle()
-          },
-            React.createElement('div', {
-              className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6"
-            },
-              // Header
-              React.createElement('div', { className: "mb-6" },
-                React.createElement('div', { className: "flex justify-between items-center mb-4" },
-                  React.createElement('span', {
-                    className: "font-semibold text-gray-800"
-                  }, `Aluno: ${studentName}`),
-                  React.createElement('span', {
-                    className: "text-sm text-gray-600"
-                  }, `Questão ${currentQuestion + 1} de 5`)
-                ),
-                
-                React.createElement('div', { className: "w-full bg-gray-200 rounded-full h-3" },
-                  React.createElement('div', {
-                    className: "bg-blue-500 h-3 rounded-full transition-all duration-300",
-                    style: { width: `${((currentQuestion + 1) / 5) * 100}%` }
-                  })
-                )
-              ),
-              
-              // Question
-              React.createElement('div', { className: "mb-6" },
-                React.createElement('h3', {
-                  className: "text-xl font-bold mb-4 text-gray-800"
-                }, "🤔 Que tipo de operação resolve este problema?"),
-                React.createElement('div', {
-                  className: "p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500"
-                },
-                  React.createElement('p', {
-                    className: "text-lg leading-relaxed text-gray-800"
-                  }, currentProblem.text)
-                )
-              ),
-              
-              // Answer options or feedback
-              !showFeedback ? 
-                React.createElement('div', { className: "mb-6" },
-                  React.createElement('div', { className: "grid grid-cols-1 gap-4" },
-                    operations.map((operation) => 
-                      React.createElement('button', {
-                        key: operation.value,
-                        onClick: () => handleAnswerClick(operation.value),
-                        className: "p-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all duration-200 text-left transform hover:scale-105"
-                      },
-                        React.createElement('div', { className: "flex items-center" },
-                          React.createElement('span', { className: "text-2xl mr-3" }, operation.emoji),
-                          React.createElement('span', { className: "font-semibold text-lg" }, operation.label)
-                        )
-                      )
-                    )
-                  )
-                ) :
-                React.createElement('div', { className: "mb-6" },
-                  React.createElement('div', {
-                    className: `p-4 rounded-lg border-2 ${
-                      isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
-                    }`
-                  },
-                    React.createElement('div', { className: "flex items-center mb-3" },
-                      React.createElement('span', { className: "text-3xl mr-3" }, isCorrect ? '✅' : '❌'),
-                      React.createElement('span', {
-                        className: `font-bold text-xl ${
-                          isCorrect ? 'text-green-700' : 'text-red-700'
-                        }`
-                      }, isCorrect ? 'Correto!' : 'Não é essa operação...')
-                    ),
-                    
-                    React.createElement('div', { className: "mb-3" },
-                      React.createElement('p', { className: "text-gray-700 mb-2" },
-                        React.createElement('strong', {}, "Resposta correta: "),
-                        operations.find(op => op.value === currentProblem.operation)?.label
-                      ),
-                      React.createElement('p', { className: "text-gray-600 leading-relaxed" },
-                        React.createElement('strong', {}, "Explicação: "),
-                        currentProblem.explanation
-                      )
-                    ),
-                    
-                    React.createElement('div', { className: "bg-white p-3 rounded border" },
-                      React.createElement('p', { className: "text-gray-700" },
-                        React.createElement('strong', {}, "Cálculo: "),
-                        currentProblem.calculation
-                      )
-                    )
-                  ),
+          return (
+            <div className="min-h-screen gradient-bg" style={getFontStyle()}>
+              {/* Header */}
+              <div className="relative overflow-hidden">
+                <div className="absolute inset-0 bg-black opacity-20"></div>
+                <div className="relative z-10 text-white text-center py-20">
+                  <h1 className="text-5xl md:text-6xl font-bold mb-4">
+                    🎯 Portal de Atividades Educativas
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto px-4">
+                    Aprenda brincando com atividades interativas personalizadas para diferentes necessidades
+                  </p>
                   
-                  React.createElement('div', { className: "mt-4" },
-                    React.createElement('button', {
-                      onClick: handleNext,
-                      className: "w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold transform hover:scale-105"
-                    }, currentQuestion < 4 ? '➡️ Próxima Questão' : '🏁 Ver Resultado')
-                  )
-                )
-            )
+                  {/* Font Selection and How to Use - Side by Side */}
+                  <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
+                    {/* Font Selection */}
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                      <h3 className="text-lg font-semibold mb-4">
+                        🎨 Escolha sua Fonte Preferida:
+                      </h3>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          onClick={() => setSelectedFont('comic')}
+                          className={`px-4 py-3 rounded-lg font-semibold transition-all ${
+                            selectedFont === 'comic' 
+                              ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
+                          style={{ fontFamily: "'Comic Sans MS', cursive" }}
+                        >
+                          Comic Sans
+                        </button>
+                        <button
+                          onClick={() => setSelectedFont('dyslexic')}
+                          className={`px-4 py-3 rounded-lg font-semibold transition-all ${
+                            selectedFont === 'dyslexic' 
+                              ? 'bg-white text-purple-600 shadow-lg transform scale-105' 
+                              : 'bg-white/20 text-white hover:bg-white/30'
+                          }`}
+                          style={{ fontFamily: "'OpenDyslexic', sans-serif" }}
+                        >
+                          OpenDyslexic
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* How to Use Instructions */}
+                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                      <h3 className="text-lg font-semibold mb-4">
+                        📋 Como Usar:
+                      </h3>
+                      <div className="grid grid-cols-4 gap-3 text-sm">
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Escolha sua fonte</div>
+                        </div>
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Filtre por matéria</div>
+                        </div>
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Selecione atividade</div>
+                        </div>
+                        <div className="bg-white/20 rounded-lg p-3 text-center">
+                          <div className="font-medium">Divirta-se!</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Content */}
+              <div className="relative z-10 px-4 pb-20 -mt-10">
+                <div className="max-w-6xl mx-auto">
+                  
+                  {/* Category Filters */}
+                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8">
+                    <h3 className="text-xl font-bold text-center text-gray-800 mb-4">
+                      📚 Filtrar por Matéria:
+                    </h3>
+                    <div className="flex flex-wrap justify-center gap-3">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setSelectedCategory(category)}
+                          className={`filter-button px-6 py-3 rounded-full font-semibold transition-all ${
+                            selectedCategory === category
+                              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white active'
+                              : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
+                          }`}
+                        >
+                          {category === 'Todas' && '🌍'}
+                          {category === 'Matemática' && '🔢'}
+                          {category === 'História' && '📜'}
+                          <span className="ml-2">{category}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="text-center mt-3 text-sm text-gray-600">
+                      Mostrando {filteredActivities.length} atividade{filteredActivities.length !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+                  
+                  {/* Activities Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                    {filteredActivities.map((activity) => (
+                      <div key={activity.id} className="activity-card card-hover">
+                        {/* Icon Placeholder */}
+                        <div className="icon-placeholder">
+                          {activity.icon}
+                        </div>
+
+                        {/* Content */}
+                        <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                          {activity.title}
+                        </h3>
+                        
+                        <p className="text-gray-600 mb-4 leading-relaxed">
+                          {activity.description}
+                        </p>
+
+                        {/* Stats */}
+                        <div className="mb-6">
+                          <div className="flex justify-center items-center gap-2 mb-3 text-sm text-gray-500">
+                            <div className="flex items-center gap-1">
+                              <span>⏱️</span>
+                              <span>{activity.estimatedTime}</span>
+                            </div>
+                          </div>
+                          <div className="flex justify-center items-center gap-4 text-xs">
+                            <span className="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full">
+                              {activity.category}
+                            </span>
+                            <span className={`font-bold px-3 py-1 rounded-full ${
+                              activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
+                              activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
+                              activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {activity.difficulty}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Action Button */}
+                        <a
+                          href={activity.link}
+                          onClick={(e) => {
+                            localStorage.setItem('selectedFont', selectedFont);
+                          }}
+                          className={`inline-flex items-center justify-center w-full px-8 py-4 bg-gradient-to-r ${activity.color} text-white font-bold text-lg rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300`}
+                        >
+                          <span className="mr-2">🚀</span>
+                          Começar Atividade
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="bg-black/20 text-white text-center py-8">
+                <p className="text-lg">
+                  🌟 Desenvolvido para tornar o aprendizado acessível e divertido
+                </p>
+                <p className="text-sm mt-2 opacity-80">
+                  Com suporte especial para necessidades educativas especiais
+                </p>
+              </div>
+            </div>
           );
         };
 
-        // Render the app
-        ReactDOM.render(React.createElement(QuizOperacoes), document.getElementById('root'));
+        ReactDOM.render(<PortalAtividades />, document.getElementById('root'));
     </script>
 </body>
 </html>
