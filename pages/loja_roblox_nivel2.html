@@ -10,6 +10,10 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Database Integration -->
+    <script src="../src/data/questionDatabase.js"></script>
+    <script src="../src/config/activityMapping.js"></script>
     <style>
         body {
             margin: 0;
@@ -52,11 +56,721 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
+        // Database Integration Manager for Roblox Shopping Activity
+        class RobloxDatabaseManager {
+            constructor() {
+                this.questionDB = null;
+                this.activityMapping = null;
+                this.isInitialized = false;
+                this.activityConfig = null;
+                this.questionBlocks = [];
+            }
+
+            async initialize() {
+                if (this.isInitialized) return true;
+
+                try {
+                    console.log('Initializing Roblox Database Manager...');
+
+                    // First, populate database with Roblox questions
+                    await this.populateDatabaseWithRobloxQuestions();
+
+                    // Check if database objects are available
+                    if (window.questionDB && window.ActivityMapping) {
+                        this.questionDB = window.questionDB;
+                        this.activityMapping = window.ActivityMapping;
+
+                        // Get activity configuration
+                        this.activityConfig = this.activityMapping.getActivityConfig('loja_roblox_nivel2');
+                        console.log('Activity config loaded:', this.activityConfig);
+
+                        if (this.activityConfig) {
+                            await this.loadQuestionBlocks();
+                            this.isInitialized = true;
+                            return true;
+                        }
+                    }
+
+                    // Fallback: create sample data based on original questions
+                    console.log('Database not available, creating sample data from original questions...');
+                    await this.createSampleData();
+                    this.isInitialized = true;
+                    return true;
+
+                } catch (error) {
+                    console.error('Failed to initialize database:', error);
+                    await this.createSampleData();
+                    this.isInitialized = true;
+                    return true;
+                }
+            }
+
+            async populateDatabaseWithRobloxQuestions() {
+                if (!window.questionDB) return;
+
+                // Define Roblox-specific questions for each block
+                const robloxQuestions = this.getRobloxQuestionsData();
+
+                robloxQuestions.forEach((question, index) => {
+                    try {
+                        const questionId = this.questionDB.addQuestion(question);
+                        console.log(`Added Roblox question ${index + 1} with ID: ${questionId}`);
+                    } catch (error) {
+                        console.error(`Error adding Roblox question ${index + 1}:`, error);
+                    }
+                });
+            }
+
+            getRobloxQuestionsData() {
+                return [
+                    // Block 1 - Primeiras Compras (roblox_shopping_01)
+                    {
+                        id: 'roblox_01_q1',
+                        statement: 'Você acabou de criar sua conta no Roblox e ganhou 50 Robux de bônus! Compre uma camisa (10 Robux) e um chapéu (15 Robux). Quanto você gastará no total?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'easy',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '10 + 15',
+                            result: 25
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Você acabou de criar sua conta no Roblox e ganhou 50 Robux de bônus! Hora de personalizar seu avatar.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
+                                { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 20, texto: "20 Robux" },
+                                { id: 2, valor: 25, texto: "25 Robux" },
+                                { id: 3, valor: 30, texto: "30 Robux" },
+                                { id: 4, valor: 15, texto: "15 Robux" }
+                            ],
+                            dica: 'Some os preços dos itens no carrinho: 10 + 15 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_01_q2',
+                        statement: 'Seu avatar está ficando massa! Agora você quer adicionar óculos para ficar ainda mais estiloso. Compre os óculos (8 Robux). Somando com suas compras anteriores, quanto gastou no total?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'easy',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '25 + 8',
+                            result: 33
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Seu avatar está ficando massa! Agora você quer adicionar óculos para ficar ainda mais estiloso.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
+                                { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" },
+                                { id: 3, nome: "Óculos Cool", preco: 8, emoji: "🕶️" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 28, texto: "28 Robux" },
+                                { id: 2, valor: 33, texto: "33 Robux" },
+                                { id: 3, valor: 38, texto: "38 Robux" },
+                                { id: 4, valor: 23, texto: "23 Robux" }
+                            ],
+                            dica: 'Você já gastou 25 Robux. Agora adicione mais 8 Robux dos óculos: 25 + 8 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_01_q3',
+                        statement: 'Você quer saber se ainda tem dinheiro para comprar outras coisas legais. Você tinha 50 Robux e já gastou 33. Quantos Robux sobraram?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'subtração',
+                            expression: '50 - 33',
+                            result: 17
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Você quer saber se ainda tem dinheiro para comprar outras coisas legais.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Dinheiro Gasto", preco: 33, emoji: "💸" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 17, texto: "17 Robux" },
+                                { id: 2, valor: 12, texto: "12 Robux" },
+                                { id: 3, valor: 22, texto: "22 Robux" },
+                                { id: 4, valor: 15, texto: "15 Robux" }
+                            ],
+                            dica: 'Calcule quanto sobrou: 50 - 33 = ?',
+                            tipoCalculo: 'sobra',
+                            dinheiroInicial: 50
+                        }
+                    },
+                    {
+                        id: 'roblox_01_q4',
+                        statement: 'Legal! Você descobriu que ainda pode comprar mais coisas! Vamos ver se dá para comprar os tênis. Adicione os tênis (12 Robux) ao seu carrinho. Quanto você gastará no total até agora?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '33 + 12',
+                            result: 45
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Legal! Você descobriu que ainda pode comprar mais coisas! Vamos ver se dá para comprar os tênis.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
+                                { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" },
+                                { id: 3, nome: "Óculos Cool", preco: 8, emoji: "🕶️" },
+                                { id: 4, nome: "Tênis Bacana", preco: 12, emoji: "👟" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 40, texto: "40 Robux" },
+                                { id: 2, valor: 45, texto: "45 Robux" },
+                                { id: 3, valor: 50, texto: "50 Robux" },
+                                { id: 4, valor: 35, texto: "35 Robux" }
+                            ],
+                            dica: 'Some tudo que você comprou: 33 + 12 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_01_q5',
+                        statement: 'Parabéns! Você montou seu primeiro look completo no Roblox! Agora vamos ver quanto dinheiro sobrou. Depois de gastar 45 Robux dos seus 50 Robux iniciais, quantos sobraram?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'subtração',
+                            expression: '50 - 45',
+                            result: 5
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Parabéns! Você montou seu primeiro look completo no Roblox! Agora vamos ver quanto dinheiro sobrou.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Total Gasto", preco: 45, emoji: "💸" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 3, texto: "3 Robux" },
+                                { id: 2, valor: 5, texto: "5 Robux" },
+                                { id: 3, valor: 8, texto: "8 Robux" },
+                                { id: 4, valor: 10, texto: "10 Robux" }
+                            ],
+                            dica: 'Quanto sobrou da sua carteira: 50 - 45 = ?',
+                            tipoCalculo: 'sobra',
+                            dinheiroInicial: 50
+                        }
+                    },
+
+                    // Block 2 - Loja de Pets (roblox_shopping_02)
+                    {
+                        id: 'roblox_02_q1',
+                        statement: 'Você entrou na loja de pets do Roblox! Tem 150 Robux para adotar bichinhos fofinhos. Compre um cachorro (45 Robux) e um gato (38 Robux). Quanto você gastará?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '45 + 38',
+                            result: 83
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Você entrou na loja de pets do Roblox! Tem 150 Robux para adotar bichinhos fofinhos.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
+                                { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 75, texto: "75 Robux" },
+                                { id: 2, valor: 83, texto: "83 Robux" },
+                                { id: 3, valor: 90, texto: "90 Robux" },
+                                { id: 4, valor: 78, texto: "78 Robux" }
+                            ],
+                            dica: 'Some os preços dos pets: 45 + 38 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_02_q2',
+                        statement: 'Seus pets estão adorando brincar juntos! Agora você quer adicionar um coelho para completar a família. Adicione o coelho (32 Robux) aos seus pets. Quanto você terá gasto no total?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '83 + 32',
+                            result: 115
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Seus pets estão adorando brincar juntos! Agora você quer adicionar um coelho para completar a família.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
+                                { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" },
+                                { id: 3, nome: "Coelho Saltitante", preco: 32, emoji: "🐰" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 110, texto: "110 Robux" },
+                                { id: 2, valor: 115, texto: "115 Robux" },
+                                { id: 3, valor: 120, texto: "120 Robux" },
+                                { id: 4, valor: 105, texto: "105 Robux" }
+                            ],
+                            dica: 'Você já gastou 83 Robux. Adicione mais 32 Robux: 83 + 32 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_02_q3',
+                        statement: 'Você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets. Dos seus 150 Robux iniciais, quantos sobraram após gastar 115?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'subtração',
+                            expression: '150 - 115',
+                            result: 35
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Total Gasto", preco: 115, emoji: "💸" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 30, texto: "30 Robux" },
+                                { id: 2, valor: 35, texto: "35 Robux" },
+                                { id: 3, valor: 40, texto: "40 Robux" },
+                                { id: 4, valor: 25, texto: "25 Robux" }
+                            ],
+                            dica: 'Calcule: 150 - 115 = ?',
+                            tipoCalculo: 'sobra',
+                            dinheiroInicial: 150
+                        }
+                    },
+                    {
+                        id: 'roblox_02_q4',
+                        statement: 'Seus pets estão com fome! Você decidiu comprar comida premium para eles. Adicione a comida premium (35 Robux). Quanto você terá gasto no total?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '115 + 35',
+                            result: 150
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Seus pets estão com fome! Você decidiu comprar comida premium para eles.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
+                                { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" },
+                                { id: 3, nome: "Coelho Saltitante", preco: 32, emoji: "🐰" },
+                                { id: 4, nome: "Comida Premium", preco: 35, emoji: "🍖" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 145, texto: "145 Robux" },
+                                { id: 2, valor: 150, texto: "150 Robux" },
+                                { id: 3, valor: 155, texto: "155 Robux" },
+                                { id: 4, valor: 140, texto: "140 Robux" }
+                            ],
+                            dica: 'Some todas as suas compras: 115 + 35 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_02_q5',
+                        statement: 'Incrível! Você gastou exatamente todos os seus Robux cuidando bem dos seus pets! Depois de gastar 150 Robux dos seus 150 Robux iniciais, quantos sobraram?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'easy',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'subtração',
+                            expression: '150 - 150',
+                            result: 0
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Incrível! Você gastou exatamente todos os seus Robux cuidando bem dos seus pets!',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Total Gasto", preco: 150, emoji: "💸" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 0, texto: "0 Robux" },
+                                { id: 2, valor: 5, texto: "5 Robux" },
+                                { id: 3, valor: 10, texto: "10 Robux" },
+                                { id: 4, valor: 15, texto: "15 Robux" }
+                            ],
+                            dica: 'Você gastou tudo: 150 - 150 = ?',
+                            tipoCalculo: 'sobra',
+                            dinheiroInicial: 150
+                        }
+                    },
+
+                    // Block 3 - Parque de Diversões (roblox_shopping_03)
+                    {
+                        id: 'roblox_03_q1',
+                        statement: 'Você chegou no parque de diversões do Roblox! Tem 200 Robux para se divertir o dia todo. Compre o ingresso do parque (85 Robux) e um lanche (67 Robux). Quanto você gastará?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'hard',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '85 + 67',
+                            result: 152
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Você chegou no parque de diversões do Roblox! Tem 200 Robux para se divertir o dia todo.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
+                                { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 145, texto: "145 Robux" },
+                                { id: 2, valor: 152, texto: "152 Robux" },
+                                { id: 3, valor: 160, texto: "160 Robux" },
+                                { id: 4, valor: 138, texto: "138 Robux" }
+                            ],
+                            dica: 'Some o ingresso e o lanche: 85 + 67 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_03_q2',
+                        statement: 'Depois do lanche, você quer andar na montanha-russa! Mas primeiro precisa de um refrigerante para se refrescar. Adicione um refrigerante (25 Robux). Quanto você terá gasto no total?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'hard',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '152 + 25',
+                            result: 177
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Depois do lanche, você quer andar na montanha-russa! Mas primeiro precisa de um refrigerante para se refrescar.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
+                                { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" },
+                                { id: 3, nome: "Refrigerante", preco: 25, emoji: "🥤" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 170, texto: "170 Robux" },
+                                { id: 2, valor: 177, texto: "177 Robux" },
+                                { id: 3, valor: 185, texto: "185 Robux" },
+                                { id: 4, valor: 162, texto: "162 Robux" }
+                            ],
+                            dica: 'Você já gastou 152 Robux. Adicione mais 25: 152 + 25 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_03_q3',
+                        statement: 'Agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída. Dos seus 200 Robux iniciais, quantos sobraram depois de gastar 177?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'hard',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'subtração',
+                            expression: '200 - 177',
+                            result: 23
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Total Gasto", preco: 177, emoji: "💸" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 18, texto: "18 Robux" },
+                                { id: 2, valor: 23, texto: "23 Robux" },
+                                { id: 3, valor: 28, texto: "28 Robux" },
+                                { id: 4, valor: 33, texto: "33 Robux" }
+                            ],
+                            dica: 'Calcule: 200 - 177 = ?',
+                            tipoCalculo: 'sobra',
+                            dinheiroInicial: 200
+                        }
+                    },
+                    {
+                        id: 'roblox_03_q4',
+                        statement: 'Legal! Você ainda tem dinheiro para comprar um imã de lembrança do parque. Adicione o imã (23 Robux) às suas compras. Quanto você terá gasto no total?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'hard',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'adição',
+                            expression: '177 + 23',
+                            result: 200
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Legal! Você ainda tem dinheiro para comprar um imã de lembrança do parque.',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
+                                { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" },
+                                { id: 3, nome: "Refrigerante", preco: 25, emoji: "🥤" },
+                                { id: 4, nome: "Imã", preco: 23, emoji: "🧢" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 195, texto: "195 Robux" },
+                                { id: 2, valor: 200, texto: "200 Robux" },
+                                { id: 3, valor: 205, texto: "205 Robux" },
+                                { id: 4, valor: 190, texto: "190 Robux" }
+                            ],
+                            dica: 'Some todas as suas compras: 177 + 23 = ?'
+                        }
+                    },
+                    {
+                        id: 'roblox_03_q5',
+                        statement: 'Perfeito! Você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro! Depois de gastar 200 Robux dos seus 200 Robux iniciais, quantos sobraram?',
+                        context: 'shopping',
+                        subject: 'matematica',
+                        difficulty: 'medium',
+                        ageRange: '6-8',
+                        mathematics: {
+                            operation: 'subtração',
+                            expression: '200 - 200',
+                            result: 0
+                        },
+                        originalActivity: 'Loja do Roblox - Nível 2',
+                        robloxData: {
+                            contexto: 'Perfeito! Você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro!',
+                            carrinhoFixo: [
+                                { id: 1, nome: "Total Gasto", preco: 200, emoji: "💸" }
+                            ],
+                            opcoes: [
+                                { id: 1, valor: 0, texto: "0 Robux" },
+                                { id: 2, valor: 5, texto: "5 Robux" },
+                                { id: 3, valor: 10, texto: "10 Robux" },
+                                { id: 4, valor: 15, texto: "15 Robux" }
+                            ],
+                            dica: 'Você gastou exatamente tudo: 200 - 200 = ?',
+                            tipoCalculo: 'sobra',
+                            dinheiroInicial: 200
+                        }
+                    }
+                ];
+            }
+
+            async loadQuestionBlocks() {
+                this.questionBlocks = [];
+                console.log('Loading question blocks from database...');
+
+                // Create mapping for our Roblox question IDs
+                const blockQuestionIds = [
+                    ['roblox_01_q1', 'roblox_01_q2', 'roblox_01_q3', 'roblox_01_q4', 'roblox_01_q5'],
+                    ['roblox_02_q1', 'roblox_02_q2', 'roblox_02_q3', 'roblox_02_q4', 'roblox_02_q5'],
+                    ['roblox_03_q1', 'roblox_03_q2', 'roblox_03_q3', 'roblox_03_q4', 'roblox_03_q5']
+                ];
+
+                for (let blockIndex = 0; blockIndex < 3; blockIndex++) {
+                    const blockQuestions = [];
+                    const questionIds = blockQuestionIds[blockIndex];
+
+                    console.log(`Loading block ${blockIndex + 1} questions:`, questionIds);
+
+                    for (let questionIndex = 0; questionIndex < 5; questionIndex++) {
+                        const questionId = questionIds[questionIndex];
+
+                        // Try to find question in database by scanning all questions
+                        let question = null;
+                        if (this.questionDB && this.questionDB.questions) {
+                            // Look for question with matching original ID
+                            for (let [dbId, dbQuestion] of this.questionDB.questions) {
+                                if (dbQuestion.id === questionId ||
+                                    (dbQuestion.robloxData && dbId.includes('shopping')) ||
+                                    (dbQuestion.originalActivity === 'Loja do Roblox - Nível 2' && dbId.includes(`roblox_${blockIndex}`))) {
+                                    question = dbQuestion;
+                                    console.log(`Found database question for ${questionId}:`, dbId);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!question) {
+                            // Use our pre-defined data as fallback
+                            console.log(`Using fallback data for ${questionId}`);
+                            question = this.getFallbackQuestionData(blockIndex, questionIndex);
+                        }
+
+                        const formattedQuestion = this.formatQuestionForActivity(question, blockIndex, questionIndex);
+                        blockQuestions.push(formattedQuestion);
+                    }
+
+                    this.questionBlocks.push(blockQuestions);
+                }
+
+                console.log('Question blocks loaded:', this.questionBlocks);
+            }
+
+            getFallbackQuestionData(blockIndex, questionIndex) {
+                const allQuestions = this.getRobloxQuestionsData();
+                const questionIndexInArray = blockIndex * 5 + questionIndex;
+
+                if (questionIndexInArray < allQuestions.length) {
+                    return allQuestions[questionIndexInArray];
+                }
+
+                // Ultimate fallback
+                return this.createSampleQuestionFromOriginal(blockIndex, questionIndex);
+            }
+
+            formatQuestionForActivity(question, blockIndex, questionIndex) {
+                // Handle both database format and direct question format
+                const robloxData = question.robloxData || {};
+                const mathematics = question.mathematics || {};
+
+                return {
+                    id: question.id,
+                    pergunta: question.statement || question.pergunta,
+                    contexto: robloxData.contexto || question.contexto || 'Você está na loja do Roblox!',
+                    carrinhoFixo: robloxData.carrinhoFixo || question.carrinhoFixo || [
+                        { id: 1, nome: "Item Exemplo", preco: 10, emoji: "🎮" }
+                    ],
+                    opcoes: robloxData.opcoes || question.opcoes || [
+                        { id: 1, valor: 10, texto: "10 Robux" },
+                        { id: 2, valor: 15, texto: "15 Robux" },
+                        { id: 3, valor: 20, texto: "20 Robux" },
+                        { id: 4, valor: 5, texto: "5 Robux" }
+                    ],
+                    respostaCorreta: mathematics.result || question.respostaCorreta || robloxData.opcoes?.[1]?.valor || 10,
+                    dica: robloxData.dica || question.dica || 'Esta é uma questão exemplo',
+                    tipoCalculo: robloxData.tipoCalculo || question.tipoCalculo,
+                    dinheiroInicial: robloxData.dinheiroInicial || question.dinheiroInicial,
+                    competencyData: {
+                        calculation: {
+                            difficulty: this.getDifficultyFromQuestion(question, 'calculation'),
+                            weight: 1.0
+                        },
+                        problem_solving: {
+                            difficulty: this.getDifficultyFromQuestion(question, 'problem_solving'),
+                            weight: 0.8
+                        },
+                        text_interpretation: {
+                            difficulty: this.getDifficultyFromQuestion(question, 'text_interpretation'),
+                            weight: 0.7
+                        }
+                    },
+                    audio: {
+                        enunciado: this.generateAudioPath(blockIndex + 1, questionIndex + 1, 'enunciado'),
+                        explicacao: this.generateAudioPath(blockIndex + 1, questionIndex + 1, 'explicacao')
+                    },
+                    metadata: {
+                        difficulty: question.metadata?.difficulty || question.difficulty || 'medium',
+                        blockIndex,
+                        questionIndex,
+                        originalId: question.id,
+                        subject: question.subject || question.metadata?.subject || 'matematica'
+                    }
+                };
+            }
+
+            getDifficultyFromQuestion(question, competencyType) {
+                if (question.competencies && question.competencies[competencyType]) {
+                    return 'medium'; // Default from database format
+                }
+
+                const difficulty = question.difficulty || question.metadata?.difficulty || 'medium';
+
+                // Map difficulty levels
+                const difficultyMap = {
+                    'easy': 'easy',
+                    'medium': 'medium',
+                    'hard': 'hard',
+                    'Iniciante': 'easy',
+                    'Intermediário': 'medium',
+                    'Avançado': 'hard'
+                };
+
+                return difficultyMap[difficulty] || 'medium';
+            }
+
+            generateAudioPath(blockNumber, questionNumber, audioType) {
+                const blockStr = String(blockNumber).padStart(2, '0');
+                return `../media/audios/matematica/roblox_shopping_${blockStr}/roblox_${blockStr}_questao_${questionNumber}_${audioType}.mp3`;
+            }
+
+            async createSampleData() {
+                console.log('Using fallback sample data structure...');
+
+                // Use our pre-defined question data as fallback
+                await this.loadQuestionBlocks();
+
+                // Set activity config
+                this.activityConfig = {
+                    name: 'Loja do Roblox - Nível 2',
+                    subject: 'matematica',
+                    competencies: ['calculation', 'problem_solving', 'text_interpretation'],
+                    questionBlocks: [
+                        { blockId: 'roblox_shopping_01', questions: 5 },
+                        { blockId: 'roblox_shopping_02', questions: 5 },
+                        { blockId: 'roblox_shopping_03', questions: 5 }
+                    ]
+                };
+            }
+
+
+            createSampleQuestionFromOriginal(blockIndex, questionIndex) {
+                // Fallback question creator
+                return {
+                    id: `sample_roblox_${blockIndex}_${questionIndex}`,
+                    contexto: "Você está na loja do Roblox!",
+                    pergunta: "Questão exemplo de compras no Roblox",
+                    carrinhoFixo: [{ id: 1, nome: "Item Exemplo", preco: 10, emoji: "🎮" }],
+                    opcoes: [
+                        { id: 1, valor: 10, texto: "10 Robux" },
+                        { id: 2, valor: 15, texto: "15 Robux" },
+                        { id: 3, valor: 20, texto: "20 Robux" },
+                        { id: 4, valor: 5, texto: "5 Robux" }
+                    ],
+                    respostaCorreta: 10,
+                    dica: "Esta é uma questão exemplo",
+                    competencies: {
+                        calculation: { difficulty: 'medium', weight: 1.0 },
+                        problem_solving: { difficulty: 'medium', weight: 0.8 },
+                        text_interpretation: { difficulty: 'medium', weight: 0.7 }
+                    },
+                    difficulty: 'medium'
+                };
+            }
+
+            getQuestionBlock(blockIndex) {
+                return this.questionBlocks[blockIndex] || [];
+            }
+
+            getCompetencyConfig() {
+                return this.activityConfig?.competencies || ['calculation', 'problem_solving', 'text_interpretation'];
+            }
+
+            getAllQuestionBlocks() {
+                return this.questionBlocks;
+            }
+        }
+
         const LojaRobloxNivel2 = () => {
+            // Database integration
+            const [database] = useState(new RobloxDatabaseManager());
+            const [databaseReady, setDatabaseReady] = useState(false);
+
+            // Core state management
             const [studentName, setStudentName] = useState('');
             const [selectedFont, setSelectedFont] = useState(localStorage.getItem('selectedFont') || 'comic');
             const [currentPhase, setCurrentPhase] = useState('inicio'); // inicio, selecao, jogo, resultado
-            const [currentBlock, setCurrentBlock] = useState(null);
+            const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
             const [currentQuestion, setCurrentQuestion] = useState(0);
             const [selectedAnswer, setSelectedAnswer] = useState(null);
             const [showFeedback, setShowFeedback] = useState(false);
@@ -68,302 +782,120 @@
             const [startTime, setStartTime] = useState(null);
             const [completedBlocks, setCompletedBlocks] = useState([]);
 
-            const blocos = [
+            // Multi-competency scoring
+            const [competencyScores, setCompetencyScores] = useState({
+                calculation: { correct: 0, total: 0 },
+                problem_solving: { correct: 0, total: 0 },
+                text_interpretation: { correct: 0, total: 0 }
+            });
+
+            // Block configurations with database integration
+            const blockConfigs = [
                 {
-                  id: 1,
-                  titulo: "Primeiras Compras",
-                  subtitulo: "Começando no Roblox",
-                  cor: "from-green-400 to-blue-500",
-                  dificuldade: "Fácil",
-                  objetivo: "Aquecer com somas simples",
-                  robuxInicial: 50,
-                  situacoes: [
-                    {
-                      contexto: "Você acabou de criar sua conta no Roblox e ganhou 50 Robux de bônus! Hora de personalizar seu avatar.",
-                      pergunta: "Compre uma camisa (10 Robux) e um chapéu (15 Robux). Quanto você gastará no total?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
-                        { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 20, texto: "20 Robux" },
-                        { id: 2, valor: 25, texto: "25 Robux" },
-                        { id: 3, valor: 30, texto: "30 Robux" },
-                        { id: 4, valor: 15, texto: "15 Robux" }
-                      ],
-                      respostaCorreta: 25,
-                      dica: "Some os preços dos itens no carrinho: 10 + 15 = ?"
-                    },
-                    {
-                      contexto: "Seu avatar está ficando massa! Agora você quer adicionar óculos para ficar ainda mais estiloso.",
-                      pergunta: "Compre os óculos (8 Robux). Somando com suas compras anteriores, quanto gastou no total?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
-                        { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" },
-                        { id: 3, nome: "Óculos Cool", preco: 8, emoji: "🕶️" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 28, texto: "28 Robux" },
-                        { id: 2, valor: 33, texto: "33 Robux" },
-                        { id: 3, valor: 38, texto: "38 Robux" },
-                        { id: 4, valor: 23, texto: "23 Robux" }
-                      ],
-                      respostaCorreta: 33,
-                      dica: "Você já gastou 25 Robux. Agora adicione mais 8 Robux dos óculos: 25 + 8 = ?"
-                    },
-                    {
-                      contexto: "Você quer saber se ainda tem dinheiro para comprar outras coisas legais.",
-                      pergunta: "Você tinha 50 Robux e já gastou 33. Quantos Robux sobraram?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Dinheiro Gasto", preco: 33, emoji: "💸" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 17, texto: "17 Robux" },
-                        { id: 2, valor: 12, texto: "12 Robux" },
-                        { id: 3, valor: 22, texto: "22 Robux" },
-                        { id: 4, valor: 15, texto: "15 Robux" }
-                      ],
-                      respostaCorreta: 17,
-                      dica: "Calcule quanto sobrou: 50 - 33 = ?",
-                      tipoCalculo: "sobra",
-                      dinheiroInicial: 50
-                    },
-                    {
-                      contexto: "Legal! Você descobriu que ainda pode comprar mais coisas! Vamos ver se dá para comprar os tênis.",
-                      pergunta: "Adicione os tênis (12 Robux) ao seu carrinho. Quanto você gastará no total até agora?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Camisa Básica", preco: 10, emoji: "👕" },
-                        { id: 2, nome: "Chapéu Legal", preco: 15, emoji: "🎩" },
-                        { id: 3, nome: "Óculos Cool", preco: 8, emoji: "🕶️" },
-                        { id: 4, nome: "Tênis Bacana", preco: 12, emoji: "👟" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 40, texto: "40 Robux" },
-                        { id: 2, valor: 45, texto: "45 Robux" },
-                        { id: 3, valor: 50, texto: "50 Robux" },
-                        { id: 4, valor: 35, texto: "35 Robux" }
-                      ],
-                      respostaCorreta: 45,
-                      dica: "Some tudo que você comprou: 33 + 12 = ?"
-                    },
-                    {
-                      contexto: "Parabéns! Você montou seu primeiro look completo no Roblox! Agora vamos ver quanto dinheiro sobrou.",
-                      pergunta: "Depois de gastar 45 Robux dos seus 50 Robux iniciais, quantos sobraram?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Total Gasto", preco: 45, emoji: "💸" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 3, texto: "3 Robux" },
-                        { id: 2, valor: 5, texto: "5 Robux" },
-                        { id: 3, valor: 8, texto: "8 Robux" },
-                        { id: 4, valor: 10, texto: "10 Robux" }
-                      ],
-                      respostaCorreta: 5,
-                      dica: "Quanto sobrou da sua carteira: 50 - 45 = ?",
-                      tipoCalculo: "sobra",
-                      dinheiroInicial: 50
-                    }
-                  ]
+                    id: 1,
+                    titulo: "Primeiras Compras",
+                    subtitulo: "Começando no Roblox",
+                    cor: "from-green-400 to-blue-500",
+                    dificuldade: "Fácil",
+                    objetivo: "Aquecer com somas simples",
+                    robuxInicial: 50,
+                    blockId: 'roblox_shopping_01'
                 },
                 {
-                  id: 2,
-                  titulo: "Loja de Pets",
-                  subtitulo: "Adotando companheiros virtuais",
-                  cor: "from-purple-500 to-pink-500",
-                  dificuldade: "Médio",
-                  objetivo: "Resolver problemas com valores maiores",
-                  robuxInicial: 150,
-                  situacoes: [
-                    {
-                      contexto: "Você entrou na loja de pets do Roblox! Tem 150 Robux para adotar bichinhos fofinhos.",
-                      pergunta: "Compre um cachorro (45 Robux) e um gato (38 Robux). Quanto você gastará?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
-                        { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 75, texto: "75 Robux" },
-                        { id: 2, valor: 83, texto: "83 Robux" },
-                        { id: 3, valor: 90, texto: "90 Robux" },
-                        { id: 4, valor: 78, texto: "78 Robux" }
-                      ],
-                      respostaCorreta: 83,
-                      dica: "Some os preços dos pets: 45 + 38 = ?"
-                    },
-                    {
-                      contexto: "Seus pets estão adorando brincar juntos! Agora você quer adicionar um coelho para completar a família.",
-                      pergunta: "Adicione o coelho (32 Robux) aos seus pets. Quanto você terá gasto no total?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
-                        { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" },
-                        { id: 3, nome: "Coelho Saltitante", preco: 32, emoji: "🐰" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 110, texto: "110 Robux" },
-                        { id: 2, valor: 115, texto: "115 Robux" },
-                        { id: 3, valor: 120, texto: "120 Robux" },
-                        { id: 4, valor: 105, texto: "105 Robux" }
-                      ],
-                      respostaCorreta: 115,
-                      dica: "Você já gastou 83 Robux. Adicione mais 32 Robux: 83 + 32 = ?"
-                    },
-                    {
-                      contexto: "Você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets.",
-                      pergunta: "Dos seus 150 Robux iniciais, quantos sobraram após gastar 115?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Total Gasto", preco: 115, emoji: "💸" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 30, texto: "30 Robux" },
-                        { id: 2, valor: 35, texto: "35 Robux" },
-                        { id: 3, valor: 40, texto: "40 Robux" },
-                        { id: 4, valor: 25, texto: "25 Robux" }
-                      ],
-                      respostaCorreta: 35,
-                      dica: "Calcule: 150 - 115 = ?",
-                      tipoCalculo: "sobra",
-                      dinheiroInicial: 150
-                    },
-                    {
-                      contexto: "Seus pets estão com fome! Você decidiu comprar comida premium para eles.",
-                      pergunta: "Adicione a comida premium (35 Robux). Quanto você terá gasto no total?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Cachorro Dourado", preco: 45, emoji: "🐶" },
-                        { id: 2, nome: "Gato Fofo", preco: 38, emoji: "🐱" },
-                        { id: 3, nome: "Coelho Saltitante", preco: 32, emoji: "🐰" },
-                        { id: 4, nome: "Comida Premium", preco: 35, emoji: "🍖" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 145, texto: "145 Robux" },
-                        { id: 2, valor: 150, texto: "150 Robux" },
-                        { id: 3, valor: 155, texto: "155 Robux" },
-                        { id: 4, valor: 140, texto: "140 Robux" }
-                      ],
-                      respostaCorreta: 150,
-                      dica: "Some todas as suas compras: 115 + 35 = ?"
-                    },
-                    {
-                      contexto: "Incrível! Você gastou exatamente todos os seus Robux cuidando bem dos seus pets!",
-                      pergunta: "Depois de gastar 150 Robux dos seus 150 Robux iniciais, quantos sobraram?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Total Gasto", preco: 150, emoji: "💸" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 0, texto: "0 Robux" },
-                        { id: 2, valor: 5, texto: "5 Robux" },
-                        { id: 3, valor: 10, texto: "10 Robux" },
-                        { id: 4, valor: 15, texto: "15 Robux" }
-                      ],
-                      respostaCorreta: 0,
-                      dica: "Você gastou tudo: 150 - 150 = ?",
-                      tipoCalculo: "sobra",
-                      dinheiroInicial: 150
-                    }
-                  ]
+                    id: 2,
+                    titulo: "Loja de Pets",
+                    subtitulo: "Adotando companheiros virtuais",
+                    cor: "from-purple-500 to-pink-500",
+                    dificuldade: "Médio",
+                    objetivo: "Resolver problemas com valores maiores",
+                    robuxInicial: 150,
+                    blockId: 'roblox_shopping_02'
                 },
                 {
-                  id: 3,
-                  titulo: "Parque de Diversões",
-                  subtitulo: "Ingressos e brinquedos",
-                  cor: "from-red-500 to-orange-600",
-                  dificuldade: "Avançado",
-                  objetivo: "Gerenciar orçamento com valores maiores",
-                  robuxInicial: 200,
-                  situacoes: [
-                    {
-                      contexto: "Você chegou no parque de diversões do Roblox! Tem 200 Robux para se divertir o dia todo.",
-                      pergunta: "Compre o ingresso do parque (85 Robux) e um lanche (67 Robux). Quanto você gastará?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
-                        { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 145, texto: "145 Robux" },
-                        { id: 2, valor: 152, texto: "152 Robux" },
-                        { id: 3, valor: 160, texto: "160 Robux" },
-                        { id: 4, valor: 138, texto: "138 Robux" }
-                      ],
-                      respostaCorreta: 152,
-                      dica: "Some o ingresso e o lanche: 85 + 67 = ?"
-                    },
-                    {
-                      contexto: "Depois do lanche, você quer andar na montanha-russa! Mas primeiro precisa de um refrigerante para se refrescar.",
-                      pergunta: "Adicione um refrigerante (25 Robux). Quanto você terá gasto no total?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
-                        { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" },
-                        { id: 3, nome: "Refrigerante", preco: 25, emoji: "🥤" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 170, texto: "170 Robux" },
-                        { id: 2, valor: 177, texto: "177 Robux" },
-                        { id: 3, valor: 185, texto: "185 Robux" },
-                        { id: 4, valor: 162, texto: "162 Robux" }
-                      ],
-                      respostaCorreta: 177,
-                      dica: "Você já gastou 152 Robux. Adicione mais 25: 152 + 25 = ?"
-                    },
-                    {
-                      contexto: "Agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída.",
-                      pergunta: "Dos seus 200 Robux iniciais, quantos sobraram depois de gastar 177?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Total Gasto", preco: 177, emoji: "💸" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 18, texto: "18 Robux" },
-                        { id: 2, valor: 23, texto: "23 Robux" },
-                        { id: 3, valor: 28, texto: "28 Robux" },
-                        { id: 4, valor: 33, texto: "33 Robux" }
-                      ],
-                      respostaCorreta: 23,
-                      dica: "Calcule: 200 - 177 = ?",
-                      tipoCalculo: "sobra",
-                      dinheiroInicial: 200
-                    },
-                    {
-                      contexto: "Legal! Você ainda tem dinheiro para comprar um imã de lembrança do parque.",
-                      pergunta: "Adicione o imã (23 Robux) às suas compras. Quanto você terá gasto no total?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Ingresso VIP", preco: 85, emoji: "🎟️" },
-                        { id: 2, nome: "Combo Lanche", preco: 67, emoji: "🍔" },
-                        { id: 3, nome: "Refrigerante", preco: 25, emoji: "🥤" },
-                        { id: 4, nome: "Imã", preco: 23, emoji: "🧢" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 195, texto: "195 Robux" },
-                        { id: 2, valor: 200, texto: "200 Robux" },
-                        { id: 3, valor: 205, texto: "205 Robux" },
-                        { id: 4, valor: 190, texto: "190 Robux" }
-                      ],
-                      respostaCorreta: 200,
-                      dica: "Some todas as suas compras: 177 + 23 = ?"
-                    },
-                    {
-                      contexto: "Perfeito! Você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro!",
-                      pergunta: "Depois de gastar 200 Robux dos seus 200 Robux iniciais, quantos sobraram?",
-                      carrinhoFixo: [
-                        { id: 1, nome: "Total Gasto", preco: 200, emoji: "💸" }
-                      ],
-                      opcoes: [
-                        { id: 1, valor: 0, texto: "0 Robux" },
-                        { id: 2, valor: 5, texto: "5 Robux" },
-                        { id: 3, valor: 10, texto: "10 Robux" },
-                        { id: 4, valor: 15, texto: "15 Robux" }
-                      ],
-                      respostaCorreta: 0,
-                      dica: "Você gastou exatamente tudo: 200 - 200 = ?",
-                      tipoCalculo: "sobra",
-                      dinheiroInicial: 200
-                    }
-                  ]
+                    id: 3,
+                    titulo: "Parque de Diversões",
+                    subtitulo: "Ingressos e brinquedos",
+                    cor: "from-red-500 to-orange-600",
+                    dificuldade: "Avançado",
+                    objetivo: "Gerenciar orçamento com valores maiores",
+                    robuxInicial: 200,
+                    blockId: 'roblox_shopping_03'
                 }
             ];
+
+            // Initialize database
+            useEffect(() => {
+                const initDatabase = async () => {
+                    try {
+                        const success = await database.initialize();
+                        if (success) {
+                            setDatabaseReady(true);
+                            console.log('Roblox Database initialized successfully');
+                        } else {
+                            throw new Error('Database initialization failed');
+                        }
+                    } catch (error) {
+                        console.error('Database initialization failed:', error);
+                        setDatabaseReady(true); // Continue with fallback data
+                    }
+                };
+
+                initDatabase();
+            }, [database]);
+
+            // Audio state
+            const [currentAudio, setCurrentAudio] = useState(null);
 
             useEffect(() => {
                 if (currentPhase === 'jogo' && !startTime) {
                     setStartTime(Date.now());
                 }
             }, [currentPhase, startTime]);
+
+            // Audio control functions
+            const playAudio = (blockIndex, questionIndex, audioType = 'enunciado') => {
+                try {
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+
+                    // Use the database-generated audio path
+                    const situacao = getCurrentQuestion();
+                    if (situacao && situacao.audio && situacao.audio[audioType]) {
+                        const audioPath = situacao.audio[audioType];
+                        const audio = new Audio(audioPath);
+                        audio.volume = 0.8;
+                        setCurrentAudio(audio);
+
+                        audio.addEventListener('ended', () => {
+                            setCurrentAudio(null);
+                        });
+
+                        audio.play().catch(error => {
+                            console.log('Áudio não encontrado:', audioPath);
+                            setCurrentAudio(null);
+                        });
+                    } else {
+                        console.log('Estrutura de áudio não encontrada para a questão');
+                    }
+                } catch (error) {
+                    console.log('Erro ao reproduzir áudio:', error);
+                }
+            };
+
+            const playFeedbackAudio = () => {
+                try {
+                    const situacao = getCurrentQuestion();
+                    if (situacao && situacao.audio && situacao.audio.explicacao) {
+                        setTimeout(() => {
+                            playAudio(currentBlockIndex, currentQuestion, 'explicacao');
+                        }, 1000);
+                    }
+                } catch (error) {
+                    console.log('Erro ao reproduzir áudio de explicação:', error);
+                }
+            };
 
             const getFontStyle = () => ({
                 fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : "'Comic Sans MS', cursive"
@@ -375,36 +907,87 @@
                 }
             };
 
-            const selecionarBloco = (bloco) => {
-                setCurrentBlock(bloco);
+            const selecionarBloco = (blocoIndex) => {
+                setCurrentBlockIndex(blocoIndex);
                 setCurrentQuestion(0);
                 setSelectedAnswer(null);
                 setScore(0);
+                setCompetencyScores({
+                    calculation: { correct: 0, total: 0 },
+                    problem_solving: { correct: 0, total: 0 },
+                    text_interpretation: { correct: 0, total: 0 }
+                });
                 setQuizCompleted(false);
                 setCurrentPhase('jogo');
                 setStartTime(Date.now());
+
+                // Auto-play first question audio after a short delay
+                setTimeout(() => {
+                    playAudio(blocoIndex, 0, 'enunciado');
+                }, 1500);
+            };
+
+            const getCurrentQuestion = () => {
+                if (!databaseReady) return null;
+                const block = database.getQuestionBlock(currentBlockIndex);
+                return block[currentQuestion] || null;
             };
 
             const handleAnswerClick = (opcao) => {
+                const situacao = getCurrentQuestion();
+                if (!situacao) return;
+
                 setSelectedAnswer(opcao);
-                const situacao = currentBlock.situacoes[currentQuestion];
                 const correct = opcao.valor === situacao.respostaCorreta;
                 setIsCorrect(correct);
-                
+
+                // Update competency scores with weighted approach
+                setCompetencyScores(prev => {
+                    const updated = { ...prev };
+                    const competencyData = situacao.competencyData || {};
+
+                    // Update each competency score based on question difficulty and weight
+                    Object.keys(updated).forEach(competency => {
+                        const competencyInfo = competencyData[competency];
+                        if (competencyInfo) {
+                            updated[competency].total += 1;
+
+                            if (correct) {
+                                // Calculate weighted score based on difficulty and weight
+                                const difficultyMultiplier = {
+                                    'easy': 0.8,
+                                    'medium': 1.0,
+                                    'hard': 1.2
+                                };
+
+                                const difficulty = competencyInfo.difficulty || 'medium';
+                                const weight = competencyInfo.weight || 1.0;
+                                const score = difficultyMultiplier[difficulty] * weight;
+
+                                updated[competency].correct += score;
+                            }
+                        }
+                    });
+
+                    console.log('Updated competency scores:', updated);
+                    return updated;
+                });
+
                 if (correct) {
                     setScore(prev => prev + 1);
                     setFeedbackMessage("✅ Perfeito! Você calculou certinho! 🎉");
                 } else {
                     setFeedbackMessage(`❌ Quase lá! A resposta correta era ${situacao.respostaCorreta} Robux. ${situacao.dica}`);
                 }
-                
+
                 setShowFeedback(true);
+                playFeedbackAudio();
             };
 
             const proximaPergunta = () => {
                 setShowFeedback(false);
                 setSelectedAnswer(null);
-                if (currentQuestion < currentBlock.situacoes.length - 1) {
+                if (currentQuestion < 4) {
                     setCurrentQuestion(currentQuestion + 1);
                     setStartTime(Date.now());
                 } else {
@@ -414,17 +997,42 @@
             
             const saveResult = () => {
                 const timeSpent = Math.round((Date.now() - startTime) / 1000);
+                const currentConfig = blockConfigs[currentBlockIndex];
+
+                // Calculate normalized percentages for competency scores
+                const calcPercentage = Math.round((competencyScores.calculation.correct / Math.max(1, competencyScores.calculation.total)) * 100);
+                const problemPercentage = Math.round((competencyScores.problem_solving.correct / Math.max(1, competencyScores.problem_solving.total)) * 100);
+                const textPercentage = Math.round((competencyScores.text_interpretation.correct / Math.max(1, competencyScores.text_interpretation.total)) * 100);
+
                 const result = {
                     Nome: studentName,
                     Materia: 'Matematica',
-                    Atividade: 'Loja Roblox Nivel 2',
-                    Bloco: currentBlock.titulo,
-                    Questao: `Bloco_${currentBlock.id}`,
+                    Atividade: 'Loja Roblox Nivel 2 (Database)',
+                    Bloco: currentConfig.titulo,
+                    Block_ID: currentConfig.blockId,
+                    Questao: `Bloco_${currentConfig.id}`,
                     Tempo_Execucao: `${timeSpent}s`,
                     Acertos: score,
-                    Erros: currentBlock.situacoes.length - score,
-                    Score: `${Math.round((score / currentBlock.situacoes.length) * 100)}%`
+                    Erros: 5 - score,
+                    Score: `${Math.round((score / 5) * 100)}%`,
+                    Data_Sessao: new Date().toISOString().split('T')[0],
+                    Hora_Sessao: new Date().toLocaleTimeString('pt-BR'),
+                    // Multi-competency data with weighted scoring
+                    Calculo_Score_Bruto: Math.round(competencyScores.calculation.correct * 100) / 100,
+                    Calculo_Total_Questoes: competencyScores.calculation.total,
+                    Calculo_Percentual: `${calcPercentage}%`,
+                    Resolucao_Problemas_Score_Bruto: Math.round(competencyScores.problem_solving.correct * 100) / 100,
+                    Resolucao_Problemas_Total_Questoes: competencyScores.problem_solving.total,
+                    Resolucao_Problemas_Percentual: `${problemPercentage}%`,
+                    Interpretacao_Texto_Score_Bruto: Math.round(competencyScores.text_interpretation.correct * 100) / 100,
+                    Interpretacao_Texto_Total_Questoes: competencyScores.text_interpretation.total,
+                    Interpretacao_Texto_Percentual: `${textPercentage}%`,
+                    // Database integration metadata
+                    Sistema_Database: 'Ativo',
+                    Versao_Sistema: '2.0',
+                    Competencias_Avaliadas: 'Calculo,Resolucao_Problemas,Interpretacao_Texto'
                 };
+
                 const updatedResults = [...sessionResults, result];
                 setSessionResults(updatedResults);
                 localStorage.setItem('robloxShopSessionResults', JSON.stringify(updatedResults));
@@ -437,17 +1045,19 @@
                     return;
                 }
 
-                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
-                const csvContent = resultsToExport.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
+                const header = 'Nome,Materia,Atividade,Bloco,Block_ID,Questao,Tempo_Execucao,Acertos,Erros,Score,Data_Sessao,Hora_Sessao,Calculo_Score_Bruto,Calculo_Total_Questoes,Calculo_Percentual,Resolucao_Problemas_Score_Bruto,Resolucao_Problemas_Total_Questoes,Resolucao_Problemas_Percentual,Interpretacao_Texto_Score_Bruto,Interpretacao_Texto_Total_Questoes,Interpretacao_Texto_Percentual,Sistema_Database,Versao_Sistema,Competencias_Avaliadas\n';
+                const csvContent = resultsToExport.map(r =>
+                    `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Block_ID},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score},${r.Data_Sessao},${r.Hora_Sessao},${r.Calculo_Score_Bruto},${r.Calculo_Total_Questoes},${r.Calculo_Percentual},${r.Resolucao_Problemas_Score_Bruto},${r.Resolucao_Problemas_Total_Questoes},${r.Resolucao_Problemas_Percentual},${r.Interpretacao_Texto_Score_Bruto},${r.Interpretacao_Texto_Total_Questoes},${r.Interpretacao_Texto_Percentual},${r.Sistema_Database},${r.Versao_Sistema},${r.Competencias_Avaliadas}`
+                ).join('\n');
                 const fullContent = header + csvContent;
 
                 const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
-                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') ;
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
                 link.setAttribute('href', url);
-                link.setAttribute('download', `resultados-loja_roblox-${dateStr}-${studentNameForFile}.csv`);
+                link.setAttribute('download', `resultados-loja_roblox-multi_competencia-${dateStr}-${studentNameForFile}.csv`);
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -502,18 +1112,37 @@
                                 </div>
                             </div>
                         </div>
+                        {/* Database Integration Status */}
+                        <div className="max-w-6xl mx-auto mb-6">
+                            <div className="bg-green-100 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                <div className="flex items-center">
+                                    <div className="text-green-600 text-xl mr-3">🗄️</div>
+                                    <div>
+                                        <h4 className="text-green-800 font-bold text-sm">Sistema de Banco de Dados Ativo</h4>
+                                        <p className="text-green-700 text-xs">
+                                            Questões carregadas dinamicamente • Competências: Cálculo, Resolução de Problemas, Interpretação • Versão 2.0
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-                            {blocos.map((bloco) => (
+                            {blockConfigs.map((bloco, index) => (
                                 <div key={bloco.id} className={`bg-gradient-to-br ${bloco.cor} rounded-2xl p-6 text-white shadow-2xl hover:scale-105 transition-all duration-300`}>
                                     <h3 className="text-2xl font-bold mb-1">{bloco.titulo}</h3>
                                     <p className="text-sm opacity-90 mb-2">{bloco.subtitulo}</p>
                                     <div className="inline-block bg-white/20 rounded-full px-3 py-1 text-xs font-bold mt-2">{bloco.dificuldade}</div>
+                                    <div className="text-xs bg-white/10 rounded-full px-2 py-1 mt-1">Multi-Competência</div>
+                                    <div className="text-xs bg-blue-500/80 rounded-full px-2 py-1 mt-1">📊 Database</div>
                                     {completedBlocks.includes(bloco.id) && <div className="text-2xl mt-2">✅ CONCLUÍDO</div>}
                                     <div className="bg-white/10 rounded-lg p-4 my-4">
                                         <p className="text-sm font-semibold mb-2">🎯 Objetivo:</p>
                                         <p className="text-sm">{bloco.objetivo}</p>
+                                        <p className="text-xs mt-2 opacity-80">Avalia: Cálculo, Resolução de Problemas, Interpretação</p>
+                                        <p className="text-xs mt-1 opacity-60">Block ID: {bloco.blockId}</p>
                                     </div>
-                                    <button onClick={() => selecionarBloco(bloco)} className="w-full py-3 bg-white text-gray-800 font-bold rounded-lg hover:bg-gray-100 transition-all">
+                                    <button onClick={() => selecionarBloco(index)} className="w-full py-3 bg-white text-gray-800 font-bold rounded-lg hover:bg-gray-100 transition-all">
                                         {completedBlocks.includes(bloco.id) ? '🔄 Jogar Novamente' : '🎮 Começar'}
                                     </button>
                                 </div>
@@ -524,34 +1153,93 @@
             }
 
             if (quizCompleted) {
-                const percentage = Math.round((score / currentBlock.situacoes.length) * 100);
+                const percentage = Math.round((score / 5) * 100);
+                const calcPercentage = Math.round((competencyScores.calculation.correct / Math.max(1, competencyScores.calculation.total)) * 100);
+                const problemPercentage = Math.round((competencyScores.problem_solving.correct / Math.max(1, competencyScores.problem_solving.total)) * 100);
+                const textPercentage = Math.round((competencyScores.text_interpretation.correct / Math.max(1, competencyScores.text_interpretation.total)) * 100);
+
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4 flex items-center justify-center" style={getFontStyle()}>
-                        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 text-center">
-                            <h1 className="text-4xl font-bold mb-4 text-gray-800">🎊 Parabéns, {studentName}! 🎊</h1>
-                            <div className="text-8xl mb-6">{percentage >= 80 ? '🏆' : percentage >= 60 ? '🌟' : '💪'}</div>
-                            <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                                <p className="text-3xl font-bold text-gray-800 mb-2">{score} de {currentBlock.situacoes.length} acertos</p>
-                                <p className="text-xl text-gray-600 mb-4">{percentage}% de aproveitamento</p>
+                        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8">
+                            <div className="text-center mb-8">
+                                <h1 className="text-4xl font-bold mb-4 text-gray-800">🎊 Parabéns, {studentName}! 🎊</h1>
+                                <div className="text-8xl mb-6">{percentage >= 80 ? '🏆' : percentage >= 60 ? '🌟' : '💪'}</div>
+                                <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                                    <p className="text-3xl font-bold text-gray-800 mb-2">{score} de 5 acertos</p>
+                                    <p className="text-xl text-gray-600 mb-4">{percentage}% de aproveitamento geral</p>
+                                </div>
                             </div>
-                            <button onClick={() => { saveResult(); setCurrentPhase('selecao'); }} className="w-full px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-xl font-bold">
-                                🎯 Escolher Novo Bloco
-                            </button>
+
+                            <div className="bg-blue-50 rounded-lg p-6 mb-6">
+                                <h3 className="text-2xl font-bold text-center text-blue-800 mb-6">📊 Análise Multi-Competência</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="text-center">
+                                        <div className="text-4xl mb-2">🧮</div>
+                                        <div className="text-2xl font-bold text-green-600">{calcPercentage}%</div>
+                                        <div className="text-sm text-gray-600">Cálculo Matemático</div>
+                                        <div className="text-xs text-gray-500 mt-1">{competencyScores.calculation.correct}/{competencyScores.calculation.total}</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-4xl mb-2">🧩</div>
+                                        <div className="text-2xl font-bold text-purple-600">{problemPercentage}%</div>
+                                        <div className="text-sm text-gray-600">Resolução de Problemas</div>
+                                        <div className="text-xs text-gray-500 mt-1">{competencyScores.problem_solving.correct}/{competencyScores.problem_solving.total}</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-4xl mb-2">📖</div>
+                                        <div className="text-2xl font-bold text-orange-600">{textPercentage}%</div>
+                                        <div className="text-sm text-gray-600">Interpretação de Texto</div>
+                                        <div className="text-xs text-gray-500 mt-1">{competencyScores.text_interpretation.correct}/{competencyScores.text_interpretation.total}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="text-center">
+                                <button onClick={() => { saveResult(); setCurrentPhase('selecao'); }} className="px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-xl font-bold mr-4">
+                                    🎯 Escolher Novo Bloco
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Loading state
+            if (!databaseReady) {
+                return (
+                    <div className="loading">
+                        <div className="spinner"></div>
+                        <div>Carregando banco de dados do Roblox...</div>
+                        <div style={{ fontSize: '12px', marginTop: '20px', opacity: 0.8 }}>
+                            Sistema de integração com banco de dados de questões
                         </div>
                     </div>
                 );
             }
 
             if (currentPhase === 'jogo') {
-                const situacao = currentBlock.situacoes[currentQuestion];
+                const situacao = getCurrentQuestion();
+                const currentConfig = blockConfigs[currentBlockIndex];
+
+                if (!situacao) {
+                    return (
+                        <div className="loading">
+                            <div className="spinner"></div>
+                            Carregando questão...
+                        </div>
+                    );
+                }
 
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 p-4 flex items-center justify-center" style={getFontStyle()}>
                         <div className="w-full max-w-4xl mx-auto">
                             <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-6 mb-6">
                                 <div className="flex justify-between items-center">
-                                    <h2 className="text-2xl font-bold text-purple-700">{currentBlock.titulo}</h2>
-                                    <span className="text-lg font-semibold text-gray-600">Questão {currentQuestion + 1} de {currentBlock.situacoes.length}</span>
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-purple-700">{currentConfig.titulo}</h2>
+                                        <div className="text-sm text-blue-600 font-medium">Multi-Competência: Cálculo + Resolução + Interpretação</div>
+                                    </div>
+                                    <span className="text-lg font-semibold text-gray-600">Questão {currentQuestion + 1} de 5</span>
                                 </div>
                             </div>
 
@@ -577,20 +1265,48 @@
                                                 ))}
                                             </div>
                                         </div>
+
+                                        {/* Competency indicators */}
+                                        <div className="bg-purple-50 rounded-lg p-4">
+                                            <h4 className="text-sm font-bold text-purple-800 mb-2">📊 Competências Avaliadas:</h4>
+                                            <div className="grid grid-cols-3 gap-2 text-xs">
+                                                <div className="text-center">
+                                                    <div className="text-green-600 font-bold">🧮</div>
+                                                    <div>Cálculo</div>
+                                                </div>
+                                                <div className="text-center">
+                                                    <div className="text-purple-600 font-bold">🧩</div>
+                                                    <div>Resolução</div>
+                                                </div>
+                                                <div className="text-center">
+                                                    <div className="text-orange-600 font-bold">📖</div>
+                                                    <div>Interpretação</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     {/* Right side: Question and Options */}
                                     <div className="space-y-6">
                                         <div className="bg-yellow-100 border-l-4 border-yellow-500 p-6 rounded-lg">
-                                            <h3 className="text-xl font-bold text-yellow-800 mb-3">🤔 Pergunta</h3>
+                                            <div className="flex items-center justify-between mb-3">
+                                                <h3 className="text-xl font-bold text-yellow-800">🤔 Pergunta</h3>
+                                                <button
+                                                    onClick={() => playAudio(currentBlockIndex, currentQuestion, 'enunciado')}
+                                                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm"
+                                                    title="Ouvir pergunta"
+                                                >
+                                                    🔊 Ouvir
+                                                </button>
+                                            </div>
                                             <p className="text-lg text-gray-800">{situacao.pergunta}</p>
                                         </div>
 
                                         {!showFeedback ? (
                                             <div className="space-y-3">
                                                 {situacao.opcoes.map(opcao => (
-                                                    <button 
-                                                        key={opcao.id} 
+                                                    <button
+                                                        key={opcao.id}
                                                         onClick={() => handleAnswerClick(opcao)}
                                                         className="w-full text-left p-4 bg-white rounded-lg border-2 border-gray-300 hover:border-purple-500 hover:bg-purple-50 transition-all transform hover:scale-105"
                                                     >
@@ -601,9 +1317,17 @@
                                         ) : (
                                             <div className={`p-6 rounded-lg border-4 ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
                                                 <div className="text-6xl mb-4 text-center">{isCorrect ? '🎉' : '🤔'}</div>
-                                                <p className="text-lg font-semibold text-gray-800 text-center mb-4">{feedbackMessage}</p>
+                                                <p className="text-lg font-semibold text-gray-800 text-center mb-2">{feedbackMessage}</p>
+                                                <p className="text-xs text-gray-600 text-center mb-2">Competências avaliadas nesta questão ✓</p>
+                                                <button
+                                                    onClick={() => playAudio(currentBlockIndex, currentQuestion, 'explicacao')}
+                                                    className="mb-3 px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm"
+                                                    title="Ouvir explicação"
+                                                >
+                                                    🔊 Explicação
+                                                </button>
                                                 <button onClick={proximaPergunta} className={`w-full py-3 text-white font-bold rounded-lg text-lg ${isCorrect ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}>
-                                                    {currentQuestion < currentBlock.situacoes.length - 1 ? 'Próxima Pergunta ➡️' : 'Ver Resultado 🏆'}
+                                                    {currentQuestion < 4 ? 'Próxima Pergunta ➡️' : 'Ver Resultado Multi-Competência 🏆'}
                                                 </button>
                                             </div>
                                         )}

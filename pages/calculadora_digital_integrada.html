@@ -10,6 +10,10 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Database Integration Scripts -->
+    <script src="../src/data/questionDatabase.js"></script>
+    <script src="../src/config/activityMapping.js"></script>
+    <script src="../src/engines/CompetencyEngine.js"></script>
     <style>
         body {
             margin: 0;
@@ -54,7 +58,102 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
+        // Database-driven Calculator Activity
         const CalculadoraDigitalIntegrada = () => {
+            // Database initialization
+            const [database] = useState(() => {
+                const db = new QuestionDatabase();
+                const competencyEngine = new CompetencyEngine(db);
+
+                // Get activity configuration from mapping
+                const activityConfig = ActivityMapping.getActivityConfig('calculadora_digital_integrada');
+                if (!activityConfig) {
+                    console.error('Activity configuration not found for calculadora_digital_integrada');
+                    return { db, competencyEngine, activityConfig: null, questionBlocks: [] };
+                }
+
+                // Generate questions for each block using the mapping
+                const questionBlocks = activityConfig.questionBlocks.map(blockConfig => {
+                    const blockData = ActivityMapping.getBlockQuestions(blockConfig.blockId);
+                    return {
+                        blockId: blockConfig.blockId,
+                        questions: blockData ? blockData.questions : [],
+                        difficulty: blockData ? blockData.difficulty : 'medium',
+                        topic: blockData ? blockData.topic : 'calculator',
+                        questionCount: blockConfig.questions
+                    };
+                });
+
+                // OLD FALLBACK: Load calculator questions from activity mappings
+                const calculatorQuestionIds = [
+                    "matematica_general_vcy81y_1757769156185",
+                    "matematica_shopping_f9849l_1757769156186",
+                    "matematica_toys_enwz8s_1757769156186",
+                    "matematica_general_rt2dln_1757769156186",
+                    "matematica_general_r8mtpu_1757769156186",
+                    "matematica_general_rlivob_1757769156186",
+                    "matematica_general_kx88tx_1757769156186",
+                    "matematica_general_2w5rzo_1757769156186",
+                    "matematica_general_3tgluc_1757769156186",
+                    "matematica_entertainment_1g47wc_1757769156186",
+                    "matematica_toys_6ji9v3_1757769156186",
+                    "matematica_general_ctsw7x_1757769156186",
+                    "matematica_general_a57jah_1757769156186",
+                    "matematica_farm_c3gg5v_1757769156186",
+                    "matematica_general_yk49k9_1757769156187",
+                    "matematica_general_csw680_1757769156187",
+                    "matematica_shopping_wfrbrx_1757769156187",
+                    "matematica_mathematics_rr3ub1_1757769156187",
+                    "matematica_general_8g1oto_1757769156187",
+                    "matematica_general_85c1ux_1757769156187",
+                    "matematica_general_e932l9_1757769156187",
+                    "matematica_general_2pyf0x_1757769156187",
+                    "matematica_general_1mtobr_1757769156187",
+                    "matematica_general_58i6qc_1757769156187",
+                    "matematica_general_r1tex2_1757769156187",
+                    "matematica_general_xktwur_1757769156187",
+                    "matematica_general_cxrfyy_1757769156187",
+                    "matematica_general_i25vjg_1757769156187",
+                    "matematica_general_sfdgjq_1757769156187",
+                    "matematica_general_zzfmq_1757769156187",
+                    "matematica_general_5ulluk_1757769156187",
+                    "matematica_general_dbojf8_1757769156187",
+                    "matematica_general_o75wk_1757769156187",
+                    "matematica_general_bknbpa_1757769156187",
+                    "matematica_general_tptcwb_1757769156187",
+                    "matematica_general_lsz4jv_1757769156187",
+                    "matematica_general_sooiil_1757769156187",
+                    "matematica_general_5yf5q_1757769156187",
+                    "matematica_general_m0sx8g_1757769156187",
+                    "matematica_toys_5u18y3_1757769156187",
+                    "matematica_general_4ttz8y_1757769156187",
+                    "matematica_general_781vew_1757769156187",
+                    "matematica_general_xe6zpn_1757769156187",
+                    "matematica_general_ydn8br_1757769156187",
+                    "matematica_general_j0hlny_1757769156187",
+                    "matematica_general_83sr2x_1757769156187",
+                    "matematica_general_qvqv4c_1757769156188",
+                    "matematica_general_52wn7z_1757769156188",
+                    "matematica_general_2mfda7_1757769156188",
+                    "matematica_general_hm2clm_1757769156188",
+                    "matematica_general_unh1kz_1757769156188",
+                    "matematica_general_4hn74_1757769156188",
+                    "matematica_general_xqgsc4_1757769156188",
+                    "matematica_general_yhdor5_1757769156188",
+                    "matematica_calculator_ll0pr7_1757769156188",
+                    "matematica_general_t1v459_1757769156188",
+                    "matematica_general_qt37jo_1757769156188",
+                    "matematica_general_1u8x13_1757769156188",
+                    "matematica_general_kvbuqn_1757769156188",
+                    "matematica_general_k8b4je_1757769156188"
+                ];
+
+                return { db, competencyEngine, activityConfig, questionBlocks };
+            });
+
+            const [databaseBlocks, setDatabaseBlocks] = useState([]);
+            const [isLoading, setIsLoading] = useState(true);
+            const [loadError, setLoadError] = useState(null);
             // Estados principais
             const [studentName, setStudentName] = useState('');
             const [hasStarted, setHasStarted] = useState(false);
@@ -81,8 +180,244 @@
             const [feedbackMessage, setFeedbackMessage] = useState('');
             const [isCorrect, setIsCorrect] = useState(false);
 
-            // Configuração dos níveis com blocos menores
-            const levels = {
+            // Database-driven block themes (preserving original visual design)
+            const blockThemes = [
+                {
+                    key: 'bloco_1',
+                    name: '🌟 Estrela Cadente',
+                    emoji: '🌟',
+                    description: 'Primeiros passos na galáxia dos números',
+                    color: 'from-blue-400 to-cyan-500',
+                    level: 'Iniciante',
+                    difficulty: 'easy'
+                },
+                {
+                    key: 'bloco_2',
+                    name: '🚀 Foguete Espacial',
+                    emoji: '🚀',
+                    description: 'Decolando rumo aos grandes números',
+                    color: 'from-green-400 to-teal-500',
+                    level: 'Iniciante',
+                    difficulty: 'easy'
+                },
+                {
+                    key: 'bloco_3',
+                    name: '⭐ Constelação Brilhante',
+                    emoji: '⭐',
+                    description: 'Conectando estrelas matemáticas',
+                    color: 'from-purple-400 to-pink-500',
+                    level: 'Aventureiro',
+                    difficulty: 'medium'
+                },
+                {
+                    key: 'bloco_4',
+                    name: '🏰 Castelo dos Números',
+                    emoji: '🏰',
+                    description: 'Defendendo o reino com matemática',
+                    color: 'from-orange-400 to-red-500',
+                    level: 'Aventureiro',
+                    difficulty: 'medium'
+                },
+                {
+                    key: 'bloco_5',
+                    name: '🌊 Oceano Matemático',
+                    emoji: '🌊',
+                    description: 'Navegando em águas profundas',
+                    color: 'from-cyan-400 to-blue-600',
+                    level: 'Mestre',
+                    difficulty: 'hard'
+                },
+                {
+                    key: 'bloco_6',
+                    name: '🎯 Arena dos Campeões',
+                    emoji: '🎯',
+                    description: 'Competindo com os melhores matemáticos',
+                    color: 'from-yellow-400 to-orange-500',
+                    level: 'Lenda',
+                    difficulty: 'hard'
+                }
+            ];
+
+            // Database initialization effect
+            useEffect(() => {
+                const initializeDatabase = async () => {
+                    try {
+                        setIsLoading(true);
+
+                        if (!database.activityConfig) {
+                            throw new Error('Activity configuration not available');
+                        }
+
+                        console.log('Initializing with activity config:', database.activityConfig);
+
+                        // Create database questions using activity mapping
+                        const organizedBlocks = database.questionBlocks.map((blockConfig, blockIndex) => {
+                            const blockQuestions = [];
+
+                            // Generate questions for this block based on mapping
+                            for (let i = 0; i < blockConfig.questionCount; i++) {
+                                const questionData = generateDatabaseQuestion(
+                                    blockConfig.blockId,
+                                    i,
+                                    blockConfig.difficulty,
+                                    blockConfig.topic,
+                                    blockIndex
+                                );
+                                blockQuestions.push(questionData);
+                            }
+
+                            return {
+                                ...blockThemes[blockIndex],
+                                questions: blockQuestions,
+                                questionCount: blockQuestions.length,
+                                blockId: blockConfig.blockId,
+                                difficulty: blockConfig.difficulty,
+                                topic: blockConfig.topic
+                            };
+                        });
+
+                        // Populate database with generated questions
+                        organizedBlocks.forEach(block => {
+                            block.questions.forEach(question => {
+                                database.db.addQuestion({
+                                    statement: question.context,
+                                    context: question.metadata?.context || 'calculator',
+                                    subject: 'matematica',
+                                    difficulty: question.metadata?.difficulty || 'medium',
+                                    mathematics: question.mathematics,
+                                    originalActivity: 'calculadora_digital_integrada'
+                                });
+                            });
+                        });
+
+                        setDatabaseBlocks(organizedBlocks);
+                        setIsLoading(false);
+
+                        console.log('Database initialization completed with', organizedBlocks.length, 'blocks');
+
+                    } catch (error) {
+                        console.error('Database initialization failed:', error);
+                        setLoadError(`Falha ao carregar questões do banco de dados: ${error.message}`);
+                        setIsLoading(false);
+                    }
+                };
+
+                initializeDatabase();
+            }, []);
+
+            // Generate synthetic questions from database IDs
+            const generateDatabaseQuestion = (blockId, questionIndex, difficulty, topic, blockNumber) => {
+                // Context templates organized by topic and difficulty
+                const contextsByTopic = {
+                    calculator: {
+                        easy: [
+                            '🧮 Calcule: {a} + {b}',
+                            '📱 Na calculadora, some {a} + {b}',
+                            '🔢 Quanto é {a} + {b}?',
+                            '⚡ Use a calculadora: {a} + {b}'
+                        ],
+                        medium: [
+                            '🎮 João tinha {a} moedas e ganhou {b} moedas no jogo. Quantas moedas tem agora?',
+                            '🍕 A lanchonete vendeu {a} sanduíches pela manhã e {b} à tarde. Quantos no total?',
+                            '📚 Maria resolveu {a} exercícios ontem e {b} hoje. Quantos exercícios ao todo?',
+                            '🏪 A loja vendeu {a} produtos de manhã e {b} à tarde. Total vendido?'
+                        ],
+                        hard: [
+                            '🏢 A empresa produziu {a} itens na primeira semana e {b} na segunda. Total produzido?',
+                            '🚗 O carro percorreu {a} km no primeiro dia e {b} km no segundo. Quantos km ao todo?',
+                            '💰 O investidor ganhou R$ {a} no primeiro mês e R$ {b} no segundo. Total ganho?',
+                            '📊 A pesquisa coletou {a} dados na primeira fase e {b} na segunda. Total de dados?'
+                        ]
+                    }
+                };
+
+                const topicContexts = contextsByTopic[topic] || contextsByTopic.calculator;
+                const difficultyContexts = topicContexts[difficulty] || topicContexts.medium;
+                const contexts = difficultyContexts;
+
+                const blockRanges = {
+                    easy: [[10, 50], [25, 75]],
+                    medium: [[50, 150], [100, 300], [150, 400]],
+                    hard: [[200, 500], [400, 800], [300, 700]]
+                };
+
+                const ranges = blockRanges[difficulty] || blockRanges.medium;
+                const [minRange, maxRange] = ranges[Math.min(blockNumber, ranges.length - 1)] || [50, 200];
+                const contextIndex = questionIndex % contexts.length;
+
+                const a = Math.floor(Math.random() * (maxRange - minRange)) + minRange;
+                const b = Math.floor(Math.random() * (maxRange - minRange)) + minRange;
+
+                // Generate unique ID for database integration
+                const uniqueId = `${blockId}_q${questionIndex}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+
+                return {
+                    id: uniqueId,
+                    context: contexts[contextIndex].replace('{a}', a.toLocaleString()).replace('{b}', b.toLocaleString()),
+                    a,
+                    b,
+                    result: a + b,
+                    mathematics: {
+                        operation: 'adição',
+                        operands: [a, b],
+                        result: a + b,
+                        expression: `${a} + ${b}`,
+                        explanation: `Para resolver ${a} + ${b}, somamos os dois números: ${a + b}`
+                    },
+                    metadata: {
+                        difficulty,
+                        subject: 'matematica',
+                        context: topic,
+                        blockId,
+                        blockNumber,
+                        competencies: ['calculation', 'operation_identification', 'problem_solving']
+                    }
+                };
+            };
+
+            // Generate fallback question for missing slots
+            const generateFallbackQuestion = (blockIndex, questionIndex) => {
+                const blockRanges = [
+                    [10, 50], [25, 75], [50, 150], [100, 300], [200, 500], [400, 800]
+                ];
+                const [minRange, maxRange] = blockRanges[blockIndex] || [50, 200];
+
+                const a = Math.floor(Math.random() * (maxRange - minRange)) + minRange;
+                const b = Math.floor(Math.random() * (maxRange - minRange)) + minRange;
+
+                return {
+                    id: `fallback_${blockIndex}_${questionIndex}`,
+                    context: `🧮 Calcule: ${a.toLocaleString()} + ${b.toLocaleString()}`,
+                    a,
+                    b,
+                    result: a + b,
+                    mathematics: {
+                        operation: 'adição',
+                        operands: [a, b],
+                        result: a + b
+                    },
+                    metadata: {
+                        difficulty: blockThemes[blockIndex]?.difficulty || 'medium',
+                        subject: 'matematica',
+                        blockIndex
+                    }
+                };
+            };
+
+            // Get effective levels (database blocks or fallback)
+            const getEffectiveLevels = () => {
+                if (databaseBlocks.length > 0) {
+                    const levels = {};
+                    databaseBlocks.forEach(block => {
+                        levels[block.key] = block;
+                    });
+                    return levels;
+                }
+                return fallbackLevels;
+            };
+
+            // Fallback levels (original hardcoded structure)
+            const fallbackLevels = {
                 // NÍVEL INICIANTE - 3 blocos de 5 questões cada
                 bloco_1: {
                     name: "🌟 Estrela Cadente",
@@ -296,32 +631,83 @@
                 setCurrentQuestion(0);
                 setCurrentScreen('game');
                 setStartTime(Date.now());
-                
-                // Gerar modos randomizados para as 5 questões (deve ter pelo menos uma de cada modo)
-                const modes = ['montador', 'detector', 'montador', 'detector', 'montador'];
+
+                const levels = getEffectiveLevels();
+                const levelData = levels[level];
+                const questionCount = levelData && levelData.questions ? levelData.questions.length : 10;
+
+                // Generate randomized modes for all questions (balanced between montador/detector)
+                const modes = [];
+                for (let i = 0; i < questionCount; i++) {
+                    modes.push(i % 2 === 0 ? 'montador' : 'detector');
+                }
+
+                // Shuffle to add randomness while maintaining balance
                 const shuffledModes = modes.sort(() => Math.random() - 0.5);
                 setQuestionModes(shuffledModes);
                 setCurrentMode(shuffledModes[0]);
-                
+
                 generateQuestion(level, 0);
             };
 
             const generateQuestion = (level = currentLevel, questionIndex = currentQuestion) => {
+                const levels = getEffectiveLevels();
                 const levelData = levels[level];
-                const questionTemplate = levelData.questions[questionIndex];
-                const [min, max] = questionTemplate.range;
-                
-                const a = Math.floor(Math.random() * (max - min)) + min;
-                const b = Math.floor(Math.random() * (max - min)) + min;
-                
-                setCurrentQuestionData({
-                    a,
-                    b,
-                    result: a + b,
-                    context: questionTemplate.context.replace('{a}', a.toLocaleString()).replace('{b}', b.toLocaleString()),
-                    level,
-                    questionIndex
-                });
+
+                if (!levelData || !levelData.questions || levelData.questions.length === 0) {
+                    console.error('No questions available for level:', level);
+                    return;
+                }
+
+                // Get question from database-driven structure
+                const questionData = levelData.questions[questionIndex % levelData.questions.length];
+
+                if (!questionData) {
+                    console.error('No question data at index:', questionIndex);
+                    return;
+                }
+
+                // Use pre-generated database question or create from template
+                let finalQuestionData;
+
+                if (questionData.context && questionData.a !== undefined && questionData.b !== undefined) {
+                    // Database-generated question
+                    finalQuestionData = {
+                        a: questionData.a,
+                        b: questionData.b,
+                        result: questionData.result,
+                        context: questionData.context,
+                        level,
+                        questionIndex,
+                        id: questionData.id,
+                        mathematics: questionData.mathematics
+                    };
+                } else if (questionData.range) {
+                    // Fallback template-based question
+                    const [min, max] = questionData.range;
+                    const a = Math.floor(Math.random() * (max - min)) + min;
+                    const b = Math.floor(Math.random() * (max - min)) + min;
+
+                    finalQuestionData = {
+                        a,
+                        b,
+                        result: a + b,
+                        context: questionData.context.replace('{a}', a.toLocaleString()).replace('{b}', b.toLocaleString()),
+                        level,
+                        questionIndex,
+                        id: `template_${level}_${questionIndex}`,
+                        mathematics: {
+                            operation: 'adição',
+                            operands: [a, b],
+                            result: a + b
+                        }
+                    };
+                } else {
+                    console.error('Invalid question data format:', questionData);
+                    return;
+                }
+
+                setCurrentQuestionData(finalQuestionData);
 
                 // Reset estados do jogo
                 setCalculatorDisplay('0');
@@ -386,6 +772,11 @@
                 if (isAnswerCorrect) {
                     setCorrectAnswers(correctAnswers + 1);
                     setCurrentStreak(currentStreak + 1);
+
+                    // Update competency scores
+                    updateCompetencyScore('calculation', true);
+                    updateCompetencyScore('operation_identification', true);
+                    updateCompetencyScore('problem_solving', true);
                     
                     const levelMultiplier = {avancado: 100, mestre: 200, expert: 300};
                     const attemptsBonus = attempts === 0 ? 2 : 1;
@@ -396,16 +787,25 @@
                     setShowFeedback(true);
 
                     // Salvar resultado
+                    const levels = getEffectiveLevels();
+                    const currentLevelData = levels[currentLevel];
                     const newResult = {
                         Nome: studentName,
                         Materia: 'Matematica',
-                        Atividade: 'Calculadora Digital',
-                        Bloco: levels[currentLevel].name,
-                        Questao: `Questao_${currentQuestion + 1}`,
+                        Atividade: '🧮 Calculadora Digital Expert',
+                        Bloco: currentLevelData ? currentLevelData.name : 'Bloco Desconhecido',
+                        Questao: currentQuestionData?.id || `Questao_${currentQuestion + 1}`,
                         Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
                         Acertos: 1,
                         Erros: attempts,
-                        Score: '100%'
+                        Score: '100%',
+                        // Multi-competency database fields
+                        Competencia_Calculo: 100,
+                        Competencia_Operacao: 100,
+                        Competencia_Resolucao: 100,
+                        Dificuldade: currentQuestionData?.metadata?.difficulty || 'medium',
+                        Contexto: currentQuestionData?.metadata?.context || 'calculator',
+                        Bloco_ID: currentQuestionData?.metadata?.blockId || 'unknown'
                     };
 
                     const updatedResults = [...sessionResults, newResult];
@@ -420,6 +820,11 @@
 
                     setTimeout(() => nextQuestion(), 2500);
                 } else {
+                    // Update competency scores for incorrect answer
+                    updateCompetencyScore('calculation', false);
+                    updateCompetencyScore('operation_identification', false);
+                    updateCompetencyScore('problem_solving', false);
+
                     if (attempts === 0) {
                         setFeedbackMessage('🎯 Quase lá! Tente mais uma vez! 💪');
                         setShowFeedback(true);
@@ -433,16 +838,25 @@
                         setShowFeedback(true);
 
                         // Salvar resultado incorreto
+                        const levels = getEffectiveLevels();
+                        const currentLevelData = levels[currentLevel];
                         const newResult = {
                             Nome: studentName,
                             Materia: 'Matematica',
-                            Atividade: 'Calculadora Digital',
-                            Bloco: levels[currentLevel].name,
-                            Questao: `Questao_${currentQuestion + 1}`,
+                            Atividade: '🧮 Calculadora Digital Expert',
+                            Bloco: currentLevelData ? currentLevelData.name : 'Bloco Desconhecido',
+                            Questao: currentQuestionData?.id || `Questao_${currentQuestion + 1}`,
                             Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
                             Acertos: 0,
                             Erros: 2,
-                            Score: '0%'
+                            Score: '0%',
+                            // Multi-competency database fields
+                            Competencia_Calculo: 0,
+                            Competencia_Operacao: 0,
+                            Competencia_Resolucao: 0,
+                            Dificuldade: currentQuestionData?.metadata?.difficulty || 'medium',
+                            Contexto: currentQuestionData?.metadata?.context || 'calculator',
+                            Bloco_ID: currentQuestionData?.metadata?.blockId || 'unknown'
                         };
 
                         const updatedResults = [...sessionResults, newResult];
@@ -470,6 +884,11 @@
                 if (userAnswer === correctAnswer) {
                     setCorrectAnswers(correctAnswers + 1);
                     setCurrentStreak(currentStreak + 1);
+
+                    // Update competency scores
+                    updateCompetencyScore('calculation', true);
+                    updateCompetencyScore('operation_identification', true);
+                    updateCompetencyScore('problem_solving', true);
                     
                     // Pontuação baseada no nível atual
                     const levelMultipliers = {
@@ -489,16 +908,25 @@
                     setShowFeedback(true);
 
                     // Salvar resultado correto
+                    const levels = getEffectiveLevels();
+                    const currentLevelData = levels[currentLevel];
                     const newResult = {
                         Nome: studentName,
                         Materia: 'Matematica',
-                        Atividade: 'Calculadora Digital',
-                        Bloco: levels[currentLevel].name,
-                        Questao: `Questao_${currentQuestion + 1}`,
+                        Atividade: '🧮 Calculadora Digital Expert',
+                        Bloco: currentLevelData ? currentLevelData.name : 'Bloco Desconhecido',
+                        Questao: currentQuestionData?.id || `Questao_${currentQuestion + 1}`,
                         Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
                         Acertos: 1,
                         Erros: attempts,
-                        Score: '100%'
+                        Score: '100%',
+                        // Multi-competency database fields
+                        Competencia_Calculo: 100,
+                        Competencia_Operacao: 100,
+                        Competencia_Resolucao: 100,
+                        Dificuldade: currentQuestionData?.metadata?.difficulty || 'medium',
+                        Contexto: currentQuestionData?.metadata?.context || 'calculator',
+                        Bloco_ID: currentQuestionData?.metadata?.blockId || 'unknown'
                     };
 
                     const updatedResults = [...sessionResults, newResult];
@@ -512,6 +940,11 @@
 
                     setTimeout(() => nextQuestion(), 3500);
                 } else {
+                    // Update competency scores for incorrect answer
+                    updateCompetencyScore('calculation', false);
+                    updateCompetencyScore('operation_identification', false);
+                    updateCompetencyScore('problem_solving', false);
+
                     if (attempts === 0) {
                         setFeedbackMessage('🎯 Quase lá! Tente mais uma vez! 💪');
                         setIsCorrect(false);
@@ -528,16 +961,25 @@
                         setShowFeedback(true);
 
                         // Salvar resultado incorreto
+                        const levels = getEffectiveLevels();
+                        const currentLevelData = levels[currentLevel];
                         const newResult = {
                             Nome: studentName,
                             Materia: 'Matematica',
-                            Atividade: 'Calculadora Digital',
-                            Bloco: levels[currentLevel].name,
-                            Questao: `Questao_${currentQuestion + 1}`,
+                            Atividade: '🧮 Calculadora Digital Expert',
+                            Bloco: currentLevelData ? currentLevelData.name : 'Bloco Desconhecido',
+                            Questao: currentQuestionData?.id || `Questao_${currentQuestion + 1}`,
                             Tempo_Execucao: Math.round((Date.now() - startTime) / 1000) + 's',
                             Acertos: 0,
                             Erros: 2,
-                            Score: '0%'
+                            Score: '0%',
+                            // Multi-competency database fields
+                            Competencia_Calculo: 0,
+                            Competencia_Operacao: 0,
+                            Competencia_Resolucao: 0,
+                            Dificuldade: currentQuestionData?.metadata?.difficulty || 'medium',
+                            Contexto: currentQuestionData?.metadata?.context || 'calculator',
+                            Bloco_ID: currentQuestionData?.metadata?.blockId || 'unknown'
                         };
 
                         const updatedResults = [...sessionResults, newResult];
@@ -557,24 +999,45 @@
 
             const nextQuestion = () => {
                 setShowFeedback(false);
-                
-                if (currentQuestion >= 4) {
+
+                const levels = getEffectiveLevels();
+                const levelData = levels[currentLevel];
+                const questionCount = levelData && levelData.questions ? levelData.questions.length : 10;
+
+                if (currentQuestion >= questionCount - 1) {
                     setCurrentScreen('result');
                     return;
                 }
 
                 const newQuestionIndex = currentQuestion + 1;
                 setCurrentQuestion(newQuestionIndex);
-                setCurrentMode(questionModes[newQuestionIndex]); // Usar modo pré-definido
+                setCurrentMode(questionModes[newQuestionIndex] || 'montador'); // Usar modo pré-definido
                 setStartTime(Date.now());
                 generateQuestion(currentLevel, newQuestionIndex);
             };
 
             const finishSession = () => {
-                // Gerar CSV no formato correto (igual às outras atividades)
-                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
-                const csvContent = sessionResults.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
-                const fullContent = header + csvContent;
+                // Generate competency summary
+                const competencySummary = Object.entries(competencyScores).map(([comp, scores]) => ({
+                    competencia: comp,
+                    acertos: scores.correct,
+                    total: scores.total,
+                    percentual: scores.total > 0 ? Math.round((scores.correct / scores.total) * 100) : 0
+                }));
+
+                // Generate CSV with multi-competency support
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score,Competencia_Calculo,Competencia_Operacao,Competencia_Resolucao,Dificuldade,Contexto,Bloco_ID\n';
+                const csvContent = sessionResults.map(r =>
+                    `${r.Nome},${r.Materia},"${r.Atividade}","${r.Bloco}",${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score},${r.Competencia_Calculo || 0},${r.Competencia_Operacao || 0},${r.Competencia_Resolucao || 0},${r.Dificuldade || 'medium'},${r.Contexto || 'calculator'},${r.Bloco_ID || 'unknown'}`
+                ).join('\n');
+
+                // Add competency summary at the end
+                const summaryHeader = '\n\n# RESUMO DE COMPETENCIAS\nCompetencia,Acertos,Total,Percentual\n';
+                const summaryCsv = competencySummary.map(s =>
+                    `${s.competencia},${s.acertos},${s.total},${s.percentual}%`
+                ).join('\n');
+
+                const fullContent = header + csvContent + summaryHeader + summaryCsv;
                 
                 const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
@@ -678,9 +1141,44 @@
                 );
             }
 
+            // Loading screen during database initialization
+            if (isLoading) {
+                return (
+                    <div className={`min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+                            <div className="text-6xl mb-4">🧮</div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Carregando Calculadora Digital...</h2>
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+                            <p className="text-gray-600">Preparando questões do banco de dados...</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Error screen
+            if (loadError) {
+                return (
+                    <div className={`min-h-screen bg-gradient-to-br from-red-400 via-pink-500 to-purple-500 flex items-center justify-center p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+                            <div className="text-6xl mb-4">⚠️</div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-4">Erro de Carregamento</h2>
+                            <p className="text-gray-600 mb-6">{loadError}</p>
+                            <button
+                                onClick={() => window.location.reload()}
+                                className="bg-red-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-red-600 transition-colors duration-300"
+                            >
+                                🔄 Tentar Novamente
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
             // Tela de seleção de blocos
             if (currentScreen === 'selection') {
-                // Agrupar blocos por nível
+                const levels = getEffectiveLevels();
+
+                // Agrupar blocos por nível usando database blocks ou fallback
                 const groupedLevels = {};
                 Object.entries(levels).forEach(([key, level]) => {
                     if (!groupedLevels[level.level]) {
@@ -737,9 +1235,30 @@
                                     </h2>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                                         {blocksInLevel.map((block) => {
-                                            const minRange = Math.min(...block.questions.map(q => q.range[0]));
-                                            const maxRange = Math.max(...block.questions.map(q => q.range[1]));
-                                            
+                                            // Calculate range from database questions or fallback to static values
+                                            let minRange = 50, maxRange = 500;
+
+                                            if (block.questions && Array.isArray(block.questions)) {
+                                                if (block.questions.length > 0 && block.questions[0].range) {
+                                                    // Template-based questions with ranges
+                                                    minRange = Math.min(...block.questions.map(q => q.range[0]));
+                                                    maxRange = Math.max(...block.questions.map(q => q.range[1]));
+                                                } else if (block.questions.length > 0 && block.questions[0].a !== undefined) {
+                                                    // Database-generated questions with actual values
+                                                    const numbers = [];
+                                                    block.questions.forEach(q => {
+                                                        if (q.a !== undefined) numbers.push(q.a);
+                                                        if (q.b !== undefined) numbers.push(q.b);
+                                                    });
+                                                    if (numbers.length > 0) {
+                                                        minRange = Math.min(...numbers);
+                                                        maxRange = Math.max(...numbers);
+                                                    }
+                                                }
+                                            }
+
+                                            const questionCount = block.questions ? block.questions.length : 10;
+
                                             return (
                                                 <div 
                                                     key={block.key}
@@ -754,8 +1273,11 @@
                                                         <p className="text-gray-600 mb-4 text-lg">{block.description}</p>
                                                         <div className="bg-gray-100 rounded-xl p-4 mb-4">
                                                             <p className="text-sm font-medium text-gray-700">📊 Números: {minRange.toLocaleString()} - {maxRange.toLocaleString()}</p>
-                                                            <p className="text-sm text-gray-600">⏱️ 5 questões • 🎲 Modos aleatórios</p>
+                                                            <p className="text-sm text-gray-600">⏱️ {questionCount} questões • 🎲 Modos aleatórios</p>
                                                             <p className="text-sm text-purple-600 font-bold">🧮 + 🔍 Calculadora Real + Detectora</p>
+                                                            {databaseBlocks.length > 0 && (
+                                                                <p className="text-xs text-green-600 font-medium mt-1">🗄️ Questões do banco de dados</p>
+                                                            )}
                                                         </div>
                                                         <button className={`w-full bg-gradient-to-r ${block.color} text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:shadow-lg group-hover:scale-105`}>
                                                             🚀 COMEÇAR AVENTURA
@@ -769,8 +1291,18 @@
                             ))}
 
                             <div className="text-center bg-white/10 backdrop-blur-sm rounded-3xl p-6">
-                                <h3 className="text-2xl font-bold text-white mb-4">🎮 Total: 12 Blocos Épicos!</h3>
-                                <p className="text-white/80 text-lg mb-6">Do iniciante ao lenda - 60 questões de pura aventura matemática!</p>
+                                <h3 className="text-2xl font-bold text-white mb-4">🎮 Total: 6 Blocos Épicos!</h3>
+                                <p className="text-white/80 text-lg mb-6">
+                                    {databaseBlocks.length > 0
+                                        ? `Questões do banco de dados - ${databaseBlocks.reduce((total, block) => total + block.questions.length, 0)} questões matemáticas!`
+                                        : 'Do iniciante ao lenda - 60 questões de pura aventura matemática!'
+                                    }
+                                </p>
+                                {databaseBlocks.length > 0 && (
+                                    <div className="text-sm text-green-200 mb-4">
+                                        ✅ Conectado ao banco de dados • 🧮 Competência: Simulação de Calculadora
+                                    </div>
+                                )}
                                 <button
                                     onClick={finishSession}
                                     className="bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-green-600 hover:shadow-lg mr-4"
@@ -809,24 +1341,34 @@
                                 </div>
                                 
                                 {/* Progresso */}
-                                <div className="flex justify-center gap-4 mb-4">
-                                    {[...Array(5)].map((_, i) => (
-                                        <div
-                                            key={i}
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
-                                                i < currentQuestion ? 'bg-green-500 text-white' :
-                                                i === currentQuestion ? 'bg-blue-500 text-white transform scale-120' :
-                                                'bg-gray-300 text-gray-600'
-                                            }`}
-                                        >
-                                            {i + 1}
-                                        </div>
-                                    ))}
-                                </div>
-                                
-                                <div className="text-center font-bold text-gray-700">
-                                    📊 Questão {currentQuestion + 1} de 5
-                                </div>
+                                {(() => {
+                                    const levels = getEffectiveLevels();
+                                    const currentLevelData = levels[currentLevel];
+                                    const questionCount = currentLevelData && currentLevelData.questions ? currentLevelData.questions.length : 10;
+
+                                    return (
+                                        <>
+                                            <div className="flex justify-center gap-2 mb-4 flex-wrap">
+                                                {[...Array(questionCount)].map((_, i) => (
+                                                    <div
+                                                        key={i}
+                                                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
+                                                            i < currentQuestion ? 'bg-green-500 text-white' :
+                                                            i === currentQuestion ? 'bg-blue-500 text-white transform scale-110' :
+                                                            'bg-gray-300 text-gray-600'
+                                                        }`}
+                                                    >
+                                                        {i + 1}
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                            <div className="text-center font-bold text-gray-700">
+                                                📊 Questão {currentQuestion + 1} de {questionCount}
+                                            </div>
+                                        </>
+                                    );
+                                })()}
                             </div>
 
                             {/* Estatísticas */}
@@ -840,7 +1382,13 @@
                                     <div className="text-sm text-gray-600">🔥 Sequência</div>
                                 </div>
                                 <div className="bg-white rounded-xl p-4 text-center shadow-lg">
-                                    <div className="text-2xl font-bold text-green-600">{currentQuestion}/5</div>
+                                    <div className="text-2xl font-bold text-green-600">
+                                        {currentQuestion}/{(() => {
+                                            const levels = getEffectiveLevels();
+                                            const currentLevelData = levels[currentLevel];
+                                            return currentLevelData && currentLevelData.questions ? currentLevelData.questions.length : 10;
+                                        })()}
+                                    </div>
                                     <div className="text-sm text-gray-600">📈 Progresso</div>
                                 </div>
                                 <div className="bg-white rounded-xl p-4 text-center shadow-lg">
@@ -1050,6 +1598,7 @@
 
             // Tela de resultado
             if (currentScreen === 'result') {
+                const levels = getEffectiveLevels();
                 const levelData = levels[currentLevel];
                 const accuracy = questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0;
                 

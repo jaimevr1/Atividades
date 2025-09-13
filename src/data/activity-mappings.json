@@ -1,0 +1,505 @@
+{
+  "🧮 Calculadora Digital Expert": {
+    "questionsCount": 60,
+    "contexts": [
+      "general",
+      "shopping",
+      "toys",
+      "entertainment",
+      "farm",
+      "mathematics",
+      "calculator"
+    ],
+    "difficulties": [
+      "Iniciante",
+      "Aventureiro",
+      "Mestre",
+      "Lenda"
+    ],
+    "subjects": [
+      "matematica"
+    ],
+    "mathOperations": [
+      "subtração",
+      "calculo"
+    ],
+    "suggestedCompetency": "calculator_simulation",
+    "blockConfig": {
+      "blocks": 6,
+      "questionsPerBlock": 10
+    },
+    "htmlFile": "calculadora_digital_integrada.html",
+    "questionIds": [
+      "matematica_general_vcy81y_1757769156185",
+      "matematica_shopping_f9849l_1757769156186",
+      "matematica_toys_enwz8s_1757769156186",
+      "matematica_general_rt2dln_1757769156186",
+      "matematica_general_r8mtpu_1757769156186",
+      "matematica_general_rlivob_1757769156186",
+      "matematica_general_kx88tx_1757769156186",
+      "matematica_general_2w5rzo_1757769156186",
+      "matematica_general_3tgluc_1757769156186",
+      "matematica_entertainment_1g47wc_1757769156186",
+      "matematica_toys_6ji9v3_1757769156186",
+      "matematica_general_ctsw7x_1757769156186",
+      "matematica_general_a57jah_1757769156186",
+      "matematica_farm_c3gg5v_1757769156186",
+      "matematica_general_yk49k9_1757769156187",
+      "matematica_general_csw680_1757769156187",
+      "matematica_shopping_wfrbrx_1757769156187",
+      "matematica_mathematics_rr3ub1_1757769156187",
+      "matematica_general_8g1oto_1757769156187",
+      "matematica_general_85c1ux_1757769156187",
+      "matematica_general_e932l9_1757769156187",
+      "matematica_general_2pyf0x_1757769156187",
+      "matematica_general_1mtobr_1757769156187",
+      "matematica_general_58i6qc_1757769156187",
+      "matematica_general_r1tex2_1757769156187",
+      "matematica_general_xktwur_1757769156187",
+      "matematica_general_cxrfyy_1757769156187",
+      "matematica_general_i25vjg_1757769156187",
+      "matematica_general_sfdgjq_1757769156187",
+      "matematica_general_zzfmq_1757769156187",
+      "matematica_general_5ulluk_1757769156187",
+      "matematica_general_dbojf8_1757769156187",
+      "matematica_general_o75wk_1757769156187",
+      "matematica_general_bknbpa_1757769156187",
+      "matematica_general_tptcwb_1757769156187",
+      "matematica_general_lsz4jv_1757769156187",
+      "matematica_general_sooiil_1757769156187",
+      "matematica_general_5yf5q_1757769156187",
+      "matematica_general_m0sx8g_1757769156187",
+      "matematica_toys_5u18y3_1757769156187",
+      "matematica_general_4ttz8y_1757769156187",
+      "matematica_general_781vew_1757769156187",
+      "matematica_general_xe6zpn_1757769156187",
+      "matematica_general_ydn8br_1757769156187",
+      "matematica_general_j0hlny_1757769156187",
+      "matematica_general_83sr2x_1757769156187",
+      "matematica_general_qvqv4c_1757769156188",
+      "matematica_general_52wn7z_1757769156188",
+      "matematica_general_2mfda7_1757769156188",
+      "matematica_general_hm2clm_1757769156188",
+      "matematica_general_unh1kz_1757769156188",
+      "matematica_general_4hn74_1757769156188",
+      "matematica_general_xqgsc4_1757769156188",
+      "matematica_general_yhdor5_1757769156188",
+      "matematica_calculator_ll0pr7_1757769156188",
+      "matematica_general_t1v459_1757769156188",
+      "matematica_general_qt37jo_1757769156188",
+      "matematica_general_1u8x13_1757769156188",
+      "matematica_general_kvbuqn_1757769156188",
+      "matematica_general_k8b4je_1757769156188"
+    ]
+  },
+  "Construtor de História do Brasil": {
+    "questionsCount": 10,
+    "contexts": [
+      "general"
+    ],
+    "difficulties": [
+      "hard",
+      "medium"
+    ],
+    "subjects": [
+      "historia"
+    ],
+    "mathOperations": [
+      "divisão",
+      "adição",
+      "subtração"
+    ],
+    "suggestedCompetency": "text_interpretation",
+    "blockConfig": {
+      "blocks": 2,
+      "questionsPerBlock": 5
+    },
+    "htmlFile": "construtor_historia_brasil.html",
+    "questionIds": [
+      "historia_general_j2qpx5_1757769156188",
+      "historia_general_33qamg_1757769156188",
+      "historia_general_d3pz0_1757769156188",
+      "historia_general_mwa668_1757769156188",
+      "historia_general_2qfuta_1757769156188",
+      "historia_general_qhciq_1757769156188",
+      "historia_general_nwjciz_1757769156188",
+      "historia_general_l3ekee_1757769156188",
+      "historia_general_1dhlzg_1757769156189",
+      "historia_general_8a9mdy_1757769156189"
+    ]
+  },
+  "Detective da História - Independência do Brasil": {
+    "questionsCount": 10,
+    "contexts": [
+      "general"
+    ],
+    "difficulties": [
+      "hard",
+      "medium"
+    ],
+    "subjects": [
+      "historia"
+    ],
+    "mathOperations": [
+      "divisão",
+      "subtração",
+      "multiplicação"
+    ],
+    "suggestedCompetency": "text_interpretation",
+    "blockConfig": {
+      "blocks": 2,
+      "questionsPerBlock": 5
+    },
+    "htmlFile": "detective_historia_independencia.html",
+    "questionIds": [
+      "historia_general_sx3d4_1757769156189",
+      "historia_general_qhciq_1757769156189",
+      "historia_general_vs2hwg_1757769156189",
+      "historia_general_axzljt_1757769156189",
+      "historia_general_tod0k2_1757769156189",
+      "historia_general_i20tmj_1757769156190",
+      "historia_general_fhbxxq_1757769156190",
+      "historia_general_jiau1g_1757769156190",
+      "historia_general_vqo634_1757769156190",
+      "historia_general_h04a63_1757769156190"
+    ]
+  },
+  "Corrida da História do Brasil": {
+    "questionsCount": 10,
+    "contexts": [
+      "general"
+    ],
+    "difficulties": [
+      "medium"
+    ],
+    "subjects": [
+      "historia"
+    ],
+    "mathOperations": [
+      "adição",
+      "subtração",
+      "multiplicação"
+    ],
+    "suggestedCompetency": "text_interpretation",
+    "blockConfig": {
+      "blocks": 2,
+      "questionsPerBlock": 5
+    },
+    "htmlFile": "corrida_historia_brasil.html",
+    "questionIds": [
+      "historia_general_osxhh_1757769156189",
+      "historia_general_s628xv_1757769156189",
+      "historia_general_sipo12_1757769156189",
+      "historia_general_jqxuj_1757769156189",
+      "historia_general_n7le9c_1757769156189",
+      "historia_general_zh34bg_1757769156189",
+      "historia_general_8i8y06_1757769156189",
+      "historia_general_cqj3hh_1757769156189",
+      "historia_general_msn8ex_1757769156189",
+      "historia_general_ybxk36_1757769156189"
+    ]
+  },
+  "Fazenda de Mobs": {
+    "questionsCount": 20,
+    "contexts": [
+      "shopping",
+      "general",
+      "farm",
+      "home",
+      "calculator"
+    ],
+    "difficulties": [
+      "medium",
+      "hard"
+    ],
+    "subjects": [
+      "matematica"
+    ],
+    "mathOperations": [
+      "calculo",
+      "multiplicação",
+      "divisão",
+      "subtração"
+    ],
+    "suggestedCompetency": "calculation",
+    "blockConfig": {
+      "blocks": 4,
+      "questionsPerBlock": 5
+    },
+    "htmlFile": "fazenda_mobs.html",
+    "questionIds": [
+      "matematica_shopping_o76kyh_1757769156190",
+      "matematica_general_ord8jd_1757769156190",
+      "matematica_general_hphf6s_1757769156190",
+      "matematica_general_6ru89b_1757769156190",
+      "matematica_farm_nbj539_1757769156190",
+      "matematica_general_nlsvif_1757769156190",
+      "matematica_shopping_ixmf76_1757769156190",
+      "matematica_general_izq6kq_1757769156190",
+      "matematica_home_cxjq6s_1757769156190",
+      "matematica_general_qxwhhc_1757769156190",
+      "matematica_shopping_qmrx4o_1757769156190",
+      "matematica_shopping_qpuial_1757769156190",
+      "matematica_farm_xaovye_1757769156190",
+      "matematica_calculator_uczpn2_1757769156190",
+      "matematica_general_4e37om_1757769156190",
+      "matematica_general_sqwntp_1757769156190",
+      "matematica_general_acj214_1757769156190",
+      "matematica_general_5ofv42_1757769156190",
+      "matematica_general_ycsp7g_1757769156190",
+      "matematica_general_tyjins_1757769156190"
+    ]
+  },
+  "Loja do Roblox - Nível 2": {
+    "questionsCount": 15,
+    "contexts": [
+      "Você acabou de criar sua conta no Roblox e ganhou 50 Robux de bônus! Hora de personalizar seu avatar.",
+      "Seu avatar está ficando massa! Agora você quer adicionar óculos para ficar ainda mais estiloso.",
+      "Você quer saber se ainda tem dinheiro para comprar outras coisas legais.",
+      "Legal! Você descobriu que ainda pode comprar mais coisas! Vamos ver se dá para comprar os tênis.",
+      "Parabéns! Você montou seu primeiro look completo no Roblox! Agora vamos ver quanto dinheiro sobrou.",
+      "Você entrou na loja de pets do Roblox! Tem 150 Robux para adotar bichinhos fofinhos.",
+      "Seus pets estão adorando brincar juntos! Agora você quer adicionar um coelho para completar a família.",
+      "Você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets.",
+      "Seus pets estão com fome! Você decidiu comprar comida premium para eles.",
+      "Incrível! Você gastou exatamente todos os seus Robux cuidando bem dos seus pets!",
+      "Você chegou no parque de diversões do Roblox! Tem 200 Robux para se divertir o dia todo.",
+      "Depois do lanche, você quer andar na montanha-russa! Mas primeiro precisa de um refrigerante para se refrescar.",
+      "Agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída.",
+      "Legal! Você ainda tem dinheiro para comprar um imã de lembrança do parque.",
+      "Perfeito! Você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro!"
+    ],
+    "difficulties": [
+      "Fácil",
+      "Médio",
+      "Avançado"
+    ],
+    "subjects": [
+      "matematica"
+    ],
+    "mathOperations": [
+      "calculo",
+      "subtração"
+    ],
+    "suggestedCompetency": "calculation",
+    "blockConfig": {
+      "blocks": 3,
+      "questionsPerBlock": 5
+    },
+    "htmlFile": "loja_roblox_nivel2.html",
+    "questionIds": [
+      "matematica_você acabou de criar sua conta no roblox e ganhou 50 robux de bônus! hora de personalizar seu avatar._vpjj8r_1757769156190",
+      "matematica_seu avatar está ficando massa! agora você quer adicionar óculos para ficar ainda mais estiloso._412397_1757769156190",
+      "matematica_você quer saber se ainda tem dinheiro para comprar outras coisas legais._43tu4p_1757769156190",
+      "matematica_legal! você descobriu que ainda pode comprar mais coisas! vamos ver se dá para comprar os tênis._sewqkt_1757769156190",
+      "matematica_parabéns! você montou seu primeiro look completo no roblox! agora vamos ver quanto dinheiro sobrou._ro4aut_1757769156190",
+      "matematica_você entrou na loja de pets do roblox! tem 150 robux para adotar bichinhos fofinhos._s87jaq_1757769156190",
+      "matematica_seus pets estão adorando brincar juntos! agora você quer adicionar um coelho para completar a família._2lfmpp_1757769156190",
+      "matematica_você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets._a6th0d_1757769156190",
+      "matematica_seus pets estão com fome! você decidiu comprar comida premium para eles._6zy3hd_1757769156191",
+      "matematica_incrível! você gastou exatamente todos os seus robux cuidando bem dos seus pets!_sp3wuo_1757769156191",
+      "matematica_você chegou no parque de diversões do roblox! tem 200 robux para se divertir o dia todo._bbe5sx_1757769156191",
+      "matematica_depois do lanche, você quer andar na montanha-russa! mas primeiro precisa de um refrigerante para se refrescar._tr9j51_1757769156191",
+      "matematica_agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída._5m3tx5_1757769156191",
+      "matematica_legal! você ainda tem dinheiro para comprar um imã de lembrança do parque._a9hurv_1757769156191",
+      "matematica_perfeito! você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro!_comt29_1757769156191"
+    ]
+  },
+  "Construtor Minecraft": {
+    "questionsCount": 4,
+    "contexts": [
+      "mathematics",
+      "general"
+    ],
+    "difficulties": [
+      "medium"
+    ],
+    "subjects": [
+      "matematica"
+    ],
+    "mathOperations": [
+      "subtração"
+    ],
+    "suggestedCompetency": "calculation",
+    "blockConfig": {
+      "blocks": 1,
+      "questionsPerBlock": 5
+    },
+    "htmlFile": "minecraft_constructor.html",
+    "questionIds": [
+      "matematica_mathematics_xi94cq_1757769156191",
+      "matematica_general_6qb619_1757769156191",
+      "matematica_general_3vwsh6_1757769156191",
+      "matematica_general_kmr3xb_1757769156191"
+    ]
+  },
+  "Quiz de Identificação de Operações Matemáticas": {
+    "questionsCount": 135,
+    "contexts": [
+      "toys",
+      "general",
+      "home",
+      "vehicles",
+      "school",
+      "shopping",
+      "farm"
+    ],
+    "difficulties": [
+      "easy",
+      "medium",
+      "hard"
+    ],
+    "subjects": [
+      "matematica"
+    ],
+    "mathOperations": [
+      "adição",
+      "subtração",
+      "multiplicação",
+      "divisão"
+    ],
+    "suggestedCompetency": "operation_identification",
+    "blockConfig": {
+      "blocks": 9,
+      "questionsPerBlock": 15
+    },
+    "htmlFile": "operacoes_matematicas.html",
+    "questionIds": [
+      "matematica_toys_1mjqn4_1757769156191",
+      "matematica_general_gbbizi_1757769156191",
+      "matematica_general_klrc9a_1757769156191",
+      "matematica_general_3oa4u4_1757769156191",
+      "matematica_general_fb3gbd_1757769156191",
+      "matematica_home_7wipgo_1757769156191",
+      "matematica_toys_m07k5f_1757769156191",
+      "matematica_general_r023vs_1757769156191",
+      "matematica_general_nbt9qc_1757769156191",
+      "matematica_vehicles_90cev3_1757769156191",
+      "matematica_general_js0fip_1757769156191",
+      "matematica_general_sqgwsy_1757769156191",
+      "matematica_general_3be6su_1757769156191",
+      "matematica_general_mif0w9_1757769156191",
+      "matematica_general_ym4v5d_1757769156191",
+      "matematica_general_r3nf3e_1757769156191",
+      "matematica_general_k6swn0_1757769156191",
+      "matematica_general_f4i84x_1757769156191",
+      "matematica_general_j62llv_1757769156191",
+      "matematica_general_nv7c1k_1757769156191",
+      "matematica_toys_mb6di9_1757769156191",
+      "matematica_general_huvq3i_1757769156191",
+      "matematica_general_61vah3_1757769156192",
+      "matematica_toys_gk4vv5_1757769156192",
+      "matematica_general_cqtief_1757769156192",
+      "matematica_general_kkdxai_1757769156192",
+      "matematica_general_z1vppm_1757769156192",
+      "matematica_general_3imhk3_1757769156192",
+      "matematica_vehicles_k7kk9f_1757769156192",
+      "matematica_general_rgtpbu_1757769156192",
+      "matematica_general_r6hefx_1757769156192",
+      "matematica_home_ptpfg6_1757769156192",
+      "matematica_toys_6ik8ij_1757769156192",
+      "matematica_general_gxnchq_1757769156192",
+      "matematica_general_f6yoqu_1757769156192",
+      "matematica_general_o10bb5_1757769156192",
+      "matematica_general_jfhgvo_1757769156192",
+      "matematica_general_31tbp0_1757769156192",
+      "matematica_general_i8b19g_1757769156192",
+      "matematica_general_31w6ab_1757769156192",
+      "matematica_general_kexaz7_1757769156192",
+      "matematica_general_8p4kdy_1757769156192",
+      "matematica_general_trclaa_1757769156192",
+      "matematica_general_90ydo3_1757769156192",
+      "matematica_general_sazpst_1757769156192",
+      "matematica_general_ogjhf4_1757769156192",
+      "matematica_general_ka8c_1757769156192",
+      "matematica_general_o8p0b3_1757769156192",
+      "matematica_general_838duh_1757769156192",
+      "matematica_general_1svc0c_1757769156192",
+      "matematica_general_dck55q_1757769156192",
+      "matematica_home_ijob59_1757769156192",
+      "matematica_general_k874ug_1757769156192",
+      "matematica_general_15pdjg_1757769156192",
+      "matematica_general_xkb7fa_1757769156192",
+      "matematica_toys_pfvbip_1757769156192",
+      "matematica_home_d7g3dh_1757769156192",
+      "matematica_general_mzqigi_1757769156193",
+      "matematica_general_c0fsci_1757769156193",
+      "matematica_toys_jhmlpm_1757769156193",
+      "matematica_general_tp86g7_1757769156193",
+      "matematica_general_p2zuq8_1757769156193",
+      "matematica_toys_et03c0_1757769156193",
+      "matematica_general_hs4wtr_1757769156193",
+      "matematica_general_htxtfo_1757769156194",
+      "matematica_general_5eed54_1757769156194",
+      "matematica_general_g8671g_1757769156194",
+      "matematica_general_nx3ki2_1757769156194",
+      "matematica_general_zet0od_1757769156194",
+      "matematica_toys_th92h0_1757769156194",
+      "matematica_general_dyddnx_1757769156194",
+      "matematica_school_759pm5_1757769156194",
+      "matematica_toys_mdkr8k_1757769156194",
+      "matematica_general_ojjdqx_1757769156194",
+      "matematica_general_d76r0n_1757769156194",
+      "matematica_general_rbn1bb_1757769156194",
+      "matematica_general_tqy0u3_1757769156194",
+      "matematica_general_k28ouq_1757769156194",
+      "matematica_general_8yvzsn_1757769156194",
+      "matematica_general_1ypk6n_1757769156194",
+      "matematica_toys_sc7eve_1757769156194",
+      "matematica_vehicles_3b2lne_1757769156194",
+      "matematica_general_ptzy3a_1757769156194",
+      "matematica_general_ky8wkz_1757769156194",
+      "matematica_general_wq97ji_1757769156194",
+      "matematica_school_w6muk2_1757769156194",
+      "matematica_vehicles_a9txr0_1757769156194",
+      "matematica_shopping_exlrrn_1757769156194",
+      "matematica_toys_d9enl1_1757769156194",
+      "matematica_general_k7cje1_1757769156194",
+      "matematica_general_52pijr_1757769156194",
+      "matematica_home_4tyciy_1757769156194",
+      "matematica_general_shbu71_1757769156194",
+      "matematica_general_3wi2d_1757769156194",
+      "matematica_general_jkg4t8_1757769156194",
+      "matematica_general_htjgiu_1757769156194",
+      "matematica_home_hcbzsk_1757769156194",
+      "matematica_general_hppvft_1757769156194",
+      "matematica_home_8xo1qq_1757769156194",
+      "matematica_general_jmk6os_1757769156194",
+      "matematica_general_6oz6ix_1757769156194",
+      "matematica_general_fbgqy4_1757769156195",
+      "matematica_school_zewzlu_1757769156195",
+      "matematica_general_vboh8o_1757769156195",
+      "matematica_general_94gdp2_1757769156195",
+      "matematica_general_5o2jj_1757769156195",
+      "matematica_toys_fqhr1b_1757769156195",
+      "matematica_toys_bw5hz4_1757769156195",
+      "matematica_farm_6oz57n_1757769156195",
+      "matematica_general_pe7dkn_1757769156195",
+      "matematica_school_slkan7_1757769156195",
+      "matematica_school_k18ghy_1757769156195",
+      "matematica_general_jzm0rk_1757769156195",
+      "matematica_school_91pf8f_1757769156195",
+      "matematica_home_kttgwa_1757769156195",
+      "matematica_toys_rey726_1757769156195",
+      "matematica_general_de6k2q_1757769156195",
+      "matematica_general_k5j71t_1757769156195",
+      "matematica_general_9bi423_1757769156195",
+      "matematica_general_nbmnbv_1757769156195",
+      "matematica_general_201lbo_1757769156195",
+      "matematica_general_8netwy_1757769156195",
+      "matematica_general_nbofiz_1757769156195",
+      "matematica_general_962d6i_1757769156195",
+      "matematica_general_gnhkla_1757769156195",
+      "matematica_vehicles_xh26w_1757769156195",
+      "matematica_general_4cvn7q_1757769156195",
+      "matematica_general_lrzv4x_1757769156195",
+      "matematica_general_7ocxoo_1757769156195",
+      "matematica_general_9ekkfm_1757769156195",
+      "matematica_school_kmikul_1757769156195",
+      "matematica_general_r77koc_1757769156195",
+      "matematica_general_nqq9dz_1757769156195",
+      "matematica_general_kezzd9_1757769156195",
+      "matematica_general_f6asjt_1757769156195"
+    ]
+  }
+}

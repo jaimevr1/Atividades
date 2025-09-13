@@ -1,8 +1,19 @@
 {
   "permissions": {
     "allow": [
+      "Bash(mkdir:*)",
+      "Bash(node:*)",
+      "Bash(__NEW_LINE__ echo \"📁 Required Files:\")",
+      "Bash(__NEW_LINE__ echo \"\")",
+      "Bash(__NEW_LINE__ echo \"📊 Database Integration Summary:\")",
+      "Bash(__NEW_LINE__ echo \"🎯 Key Improvements:\")",
+      "Bash(__NEW_LINE__ echo \"✅ Database integration completed successfully!\")",
+      "Bash(python3:*)",
       "Bash(python:*)",
-      "Bash(claude mcp:*)"
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_install",
+      "Read(//home/jalencar/**)",
+      "Read(//mnt/c/Users/**)"
     ],
     "deny": [],
     "ask": []

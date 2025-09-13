@@ -1,0 +1,61 @@
+{
+  "totalQuestions": 265,
+  "bySubject": {
+    "matematica": 235,
+    "historia": 30
+  },
+  "byDifficulty": {
+    "Iniciante": 15,
+    "Aventureiro": 15,
+    "Mestre": 15,
+    "Lenda": 15,
+    "hard": 96,
+    "medium": 74,
+    "Fácil": 5,
+    "Médio": 5,
+    "Avançado": 5,
+    "easy": 20
+  },
+  "byContext": {
+    "general": 194,
+    "shopping": 7,
+    "toys": 18,
+    "entertainment": 1,
+    "farm": 4,
+    "mathematics": 2,
+    "calculator": 2,
+    "home": 10,
+    "Você acabou de criar sua conta no Roblox e ganhou 50 Robux de bônus! Hora de personalizar seu avatar.": 1,
+    "Seu avatar está ficando massa! Agora você quer adicionar óculos para ficar ainda mais estiloso.": 1,
+    "Você quer saber se ainda tem dinheiro para comprar outras coisas legais.": 1,
+    "Legal! Você descobriu que ainda pode comprar mais coisas! Vamos ver se dá para comprar os tênis.": 1,
+    "Parabéns! Você montou seu primeiro look completo no Roblox! Agora vamos ver quanto dinheiro sobrou.": 1,
+    "Você entrou na loja de pets do Roblox! Tem 150 Robux para adotar bichinhos fofinhos.": 1,
+    "Seus pets estão adorando brincar juntos! Agora você quer adicionar um coelho para completar a família.": 1,
+    "Você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets.": 1,
+    "Seus pets estão com fome! Você decidiu comprar comida premium para eles.": 1,
+    "Incrível! Você gastou exatamente todos os seus Robux cuidando bem dos seus pets!": 1,
+    "Você chegou no parque de diversões do Roblox! Tem 200 Robux para se divertir o dia todo.": 1,
+    "Depois do lanche, você quer andar na montanha-russa! Mas primeiro precisa de um refrigerante para se refrescar.": 1,
+    "Agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída.": 1,
+    "Legal! Você ainda tem dinheiro para comprar um imã de lembrança do parque.": 1,
+    "Perfeito! Você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro!": 1,
+    "vehicles": 5,
+    "school": 7
+  },
+  "byAgeRange": {
+    "6-8": 265
+  },
+  "byActivity": {
+    "🧮 Calculadora Digital Expert": 60,
+    "Construtor de História do Brasil": 10,
+    "Detective da História - Independência do Brasil": 10,
+    "Corrida da História do Brasil": 10,
+    "Fazenda de Mobs": 20,
+    "Loja do Roblox - Nível 2": 15,
+    "Construtor Minecraft": 4,
+    "Quiz de Identificação de Operações Matemáticas": 135,
+    "Operações Matemáticas - Database Driven": 1
+  },
+  "generatedAt": "2025-09-13T13:12:36.209Z"
+}

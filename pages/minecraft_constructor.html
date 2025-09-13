@@ -49,6 +49,10 @@
         </div>
     </div>
 
+    <!-- Database Integration Scripts -->
+    <script src="../src/data/questionDatabase.js"></script>
+    <script src="../src/config/activityMapping.js"></script>
+
     <script type="text/babel">
         const { useState, useEffect } = React;
 
@@ -56,7 +60,7 @@
             const [studentName, setStudentName] = useState('');
             const [selectedFont, setSelectedFont] = useState(localStorage.getItem('selectedFont') || 'comic');
             const [currentPhase, setCurrentPhase] = useState('inicio');
-            const [currentBlock, setCurrentBlock] = useState(null);
+            const [currentBlock, setCurrentBlock] = useState(0);
             const [currentQuestion, setCurrentQuestion] = useState(0);
             const [sessionResults, setSessionResults] = useState([]);
             const [startTime, setStartTime] = useState(null);
@@ -69,59 +73,71 @@
             const [feedback, setFeedback] = useState('');
             const [score, setScore] = useState(0);
 
-            const blockConfigs = {
-                1: {
-                  name: "Explorador (6-7 anos)",
-                  gridSize: { rows: 2, cols: 2 },
-                  blockTypes: [
-                    { name: "Madeira", color: "#8B4513", value: 1 },
-                    { name: "Pedra", color: "#808080", value: 2 },
-                    { name: "Terra", color: "#654321", value: 3 }
-                  ],
-                  questions: [
-                    { structure: "Casa Pequena", target: 4, budget: null },
-                    { structure: "Torre Simples", target: 6, budget: null },
-                    { structure: "Ponte Básica", target: 5, budget: null },
-                    { structure: "Muro Baixo", target: 7, budget: null },
-                    { structure: "Fundação", target: 8, budget: null }
-                  ]
-                },
-                2: {
-                  name: "Construtor (8-9 anos)",
-                  gridSize: { rows: 3, cols: 3 },
-                  blockTypes: [
-                    { name: "Madeira", color: "#8B4513", value: 2 },
-                    { name: "Pedra", color: "#808080", value: 3 },
-                    { name: "Ferro", color: "#C0C0C0", value: 4 },
-                    { name: "Ouro", color: "#FFD700", value: 5 }
-                  ],
-                  questions: [
-                    { structure: "Casa Média", target: 12, budget: 25 },
-                    { structure: "Torre com Base", target: 15, budget: 30 },
-                    { structure: "Ponte Reforçada", target: 18, budget: 35 },
-                    { structure: "Castelo Pequeno", target: 20, budget: 40 },
-                    { structure: "Fortaleza Inicial", target: 22, budget: 45 }
-                  ]
-                },
-                3: {
-                  name: "Arquiteto (10-11 anos)",
-                  gridSize: { rows: 3, cols: 4 },
-                  blockTypes: [
-                    { name: "Madeira", color: "#8B4513", value: 3, property: "Leve" },
-                    { name: "Pedra", color: "#808080", value: 5, property: "Resistente" },
-                    { name: "Ferro", color: "#C0C0C0", value: 7, property: "Durável" },
-                    { name: "Diamante", color: "#00FFFF", value: 10, property: "Raro" },
-                    { name: "Obsidiana", color: "#1a0033", value: 8, property: "Especial" }
-                  ],
-                  questions: [
-                    { structure: "Mansão", target: 35, budget: 60, special: "Use pelo menos 2 tipos diferentes" },
-                    { structure: "Castelo Grande", target: 42, budget: 70, special: "Base deve ser de Pedra ou Ferro" },
-                    { structure: "Torre Mágica", target: 50, budget: 80, special: "Deve conter pelo menos 1 Diamante" },
-                    { structure: "Fortaleza Suprema", target: 45, budget: 75, special: "Máximo 3 de cada tipo" },
-                    { structure: "Palácio Real", target: 55, budget: 90, special: "Use todos os tipos de bloco" }
-                  ]
+            // Database integration state
+            const [databaseQuestions, setDatabaseQuestions] = useState([]);
+            const [currentQuestionData, setCurrentQuestionData] = useState(null);
+            const [competencyScores, setCompetencyScores] = useState({
+                calculation: { correct: 0, total: 0 },
+                problem_solving: { correct: 0, total: 0 }
+            });
+            const [loading, setLoading] = useState(true);
+            const [activityConfig, setActivityConfig] = useState(null);
+            const [blockData, setBlockData] = useState([]);
+
+            const initializeDatabase = async () => {
+                try {
+                    setLoading(true);
+                    const config = window.ActivityMapping?.getActivityConfig('minecraft_constructor');
+                    if (!config) {
+                        console.error('Activity configuration not found for minecraft_constructor');
+                        setLoading(false);
+                        return;
+                    }
+                    setActivityConfig(config);
+
+                    // Carregar todas as questões e configurações de bloco
+                    const loadedBlockData = config.questionBlocks.map(blockInfo => {
+                        const blockDetails = window.BLOCK_QUESTION_MAPPING[blockInfo.blockId];
+                        if (!blockDetails) {
+                            console.error(`Block details not found for ${blockInfo.blockId}`);
+                            return null;
+                        }
+                        
+                        const questionId = blockDetails.questions[0]; // Apenas uma questão por bloco
+                        const question = window.questionDB.getQuestionForCompetency(questionId, 'problem_solving');
+
+                        if (!question) {
+                             console.error(`Question with ID ${questionId} not found in database.`);
+                             return null;
+                        }
+
+                        return {
+                            ...blockInfo,
+                            ...blockDetails,
+                            question: question,
+                            name: `Minecraft - ${blockInfo.blockId.replace('minecraft_', 'Bloco ')}`
+                        };
+                    }).filter(Boolean);
+                    
+                    setBlockData(loadedBlockData);
+
+                } catch (error) {
+                    console.error('Error initializing database:', error);
+                } finally {
+                    setLoading(false);
                 }
-              };
+            };
+            
+            useEffect(() => {
+                // Simula o carregamento do banco de dados exportado
+                // Em um cenário real, isso viria de um fetch
+                const exportedDb = window.exportedDatabase;
+                if (exportedDb) {
+                    window.questionDB.importDatabase(exportedDb);
+                }
+                initializeDatabase();
+            }, []);
+
 
             const getFontStyle = () => ({
                 fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : "'Comic Sans MS', cursive"
@@ -136,15 +152,24 @@
             };
 
             const startQuestion = () => {
-                if (!currentBlock) return;
-                const config = blockConfigs[currentBlock];
-                const question = config.questions[currentQuestion];
-                const { rows, cols } = config.gridSize;
+                if (currentBlock === null || !blockData.length || !blockData[currentBlock]) return;
+
+                const currentBlockInfo = blockData[currentBlock];
+                const questionData = currentBlockInfo.question;
+                
+                if (!questionData || !questionData.metadata || !questionData.metadata.gridSize) {
+                    console.error("Dados da questão ou gridSize faltando", questionData);
+                    return;
+                };
+
+                const { rows, cols } = questionData.metadata.gridSize;
+
+                setCurrentQuestionData(questionData);
                 setGrid(initializeGrid(rows, cols));
-                setAvailableBlocks(config.blockTypes);
+                setAvailableBlocks(questionData.metadata.blockTypes || []);
                 setCurrentSum(0);
-                setBudget(question.budget);
-                setTargetStructure(question.structure);
+                setBudget(questionData.metadata.budget || null);
+                setTargetStructure(questionData.metadata.structure || `Desafio ${currentBlock + 1}`);
                 setIsComplete(false);
                 setFeedback('');
                 setStartTime(Date.now());
@@ -152,45 +177,56 @@
 
             useEffect(() => {
                 startQuestion();
-            }, [currentBlock, currentQuestion]);
+            }, [currentBlock, blockData]);
 
             useEffect(() => {
-                if (!currentBlock || !grid.length) return;
+                if (currentBlock === null || !grid.length || !currentQuestionData) return;
 
-                const config = blockConfigs[currentBlock];
-                const question = config.questions[currentQuestion];
                 const sum = calculateSum(grid);
                 setCurrentSum(sum);
 
-                let success = sum === question.target;
+                const target = currentQuestionData.mathematics.result;
+                let success = sum === target;
                 let newFeedback = "";
 
                 if (budget && sum > budget) {
                     success = false;
                     newFeedback = `Orçamento estourado! Limite: ${budget}, Usado: ${sum}`;
-                } else if (sum !== question.target) {
-                    if (sum > 0) newFeedback = `Soma atual: ${sum} | Necessário: ${question.target}`;
+                } else if (sum !== target) {
+                    if (sum > 0) newFeedback = `Soma atual: ${sum} | Necessário: ${target}`;
                     success = false;
-                } else if (question.special) {
-                    const usedTypes = new Set();
-                    grid.forEach(row => row.forEach(cell => { if (cell) usedTypes.add(cell.name); }));
-                    let specialRuleMet = true;
-                    // Simplified special rules check for brevity
-                    if (success && specialRuleMet) {
-                         newFeedback = "Parabéns! Estrutura construída com sucesso!";
-                    } else {
-                        success = false;
-                    }
                 } else {
-                     newFeedback = "Parabéns! Estrutura construída com sucesso!";
+                    newFeedback = "Parabéns! Estrutura construída com sucesso!";
                 }
 
                 if (success && !isComplete) {
                     setIsComplete(true);
                     setScore(prev => prev + 1);
+                    updateCompetencyScores(currentQuestionData, true);
+                } else if (!success && isComplete) {
+                    setIsComplete(false);
                 }
+
                 setFeedback(newFeedback);
-            }, [grid, currentBlock, currentQuestion, budget, isComplete]);
+            }, [grid, currentBlock, budget, isComplete, currentQuestionData]);
+
+            const updateCompetencyScores = (questionData, isCorrect) => {
+                setCompetencyScores(prevScores => {
+                    const newScores = { ...prevScores };
+                    const competencies = activityConfig?.competencies || [];
+                    
+                    competencies.forEach(competency => {
+                        if (newScores[competency]) {
+                            newScores[competency].total += 1;
+                            if (isCorrect) {
+                                newScores[competency].correct += 1;
+                            }
+                        }
+                    });
+
+                    return newScores;
+                });
+            };
 
             const handleDrop = (rowIndex, colIndex, blockType) => {
                 const newGrid = [...grid];
@@ -205,29 +241,31 @@
             };
 
             const nextQuestion = () => {
-                const config = blockConfigs[currentBlock];
-                if (currentQuestion < config.questions.length - 1) {
-                    setCurrentQuestion(currentQuestion + 1);
+                if (currentBlock < blockData.length - 1) {
+                    setCurrentBlock(currentBlock + 1);
                 } else {
-                    saveResult();
-                    setCurrentPhase('selecao');
+                    saveResult(true); // Salva o último resultado
+                    setCurrentPhase('resultado');
                 }
             };
             
-            const saveResult = () => {
+            const saveResult = (isFinalResult = false) => {
                 const timeSpent = Math.round((Date.now() - startTime) / 1000);
-                const config = blockConfigs[currentBlock];
+                const currentBlockInfo = blockData[currentBlock];
+
                 const result = {
                     Nome: studentName,
-                    Materia: 'Matematica',
-                    Atividade: 'Construtor Minecraft',
-                    Bloco: config.name,
-                    Questao: `Bloco_${currentBlock}`,
+                    Materia: activityConfig?.subject || 'matematica',
+                    Atividade: activityConfig?.name || 'Construtor Minecraft',
+                    Bloco: currentBlockInfo.name,
+                    Questao: `Bloco_${currentBlock + 1}`,
                     Tempo_Execucao: `${timeSpent}s`,
-                    Acertos: score,
-                    Erros: config.questions.length - score,
-                    Score: `${Math.round((score / config.questions.length) * 100)}%`
+                    Acertos: isComplete ? 1 : 0,
+                    Erros: isComplete ? 0 : 1,
+                    Score: isComplete ? '100%' : '0%',
+                    Questao_ID: currentQuestionData?.id || 'N/A'
                 };
+                
                 const updatedResults = [...sessionResults, result];
                 setSessionResults(updatedResults);
                 localStorage.setItem('minecraftConstructorResults', JSON.stringify(updatedResults));
@@ -245,7 +283,6 @@
                 const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
                 link.setAttribute('download', `resultados-minecraft_constructor-${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
                 document.body.appendChild(link);
                 link.click();
@@ -254,6 +291,15 @@
                 setSessionResults([]);
                 setCurrentPhase('inicio');
             };
+
+            if (loading) {
+                return (
+                    <div className="loading">
+                        <div className="spinner"></div>
+                        Carregando Banco de Dados...
+                    </div>
+                );
+            }
 
             if (currentPhase === 'inicio') {
                 return (
@@ -277,10 +323,11 @@
                         <div className="max-w-4xl mx-auto">
                             <h1 className="text-4xl font-bold text-white text-center mb-8">Olá, {studentName}! Escolha um bloco:</h1>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                {Object.entries(blockConfigs).map(([key, config]) => (
-                                    <div key={key} className="bg-white rounded-lg p-6 shadow-lg cursor-pointer" onClick={() => { setCurrentBlock(parseInt(key)); setCurrentQuestion(0); setScore(0); setCurrentPhase('jogo'); }}>
-                                        <h3 className="text-xl font-bold mb-2">{config.name}</h3>
-                                        <p className="text-gray-600">Grid: {config.gridSize.rows}x{config.gridSize.cols}</p>
+                                {blockData.map((block, index) => (
+                                    <div key={index} className="bg-white rounded-lg p-6 shadow-lg cursor-pointer" onClick={() => { setCurrentBlock(index); setScore(0); setSessionResults([]); setCurrentPhase('jogo'); }}>
+                                        <h3 className="text-xl font-bold mb-2">{block.name}</h3>
+                                        <p className="text-gray-600">Grid: {block.question.metadata.gridSize.rows}x{block.question.metadata.gridSize.cols}</p>
+                                        <p className="text-gray-600">Tópico: {block.topic}</p>
                                     </div>
                                 ))}
                             </div>
@@ -292,16 +339,17 @@
                 );
             }
 
-            if (currentPhase === 'jogo') {
-                const config = blockConfigs[currentBlock];
-                const question = config.questions[currentQuestion];
+            if (currentPhase === 'jogo' && currentQuestionData) {
+                const currentBlockInfo = blockData[currentBlock];
+                const question = currentQuestionData;
+                
                 return (
                     <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4" style={getFontStyle()}>
                         <div className="max-w-6xl mx-auto">
                             <div className="bg-white rounded-lg p-4 mb-6 flex justify-between items-center">
                                 <div>
-                                    <h2 className="text-2xl font-bold">{config.name}</h2>
-                                    <p className="text-gray-600">Questão {currentQuestion + 1}/{config.questions.length} - {question.structure}</p>
+                                    <h2 className="text-2xl font-bold">{currentBlockInfo.name}</h2>
+                                    <p className="text-gray-600">{question.metadata.structure}</p>
                                 </div>
                                 <button onClick={() => setCurrentPhase('selecao')} className="bg-gray-500 text-white p-2 rounded">Voltar</button>
                             </div>
@@ -309,11 +357,12 @@
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                     <div className="bg-white rounded-lg p-6 shadow-lg">
                                         <h3 className="text-2xl font-bold mb-4 text-center">🎯 Objetivo da Missão 🎯</h3>
+                                         <p className="text-center text-lg mb-4">{question.content.statement}</p>
                                         <div className="space-y-4 text-lg">
-                                            <p>🏗️ Construa: <span className="font-bold text-blue-600 text-xl">{question.structure}</span></p>
-                                            <p>🔢 Soma Alvo: <span className="bg-green-500 text-white px-3 py-1 rounded-full font-bold text-2xl">{question.target}</span></p>
+                                            <p>🏗️ Construa: <span className="font-bold text-blue-600 text-xl">{question.metadata.structure}</span></p>
+                                            <p>🔢 Soma Alvo: <span className="bg-green-500 text-white px-3 py-1 rounded-full font-bold text-2xl">{question.mathematics.result}</span></p>
                                             {budget && <p>💰 Orçamento: <span className="bg-yellow-500 text-white px-3 py-1 rounded-full font-bold text-2xl">{budget}</span></p>}
-                                            <p>📊 Soma Atual: <span className={`font-bold text-2xl px-3 py-1 rounded-full ${currentSum > (budget || Infinity) ? 'bg-red-500 text-white' : currentSum === question.target ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'}`}>{currentSum}</span></p>
+                                            <p>📊 Soma Atual: <span className={`font-bold text-2xl px-3 py-1 rounded-full ${currentSum > (budget || Infinity) ? 'bg-red-500 text-white' : currentSum === question.mathematics.result ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'}`}>{currentSum}</span></p>
                                         </div>
                                         {feedback && <p className={`mt-4 p-3 rounded-lg font-semibold ${isComplete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{feedback}</p>}
                                         {isComplete && <button onClick={nextQuestion} className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg mt-4 text-xl font-bold">🚀 Próxima Questão</button>}
@@ -338,7 +387,7 @@
                                     </div>
                                     <div className="bg-white rounded-lg p-6 shadow-lg">
                                         <h3 className="text-2xl font-bold mb-4 text-center">🏗️ Área de Construção</h3>
-                                        <div className="grid gap-2 mx-auto w-fit" style={{gridTemplateColumns: `repeat(${config.gridSize.cols}, 1fr)`}}>
+                                        <div className="grid gap-2 mx-auto w-fit" style={{gridTemplateColumns: `repeat(${question.metadata.gridSize.cols}, 1fr)`}}>
                                             {grid.map((row, rowIndex) => row.map((cell, colIndex) => (
                                                 <div key={`${rowIndex}-${colIndex}`} 
                                                      className="w-24 h-24 border-4 border-gray-300 rounded-lg cursor-pointer flex items-center justify-center bg-gray-100 hover:bg-gray-200"
@@ -348,8 +397,8 @@
                                                      onClick={() => handleRemove(rowIndex, colIndex)}>
                                                     {cell && <div className="text-center font-bold text-white text-2xl" style={{textShadow: '2px 2px 4px #000'}}>{cell.value}</div>}
                                                 </div>
-                                            )))}
-                                        </div>
+                                            )))
+                                        }
                                         <p className="text-center text-gray-600 mt-4 text-sm">💡 Clique em um bloco na área para removê-lo.</p>
                                     </div>
                                 </div>

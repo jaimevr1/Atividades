@@ -10,6 +10,9 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Database Integration Scripts -->
+    <script src="../src/data/questionDatabase.js"></script>
+    <script src="../src/config/activityMapping.js"></script>
     <style>
         body {
             margin: 0;
@@ -64,162 +67,451 @@
             const [showFeedback, setShowFeedback] = useState(false);
             const [isCorrect, setIsCorrect] = useState(false);
             const [score, setScore] = useState(0);
+            const [questionsData, setQuestionsData] = useState(null);
+            const [competencyScores, setCompetencyScores] = useState({
+                calculation: { correct: 0, total: 0 },
+                operation_identification: { correct: 0, total: 0 }
+            });
+            const [loading, setLoading] = useState(true);
 
-            const questionsBlocks = {
-                1: { // 6-7 anos - Multiplicação básica até 4x, produtos até 20
-                  title: "🎮 Novato no Roblox - Primeiros Passos",
-                  ageRange: "6-7 anos",
-                  questions: [
-                    {
-                      scenario: "Você acabou de entrar no Roblox! Seu avatar precisa de roupas novas. Você encontrou 3 lojas, cada uma vendendo 2 camisetas legais. Quantas camisetas diferentes você pode escolher no total?",
-                      visual: "🏪[👕👕] 🏪[👕👕] 🏪[👕👕]",
-                      calculation: "2 + 2 + 2",
-                      answer: 6,
-                      multiplication: "3 × 2",
-                      hint: "Conte as camisetas de cada loja e some tudo!",
-                      context: "Customização de avatar - conceito fundamental do Roblox"
-                    },
-                    {
-                      scenario: "No jogo 'Pet Simulator', você ganhou 4 ovos especiais. Cada ovo sempre dá exatamente 3 pets quando quebra. Se você quebrar todos os ovos, quantos pets novos você terá?",
-                      visual: "🥚[🐱🐶🐰] 🥚[🐱🐶🐰] 🥚[🐱🐶🐰] 🥚[🐱🐶🐰]",
-                      calculation: "3 + 3 + 3 + 3",
-                      answer: 12,
-                      multiplication: "4 × 3",
-                      hint: "Cada ovo sempre dá 3 pets. Conte todos!",
-                      context: "Pet games são muito populares entre crianças pequenas"
-                    },
-                    {
-                      scenario: "Você está jogando 'Obby Escape' e chegou numa sala com 5 plataformas. Em cada plataforma há exatamente 2 moedas brilhantes para coletar. Quantas moedas você conseguirá pegar nesta sala?",
-                      visual: "⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙]",
-                      calculation: "2 + 2 + 2 + 2 + 2",
-                      answer: 10,
-                      multiplication: "5 × 2",
-                      hint: "Cada plataforma tem 2 moedas. Some todas!",
-                      context: "Obbys são obstacle courses muito jogados por crianças"
-                    },
-                    {
-                      scenario: "No 'Tycoon dos Dinossauros', você construiu 2 cercados gigantes. Cada cercado abriga exatamente 4 dinossauros bebês. Quantos dinossauros bebês você está cuidando no total?",
-                      visual: "🦕🦕🦕🦕 | 🦕🦕🦕🦕",
-                      calculation: "4 + 4",
-                      answer: 8,
-                      multiplication: "2 × 4",
-                      hint: "Conte os dinossauros de cada cercado!",
-                      context: "Tycoons ensinam gestão de recursos de forma lúdica"
-                    },
-                    {
-                      scenario: "Você está no 'Pizza Place' trabalhando como entregador. Você fez 3 viagens de entrega hoje. Em cada viagem, você entregou exatamente 5 pizzas quentinhas. Quantas pizzas você entregou no dia todo?",
-                      visual: "🚗[🍕🍕🍕🍕🍕] 🚗[🍕🍕🍕🍕🍕] 🚗[🍕🍕🍕🍕🍕]",
-                      calculation: "5 + 5 + 5",
-                      answer: 15,
-                      multiplication: "3 × 5",
-                      hint: "Some as pizzas de todas as suas viagens!",
-                      context: "Roleplay games ajudam a entender profissões"
+            // Database loader function with fallback to hardcoded data
+            const loadFazendaQuestions = async () => {
+                try {
+                    // Load the exported database first
+                    const response = await fetch('../src/data/exported-database.json');
+                    const database = await response.json();
+
+                    // Get activity configuration
+                    const activityConfig = window.ACTIVITY_MAPPING['fazenda_mobs'];
+
+                    if (!activityConfig) {
+                        throw new Error('Activity configuration not found');
                     }
-                  ]
-                },
-                2: { // 8-9 anos - Multiplicação até 8x, produtos até 60
-                  title: "⚔️ Aventureiro Experiente - Desafios Maiores",
-                  ageRange: "8-9 anos", 
-                  questions: [
-                    {
-                      scenario: "No 'Simulator de Mineração Espacial', você descobriu um asteroide raro com 7 pontos de escavação. Cada ponto sempre rende exatamente 6 cristais preciosos quando minerado completamente. Se você minerar todo o asteroide, quantos cristais terá coletado?",
-                      visual: "☄️ → ⛏️[💎💎💎💎💎💎] × 7 pontos",
-                      calculation: "6 + 6 + 6 + 6 + 6 + 6 + 6",
-                      answer: 42,
-                      multiplication: "7 × 6",
-                      hint: "Cada ponto de escavação rende 6 cristais. Multiplique!",
-                      context: "Simulators espaciais estimulam interesse por ciências"
-                    },
-                    {
-                      scenario: "Você é dono de uma loja de carros no 'Vehicle Simulator'. Hoje chegaram 6 caminhões de entrega, cada um trazendo exatamente 8 carros novos para sua loja. Quantos carros novos você recebeu para vender?",
-                      visual: "🚛[🚗🚗🚗🚗🚗🚗🚗🚗] × 6 caminhões",
-                      calculation: "8 + 8 + 8 + 8 + 8 + 8",
-                      answer: 48,
-                      multiplication: "6 × 8",
-                      hint: "Cada caminhão trouxe 8 carros. Calcule o total!",
-                      context: "Vehicle simulators trabalham conceitos de negócios"
-                    },
-                    {
-                      scenario: "No 'Torre de Batalha', você formou uma guilda com 8 membros (incluindo você). Cada membro da guilda ganhou exatamente 7 pontos de experiência na última missão. Quantos pontos de experiência sua guilda ganhou no total?",
-                      visual: "👥[⭐⭐⭐⭐⭐⭐⭐] × 8 membros",
-                      calculation: "7 + 7 + 7 + 7 + 7 + 7 + 7 + 7",
-                      answer: 56,
-                      multiplication: "8 × 7",
-                      hint: "Cada membro ganhou 7 pontos. Multiplique pelo número de membros!",
-                      context: "Guilds ensinam trabalho em equipe e colaboração"
-                    },
-                    {
-                      scenario: "Você trabalha no 'Restaurante Cinco Estrelas' como chef. Para o jantar especial de hoje, você precisa preparar 9 mesas VIP. Cada mesa VIP sempre serve exatamente 5 pratos principais. Quantos pratos principais você precisa cozinhar?",
-                      visual: "🍽️[🥘🥘🥘🥘🥘] × 9 mesas VIP",
-                      calculation: "5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5",
-                      answer: 45,
-                      multiplication: "9 × 5",
-                      hint: "Cada mesa VIP precisa de 5 pratos. Calcule o total!",
-                      context: "Gestão de restaurante ensina planejamento e organização"
-                    },
-                    {
-                      scenario: "No 'Academia de Super Heróis', você está treinando com 6 colegas novatos. O instrutor deu para cada um de vocês exatamente 9 exercícios especiais para praticar esta semana. Quantos exercícios no total o grupo inteiro precisa completar?",
-                      visual: "🦸‍♂️[📋📋📋📋📋📋📋📋📋] × 6 novatos",
-                      calculation: "9 + 9 + 9 + 9 + 9 + 9",
-                      answer: 54,
-                      multiplication: "6 × 9",
-                      hint: "Cada novato recebeu 9 exercícios. Multiplique!",
-                      context: "Temas de super-heróis motivam persistência e esforço"
+
+                    // Get fazenda questions from database
+                    const fazendaQuestions = database.questions.filter(([id, question]) =>
+                        question.metadata.originalActivity === 'Fazenda de Mobs'
+                    );
+
+                    // Use fallback data if database questions are insufficient
+                    if (fazendaQuestions.length < 20) {
+                        console.warn('Using fallback hardcoded fazenda questions');
+                        return getFallbackFazendaQuestions();
                     }
-                  ]
-                },
-                3: { // 10-11 anos - Multiplicação com dezenas, produtos até 200
-                  title: "👑 Mestre do Roblox - Grandes Conquistas",
-                  ageRange: "10-11 anos",
-                  questions: [
-                    {
-                      scenario: "Você criou um 'Império Comercial' no Roblox e agora possui 12 lojas diferentes espalhadas pelo mapa. Cada loja gera exatamente 15 Robux de lucro por dia. Se todas as lojas funcionarem perfeitamente por um dia inteiro, quanto Robux você ganhará?",
-                      visual: "🏪[💰15] × 12 lojas = ? Robux por dia",
-                      calculation: "15 + 15 + 15... (12 vezes)",
-                      answer: 180,
-                      multiplication: "12 × 15",
-                      hint: "Cada loja rende 15 Robux por dia. Multiplique pelo número de lojas!",
-                      context: "Empreendedorismo digital e gestão financeira"
-                    },
-                    {
-                      scenario: "No 'Torneio Mundial de Esportes', você é técnico de 14 equipes diferentes. Cada equipe tem exatamente 11 jogadores prontos para competir. Quantos atletas estão sob sua responsabilidade no total?",
-                      visual: "⚽[👤👤👤👤👤👤👤👤👤👤👤] × 14 equipes",
-                      calculation: "11 + 11 + 11... (14 vezes)",
-                      answer: 154,
-                      multiplication: "14 × 11",
-                      hint: "Cada equipe tem 11 jogadores. Multiplique pelo número de equipes!",
-                      context: "Esportes ensinam liderança e responsabilidade"
-                    },
-                    {
-                      scenario: "Você é arquiteto no 'Cidade dos Sonhos' e recebeu uma encomenda gigante: construir 16 edifícios residenciais idênticos. Cada edifício precisa de exatamente 13 tipos diferentes de materiais de construção. Quantos tipos de materiais você precisa calcular no total?",
-                      visual: "🏢[🧱📦⚙️🪟🚪...13 tipos] × 16 edifícios",
-                      calculation: "13 + 13 + 13... (16 vezes)",
-                      answer: 208,
-                      multiplication: "16 × 13",
-                      hint: "Cada edifício usa 13 tipos de materiais. Multiplique!",
-                      context: "Arquitetura estimula pensamento espacial e planejamento"
-                    },
-                    {
-                      scenario: "No 'Festival de Música Virtual', você é organizador de 13 palcos simultâneos. Cada palco terá exatamente 12 apresentações musicais durante o evento. Quantas apresentações musicais acontecerão no festival inteiro?",
-                      visual: "🎵[🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤] × 13 palcos",
-                      calculation: "12 + 12 + 12... (13 vezes)",
-                      answer: 156,
-                      multiplication: "13 × 12",
-                      hint: "Cada palco terá 12 apresentações. Multiplique pelo número de palcos!",
-                      context: "Organização de eventos desenvolve habilidades de coordenação"
-                    },
-                    {
-                      scenario: "Você é líder da aliança mais poderosa no 'Estratégia Galáctica'. Sua aliança controla 15 planetas habitados. Cada planeta contribui com exatamente 14 naves de guerra para a frota unificada. Quantas naves de guerra sua aliança possui no total?",
-                      visual: "🪐[🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀] × 15 planetas",
-                      calculation: "14 + 14 + 14... (15 vezes)",
-                      answer: 210,
-                      multiplication: "15 × 14",
-                      hint: "Cada planeta contribui com 14 naves. Multiplique pelo número de planetas!",
-                      context: "Estratégia espacial desenvolve pensamento tático"
-                    }
-                  ]
+
+                    // Build questions structure
+                    const questionsBlocks = {};
+
+                    // Map each block
+                    activityConfig.questionBlocks.forEach((blockConfig, index) => {
+                        const blockNumber = index + 1;
+                        const blockQuestions = [];
+
+                        // Select questions for this block (5 per block)
+                        const startIndex = index * 5;
+                        const endIndex = startIndex + 5;
+                        const blockQuestionsData = fazendaQuestions.slice(startIndex, endIndex);
+
+                        blockQuestionsData.forEach(([id, questionData]) => {
+                            // Calculate answer from numbers if not available
+                            let calculatedAnswer = questionData.mathematics.result;
+                            if (!calculatedAnswer && questionData.mathematics.numbers && questionData.mathematics.numbers.length === 2) {
+                                // Assume multiplication for fazenda context
+                                calculatedAnswer = questionData.mathematics.numbers[0] * questionData.mathematics.numbers[1];
+                            }
+
+                            // Transform database question to expected format
+                            const transformedQuestion = {
+                                id: id,
+                                scenario: questionData.content.statement,
+                                visual: questionData.content.visual?.emoji || generateFarmVisual(questionData),
+                                calculation: questionData.mathematics.expression || `${questionData.mathematics.numbers?.[0] || 0} × ${questionData.mathematics.numbers?.[1] || 0}`,
+                                answer: calculatedAnswer || 0,
+                                multiplication: `${questionData.mathematics.numbers?.[0] || 0} × ${questionData.mathematics.numbers?.[1] || 0}`,
+                                hint: 'Resolva a multiplicação!',
+                                context: questionData.content.context,
+                                competencies: {
+                                    calculation: {
+                                        type: 'input_number',
+                                        question: questionData.content.statement,
+                                        correctAnswer: calculatedAnswer,
+                                        explanation: 'Calcule o resultado da multiplicação.'
+                                    },
+                                    operation_identification: questionData.competencies.operation_identification || {
+                                        type: 'multiple_choice',
+                                        question: `Qual operação usar?`,
+                                        options: ['adição', 'subtração', 'multiplicação', 'divisão'],
+                                        correctAnswer: 'multiplicação',
+                                        explanation: 'Esta questão requer multiplicação.'
+                                    }
+                                }
+                            };
+                            blockQuestions.push(transformedQuestion);
+                        });
+
+                        questionsBlocks[blockNumber] = {
+                            title: getBlockTitle(blockNumber),
+                            ageRange: "6-8 anos",
+                            questions: blockQuestions
+                        };
+                    });
+
+                    return questionsBlocks;
+
+                } catch (error) {
+                    console.error('Error loading fazenda questions:', error);
+                    console.warn('Using fallback hardcoded fazenda questions');
+                    return getFallbackFazendaQuestions();
                 }
-              };
+            };
+
+            // Fallback function with hardcoded fazenda questions
+            const getFallbackFazendaQuestions = () => {
+                return {
+                    1: {
+                        title: "🐄 Fazenda dos Noviços - Primeiros Animais",
+                        ageRange: "6-8 anos",
+                        questions: [
+                            {
+                                id: 'fazenda_01_q1',
+                                scenario: 'Na sua fazenda, você tem 3 currais. Cada curral tem 4 vacas. Quantas vacas você tem no total?',
+                                visual: '🐄🐄🐄🐄 | 🐄🐄🐄🐄 | 🐄🐄🐄🐄',
+                                calculation: '4 + 4 + 4',
+                                answer: 12,
+                                multiplication: '3 × 4',
+                                hint: 'Conte as vacas de cada curral!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 12, explanation: 'Multiplique 3 × 4' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_01_q2',
+                                scenario: 'Suas galinhas botaram ovos! Você tem 5 ninhos, cada ninho tem 3 ovos. Quantos ovos você coletou?',
+                                visual: '🥚🥚🥚 | 🥚🥚🥚 | 🥚🥚🥚 | 🥚🥚🥚 | 🥚🥚🥚',
+                                calculation: '3 + 3 + 3 + 3 + 3',
+                                answer: 15,
+                                multiplication: '5 × 3',
+                                hint: 'Some os ovos de todos os ninhos!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 15, explanation: 'Multiplique 5 × 3' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_01_q3',
+                                scenario: 'Você plantou 4 fileiras de cenouras. Cada fileira tem 6 cenouras. Quantas cenouras cresceram?',
+                                visual: '🥕🥕🥕🥕🥕🥕 (×4 fileiras)',
+                                calculation: '6 + 6 + 6 + 6',
+                                answer: 24,
+                                multiplication: '4 × 6',
+                                hint: 'Conte as cenouras de cada fileira!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 24, explanation: 'Multiplique 4 × 6' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_01_q4',
+                                scenario: 'Seus porcos estão em 2 chiqueiros. Cada chiqueiro tem 7 porcos. Quantos porcos você tem?',
+                                visual: '🐷🐷🐷🐷🐷🐷🐷 | 🐷🐷🐷🐷🐷🐷🐷',
+                                calculation: '7 + 7',
+                                answer: 14,
+                                multiplication: '2 × 7',
+                                hint: 'Conte os porcos de cada chiqueiro!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 14, explanation: 'Multiplique 2 × 7' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_01_q5',
+                                scenario: 'Você tem 3 ovelhas e cada ovelha teve 5 filhotes. Quantos cordeiros nasceram?',
+                                visual: '🐑→🐑🐑🐑🐑🐑 (×3 ovelhas)',
+                                calculation: '5 + 5 + 5',
+                                answer: 15,
+                                multiplication: '3 × 5',
+                                hint: 'Cada ovelha teve 5 filhotes!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 15, explanation: 'Multiplique 3 × 5' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            }
+                        ]
+                    },
+                    2: {
+                        title: "🐷 Fazenda Crescente - Mais Variedade",
+                        ageRange: "6-8 anos",
+                        questions: [
+                            {
+                                id: 'fazenda_02_q1',
+                                scenario: 'Você expandiu! Agora tem 6 cercados com 8 animais cada. Quantos animais você tem?',
+                                visual: '🐄🐷🐔🐑🐐🦆🐴🐕 (×6 cercados)',
+                                calculation: '8 + 8 + 8 + 8 + 8 + 8',
+                                answer: 48,
+                                multiplication: '6 × 8',
+                                hint: 'Cada cercado tem 8 animais!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 48, explanation: 'Multiplique 6 × 8' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_02_q2',
+                                scenario: 'Suas 4 vacas produzem leite. Cada vaca dá 9 litros por dia. Quantos litros você coleta?',
+                                visual: '🐄→🥛🥛🥛🥛🥛🥛🥛🥛🥛 (×4 vacas)',
+                                calculation: '9 + 9 + 9 + 9',
+                                answer: 36,
+                                multiplication: '4 × 9',
+                                hint: 'Cada vaca produz 9 litros!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 36, explanation: 'Multiplique 4 × 9' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_02_q3',
+                                scenario: 'Você tem 7 fileiras de milho. Cada fileira tem 7 plantas. Quantas plantas de milho você tem?',
+                                visual: '🌽🌽🌽🌽🌽🌽🌽 (×7 fileiras)',
+                                calculation: '7 + 7 + 7 + 7 + 7 + 7 + 7',
+                                answer: 49,
+                                multiplication: '7 × 7',
+                                hint: 'São 7 fileiras com 7 plantas cada!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 49, explanation: 'Multiplique 7 × 7' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_02_q4',
+                                scenario: 'Seus 8 patos nadam no lago. Cada pato come 6 peixes pequenos. Quantos peixes eles comem?',
+                                visual: '🦆→🐟🐟🐟🐟🐟🐟 (×8 patos)',
+                                calculation: '6 + 6 + 6 + 6 + 6 + 6 + 6 + 6',
+                                answer: 48,
+                                multiplication: '8 × 6',
+                                hint: 'Cada pato come 6 peixes!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 48, explanation: 'Multiplique 8 × 6' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_02_q5',
+                                scenario: 'Você colheu maçãs! Em 5 árvores, cada uma deu 8 maçãs. Quantas maçãs você colheu?',
+                                visual: '🌳→🍎🍎🍎🍎🍎🍎🍎🍎 (×5 árvores)',
+                                calculation: '8 + 8 + 8 + 8 + 8',
+                                answer: 40,
+                                multiplication: '5 × 8',
+                                hint: 'Cada árvore deu 8 maçãs!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 40, explanation: 'Multiplique 5 × 8' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            }
+                        ]
+                    },
+                    3: {
+                        title: "🐔 Fazenda Organizada - Controle Total",
+                        ageRange: "6-8 anos",
+                        questions: [
+                            {
+                                id: 'fazenda_03_q1',
+                                scenario: 'Sua fazenda cresceu! Você tem 9 celeiros, cada um guarda 9 sacos de ração. Quantos sacos você tem?',
+                                visual: '🏠→📦📦📦📦📦📦📦📦📦 (×9 celeiros)',
+                                calculation: '9 + 9 + 9 + 9 + 9 + 9 + 9 + 9 + 9',
+                                answer: 81,
+                                multiplication: '9 × 9',
+                                hint: 'São 9 celeiros com 9 sacos cada!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 81, explanation: 'Multiplique 9 × 9' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_03_q2',
+                                scenario: 'Suas galinhas são produtivas! 12 galinhas, cada uma bota 6 ovos por semana. Quantos ovos por semana?',
+                                visual: '🐔→🥚🥚🥚🥚🥚🥚 (×12 galinhas)',
+                                calculation: '6 × 12',
+                                answer: 72,
+                                multiplication: '12 × 6',
+                                hint: 'Cada galinha bota 6 ovos por semana!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 72, explanation: 'Multiplique 12 × 6' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_03_q3',
+                                scenario: 'Você plantou um pomar! 8 fileiras com 11 árvores frutíferas cada. Quantas árvores você plantou?',
+                                visual: '🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳🌳 (×8 fileiras)',
+                                calculation: '11 × 8',
+                                answer: 88,
+                                multiplication: '8 × 11',
+                                hint: 'São 8 fileiras com 11 árvores cada!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 88, explanation: 'Multiplique 8 × 11' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_03_q4',
+                                scenario: 'Seus 6 cavalos pastam no campo. Cada cavalo come 12 kg de capim por dia. Quanto capim precisam?',
+                                visual: '🐴→🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾 (×6 cavalos)',
+                                calculation: '12 × 6',
+                                answer: 72,
+                                multiplication: '6 × 12',
+                                hint: 'Cada cavalo come 12 kg por dia!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 72, explanation: 'Multiplique 6 × 12' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_03_q5',
+                                scenario: 'Você tem abelhas! 7 colmeias, cada uma produz 10 potes de mel por mês. Quanto mel você obtém?',
+                                visual: '🏠→🍯🍯🍯🍯🍯🍯🍯🍯🍯🍯 (×7 colmeias)',
+                                calculation: '10 × 7',
+                                answer: 70,
+                                multiplication: '7 × 10',
+                                hint: 'Cada colmeia produz 10 potes de mel!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 70, explanation: 'Multiplique 7 × 10' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            }
+                        ]
+                    },
+                    4: {
+                        title: "🐑 Fazenda Master - Desafios Avançados",
+                        ageRange: "6-8 anos",
+                        questions: [
+                            {
+                                id: 'fazenda_04_q1',
+                                scenario: 'Sua fazenda é enorme! 15 setores, cada setor tem 12 animais diferentes. Quantos animais ao todo?',
+                                visual: '🐄🐷🐔🐑🐐🦆🐴🐕🐈🦃🐰🐹 (×15 setores)',
+                                calculation: '12 × 15',
+                                answer: 180,
+                                multiplication: '15 × 12',
+                                hint: 'São 15 setores com 12 animais cada!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 180, explanation: 'Multiplique 15 × 12' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_04_q2',
+                                scenario: 'Você vende seus produtos! 14 clientes, cada um compra 13 produtos. Quantos produtos você vendeu?',
+                                visual: '🛒→📦📦📦📦📦📦📦📦📦📦📦📦📦 (×14 clientes)',
+                                calculation: '13 × 14',
+                                answer: 182,
+                                multiplication: '14 × 13',
+                                hint: 'Cada cliente comprou 13 produtos!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 182, explanation: 'Multiplique 14 × 13' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_04_q3',
+                                scenario: 'Seu campo de trigo é gigante! 16 fileiras com 14 plantas cada. Quantas plantas de trigo você tem?',
+                                visual: '🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾🌾 (×16 fileiras)',
+                                calculation: '14 × 16',
+                                answer: 224,
+                                multiplication: '16 × 14',
+                                hint: 'São 16 fileiras com 14 plantas cada!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 224, explanation: 'Multiplique 16 × 14' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_04_q4',
+                                scenario: 'Suas ovelhas dão muita lã! 18 ovelhas, cada uma produz 11 kg de lã. Quanta lã você obtém?',
+                                visual: '🐑→🧶🧶🧶🧶🧶🧶🧶🧶🧶🧶🧶 (×18 ovelhas)',
+                                calculation: '11 × 18',
+                                answer: 198,
+                                multiplication: '18 × 11',
+                                hint: 'Cada ovelha produz 11 kg de lã!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 198, explanation: 'Multiplique 18 × 11' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            },
+                            {
+                                id: 'fazenda_04_q5',
+                                scenario: 'Parabéns! Sua fazenda é um sucesso! 20 caminhões vão buscar produtos, cada um leva 15 caixas. Quantas caixas no total?',
+                                visual: '🚛→📦📦📦📦📦📦📦📦📦📦📦📦📦📦📦 (×20 caminhões)',
+                                calculation: '15 × 20',
+                                answer: 300,
+                                multiplication: '20 × 15',
+                                hint: 'Cada caminhão leva 15 caixas!',
+                                context: 'farm',
+                                competencies: {
+                                    calculation: { type: 'input_number', correctAnswer: 300, explanation: 'Multiplique 20 × 15' },
+                                    operation_identification: { type: 'multiple_choice', correctAnswer: 'multiplicação' }
+                                }
+                            }
+                        ]
+                    }
+                };
+            };
+
+            const generateFarmVisual = (questionData) => {
+                // Generate appropriate farm-themed visual based on question content
+                const statement = questionData.content.statement.toLowerCase();
+                if (statement.includes('animais') || statement.includes('pets')) return '🐄🐷🐔🐑';
+                if (statement.includes('ovos')) return '🥚🥚🥚🥚';
+                if (statement.includes('moedas')) return '🪙🪙🪙🪙';
+                if (statement.includes('cercado')) return '🐄🐄🐄🐄';
+                return '🚜🌾🐄🐷';
+            };
+
+            const getBlockTitle = (blockNumber) => {
+                const titles = {
+                    1: "🐄 Fazenda dos Noviços - Primeiros Animais",
+                    2: "🐷 Fazenda Crescente - Mais Variedade",
+                    3: "🐔 Fazenda Organizada - Controle Total",
+                    4: "🐑 Fazenda Master - Desafios Avançados"
+                };
+                return titles[blockNumber] || `🚜 Fazenda Nível ${blockNumber}`;
+            };
+
+            // Load questions on component mount
+            useEffect(() => {
+                const initializeQuestions = async () => {
+                    setLoading(true);
+                    try {
+                        const loadedQuestions = await loadFazendaQuestions();
+                        setQuestionsData(loadedQuestions);
+                    } catch (error) {
+                        console.error('Failed to initialize questions:', error);
+                        setCurrentPhase('erro');
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+
+                initializeQuestions();
+            }, []);
 
             const getFontStyle = () => ({
                 fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : "'Comic Sans MS', cursive"
@@ -240,11 +532,15 @@
             };
 
             const submitAnswer = () => {
-                const questionData = questionsBlocks[currentBlock].questions[currentQuestion];
+                const questionData = questionsData[currentBlock].questions[currentQuestion];
                 const correct = parseInt(userAnswer) === questionData.answer;
-                
+
                 if(correct) {
                     setScore(prev => prev + 1);
+                    // Update competency scores
+                    updateCompetencyScores(questionData, true);
+                } else {
+                    updateCompetencyScores(questionData, false);
                 }
 
                 setIsCorrect(correct);
@@ -255,10 +551,30 @@
                 }, 3000);
             };
 
+            const updateCompetencyScores = (questionData, isCorrect) => {
+                setCompetencyScores(prev => {
+                    const newScores = { ...prev };
+
+                    // Update calculation competency
+                    if (questionData.competencies?.calculation) {
+                        newScores.calculation.total += 1;
+                        if (isCorrect) newScores.calculation.correct += 1;
+                    }
+
+                    // Update operation identification competency
+                    if (questionData.competencies?.operation_identification) {
+                        newScores.operation_identification.total += 1;
+                        if (isCorrect) newScores.operation_identification.correct += 1;
+                    }
+
+                    return newScores;
+                });
+            };
+
             const nextQuestion = () => {
                 setShowFeedback(false);
                 setUserAnswer('');
-                if (currentQuestion < questionsBlocks[currentBlock].questions.length - 1) {
+                if (currentQuestion < questionsData[currentBlock].questions.length - 1) {
                     setCurrentQuestion(prev => prev + 1);
                 } else {
                     saveResult();
@@ -268,7 +584,14 @@
             
             const saveResult = () => {
                 const timeSpent = Math.round((Date.now() - startTime) / 1000);
-                const config = questionsBlocks[currentBlock];
+                const config = questionsData[currentBlock];
+
+                // Calculate competency percentages
+                const calcPercentage = competencyScores.calculation.total > 0 ?
+                    Math.round((competencyScores.calculation.correct / competencyScores.calculation.total) * 100) : 0;
+                const opIdPercentage = competencyScores.operation_identification.total > 0 ?
+                    Math.round((competencyScores.operation_identification.correct / competencyScores.operation_identification.total) * 100) : 0;
+
                 const result = {
                     Nome: studentName,
                     Materia: 'Matematica',
@@ -278,11 +601,24 @@
                     Tempo_Execucao: `${timeSpent}s`,
                     Acertos: score,
                     Erros: config.questions.length - score,
-                    Score: `${Math.round((score / config.questions.length) * 100)}%`
+                    Score: `${Math.round((score / config.questions.length) * 100)}%`,
+                    // Competency scores
+                    Competencia_Calculo: `${calcPercentage}%`,
+                    Competencia_Identificacao: `${opIdPercentage}%`,
+                    Acertos_Calculo: competencyScores.calculation.correct,
+                    Total_Calculo: competencyScores.calculation.total,
+                    Acertos_Identificacao: competencyScores.operation_identification.correct,
+                    Total_Identificacao: competencyScores.operation_identification.total
                 };
                 const updatedResults = [...sessionResults, result];
                 setSessionResults(updatedResults);
                 localStorage.setItem('fazendaMobsResults', JSON.stringify(updatedResults));
+
+                // Reset competency scores for next block
+                setCompetencyScores({
+                    calculation: { correct: 0, total: 0 },
+                    operation_identification: { correct: 0, total: 0 }
+                });
             };
 
             const downloadCSV = () => {
@@ -291,8 +627,10 @@
                     alert("Nenhum dado para exportar!");
                     return;
                 }
-                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
-                const csvContent = resultsToExport.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score,Competencia_Calculo,Competencia_Identificacao,Acertos_Calculo,Total_Calculo,Acertos_Identificacao,Total_Identificacao\n';
+                const csvContent = resultsToExport.map(r =>
+                    `${r.Nome},${r.Materia},${r.Atividade},"${r.Bloco}",${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score},${r.Competencia_Calculo || '0%'},${r.Competencia_Identificacao || '0%'},${r.Acertos_Calculo || 0},${r.Total_Calculo || 0},${r.Acertos_Identificacao || 0},${r.Total_Identificacao || 0}`
+                ).join('\n');
                 const fullContent = header + csvContent;
                 const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
@@ -306,6 +644,53 @@
                 setSessionResults([]);
                 setCurrentPhase('inicio');
             };
+
+            // Audio integration function
+            const playAudio = (type, questionId) => {
+                try {
+                    // Map questionId to block and question number for audio file structure
+                    // For now, we'll generate placeholder audio paths based on block structure
+                    const blockNumber = currentBlock.toString().padStart(2, '0');
+                    const questionNumber = (currentQuestion + 1).toString();
+
+                    let audioPath;
+                    if (type === 'enunciado') {
+                        audioPath = `../media/audios/matematica/fazenda_${blockNumber}/fazenda_${blockNumber}_questao_${questionNumber}_enunciado.mp3`;
+                    } else if (type === 'explicacao') {
+                        audioPath = `../media/audios/matematica/fazenda_${blockNumber}/fazenda_${blockNumber}_questao_${questionNumber}_explicacao.mp3`;
+                    }
+
+                    const audio = new Audio(audioPath);
+                    audio.play().catch(error => {
+                        console.log('Audio file not found or failed to play:', audioPath);
+                        // Fallback: show text message
+                        alert(`Áudio não disponível: ${audioPath}`);
+                    });
+                } catch (error) {
+                    console.log('Error playing audio:', error);
+                }
+            };
+
+            if (loading || !questionsData) {
+                return (
+                    <div className="loading">
+                        <div className="spinner"></div>
+                        Carregando questões da fazenda...
+                    </div>
+                );
+            }
+
+            if (currentPhase === 'erro') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-red-400 to-red-600 p-4 flex items-center justify-center" style={getFontStyle()}>
+                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center">
+                            <h1 className="text-4xl font-bold text-red-600 mb-4">❌ Erro</h1>
+                            <p className="text-lg text-gray-600 mb-6">Não foi possível carregar as questões da fazenda. Tente novamente mais tarde.</p>
+                            <a href="../index.html" className="block w-full px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600">Voltar ao Portal</a>
+                        </div>
+                    </div>
+                );
+            }
 
             if (currentPhase === 'inicio') {
                 return (
@@ -328,37 +713,53 @@
                     <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4" style={getFontStyle()}>
                         <div className="max-w-4xl mx-auto">
                             <h1 className="text-4xl font-bold text-white text-center mb-8">Olá, {studentName}! Escolha um bloco de desafios:</h1>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                {Object.entries(questionsBlocks).map(([key, config]) => (
-                                    <div key={key} className="bg-white rounded-lg p-6 shadow-lg cursor-pointer" onClick={() => selecionarBloco(parseInt(key))}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                {Object.entries(questionsData).map(([key, config]) => (
+                                    <div key={key} className="bg-white rounded-lg p-6 shadow-lg cursor-pointer hover:shadow-xl transition-shadow" onClick={() => selecionarBloco(parseInt(key))}>
                                         <h3 className="text-xl font-bold mb-2">{config.title}</h3>
-                                        <p className="text-gray-600">{config.ageRange}</p>
+                                        <p className="text-gray-600 mb-2">{config.ageRange}</p>
+                                        <p className="text-sm text-blue-600">{config.questions.length} questões</p>
                                     </div>
                                 ))}
                             </div>
-                             <button onClick={downloadCSV} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold">
-                                Finalizar Sessão e Baixar CSV
-                            </button>
+                            <div className="text-center">
+                                <button onClick={downloadCSV} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold">
+                                    Finalizar Sessão e Baixar CSV
+                                </button>
+                            </div>
                         </div>
                     </div>
                 );
             }
 
             if (currentPhase === 'jogo') {
-                const questionData = questionsBlocks[currentBlock].questions[currentQuestion];
+                const questionData = questionsData[currentBlock].questions[currentQuestion];
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 p-4 flex items-center justify-center" style={getFontStyle()}>
                         <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl p-8">
                             <div className="mb-6">
-                                <p className="text-lg text-gray-600 text-center">Questão {currentQuestion + 1} de {questionsBlocks[currentBlock].questions.length}</p>
+                                <p className="text-lg text-gray-600 text-center">Questão {currentQuestion + 1} de {questionsData[currentBlock].questions.length}</p>
                                 <div className="w-full bg-gray-200 rounded-full h-4 mt-2">
-                                    <div className="bg-green-500 h-4 rounded-full" style={{width: `${((currentQuestion + 1) / questionsBlocks[currentBlock].questions.length) * 100}%`}}></div>
+                                    <div className="bg-green-500 h-4 rounded-full" style={{width: `${((currentQuestion + 1) / questionsData[currentBlock].questions.length) * 100}%`}}></div>
                                 </div>
                             </div>
                             <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg">
                                 <h3 className="text-xl font-semibold text-gray-800">{questionData.scenario}</h3>
                             </div>
                             <div className="text-center my-6 text-3xl font-mono text-gray-700">{questionData.visual}</div>
+
+                            {/* Audio integration for enunciado */}
+                            {questionData.id && (
+                                <div className="text-center mb-4">
+                                    <button
+                                        onClick={() => playAudio('enunciado', questionData.id)}
+                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 mr-2"
+                                    >
+                                        🔊 Ouvir Questão
+                                    </button>
+                                </div>
+                            )}
+
                             {!showFeedback ? (
                                 <div className="space-y-4">
                                     <input
@@ -375,7 +776,20 @@
                             ) : (
                                 <div className={`text-center p-6 rounded-lg ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}>
                                     <h4 className={`text-2xl font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? 'Correto!' : 'Quase lá!'}</h4>
-                                    <p className="text-lg mt-2">A resposta é {questionData.answer}. ({questionData.multiplication})</p>
+                                    <p className="text-lg mt-2">A resposta é {questionData.answer}. {questionData.multiplication && `(${questionData.multiplication})`}</p>
+                                    <p className="text-sm text-gray-600 mt-2">{questionData.hint}</p>
+
+                                    {/* Audio integration for explicação */}
+                                    {questionData.id && (
+                                        <div className="mt-4">
+                                            <button
+                                                onClick={() => playAudio('explicacao', questionData.id)}
+                                                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                                            >
+                                                🔊 Ouvir Explicação
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>

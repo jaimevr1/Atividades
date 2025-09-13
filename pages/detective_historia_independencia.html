@@ -56,6 +56,10 @@
         </div>
     </div>
 
+    <script src="../src/data/questionDatabase.js"></script>
+    <script src="../src/config/activityMapping.js"></script>
+    <script src="../src/data/exported-database.json"></script>
+
     <script type="text/babel">
         const { useState, useEffect } = React;
         
@@ -81,6 +85,11 @@
           const [gameCompleted, setGameCompleted] = useState(false);
           const [allSessionData, setAllSessionData] = useState([]);
 
+          // Database integration state
+          const [loading, setLoading] = useState(true);
+          const [activityConfig, setActivityConfig] = useState(null);
+          const [mysteries, setMysteries] = useState([]);
+
           // Listas de sons de feedback
           const feedbackSounds = {
             acertos: [
@@ -96,6 +105,61 @@
               'erro_4.mp3'
             ]
           };
+
+          const initializeDatabase = async () => {
+              try {
+                  setLoading(true);
+                  const config = window.ActivityMapping?.getActivityConfig('detective_historia_independencia');
+                  if (!config) {
+                      console.error('Activity configuration not found for detective_historia_independencia');
+                      setLoading(false);
+                      return;
+                  }
+                  setActivityConfig(config);
+
+                  const blockInfo = config.questionBlocks[0]; // Assuming one block for this activity
+                  const blockDetails = window.BLOCK_QUESTION_MAPPING[blockInfo.blockId];
+                  if (!blockDetails) {
+                      console.error(`Block details not found for ${blockInfo.blockId}`);
+                      setLoading(false);
+                      return;
+                  }
+                  
+                  const loadedMysteries = blockDetails.questions.map((questionId, index) => {
+                      const question = window.questionDB.getQuestionForCompetency(questionId, 'problem_solving');
+                      if (!question) {
+                           console.error(`Question with ID ${questionId} not found in database.`);
+                           return null;
+                      }
+                      return {
+                          id: index,
+                          year: question.metadata.year,
+                          code: `MISTÉRIO-00${index + 1}`,
+                          clues: question.metadata.clues,
+                          solution: question.content.statement,
+                          image: `../media/misterios/${question.metadata.year}.png`, // Assuming image naming convention
+                          icon: "🔍",
+                          alternatives: [question.content.statement, "Alternativa Falsa 1", "Alternativa Falsa 2"], // Placeholder alternatives
+                      };
+                  }).filter(Boolean);
+                  
+                  setMysteries(loadedMysteries);
+
+              } catch (error) {
+                  console.error('Error initializing database:', error);
+              } finally {
+                  setLoading(false);
+              }
+          };
+
+          useEffect(() => {
+              const exportedDb = window.exportedDatabase;
+              if (exportedDb) {
+                  window.questionDB.importDatabase(exportedDb);
+              }
+              initializeDatabase();
+          }, []);
+
 
           // Função para tocar som de feedback (acerto/erro)
           const playFeedbackSound = (isCorrect) => {
@@ -114,100 +178,6 @@
               console.log('Erro ao reproduzir som de feedback:', error);
             }
           };
-
-          // Dossiês de investigação
-          const mysteries = [
-            {
-              id: 0,
-              year: 1808,
-              code: "MISTÉRIO-001",
-              clues: [
-                "A família de um rei precisou fugir de Napoleão Bonaparte.",
-                "Eles atravessaram o oceano e trouxeram a corte para o Brasil.",
-                "O Brasil deixou de ser apenas uma colônia e o porto do Rio de Janeiro foi aberto."
-              ],
-              solution: "Abertura dos Portos às Nações Amigas",
-              image: "../media/misterios/familia_real_1808.png",
-              icon: "🔍",
-              alternatives: [
-                "Abertura dos Portos às Nações Amigas",
-                "Criação do Reino Unido",
-                "Invasão Napoleônica no Brasil"
-              ]
-            },
-            {
-              id: 1,
-              year: 1821,
-              code: "MISTÉRIO-002", 
-              clues: [
-                "A família real precisou voltar para Portugal.",
-                "A corte portuguesa queria que o Brasil voltasse a ser apenas uma colônia.",
-                "O príncipe herdeiro, Dom Pedro, foi aconselhado a ficar no Brasil."
-              ],
-              solution: "O Dia do Fico",
-              image: "../media/misterios/dia_do_fico_1821.png",
-              icon: "🔍",
-              alternatives: [
-                "O Dia do Fico",
-                "Regresso Real Forçado",
-                "Revolução Pernambucana"
-              ]
-            },
-            {
-              id: 2,
-              year: 1822,
-              code: "MISTÉRIO-003",
-              clues: [
-                "Um príncipe estava viajando por São Paulo.",
-                "Ele recebeu uma carta de Portugal exigindo que voltasse imediatamente.",
-                "Às margens de um rio, ele levantou sua espada e gritou 'Independência ou Morte!'."
-              ],
-              solution: "O Grito do Ipiranga",
-              image: "../media/misterios/grito_ipiranga_1822.png", 
-              icon: "🔍",
-              alternatives: [
-                "O Grito do Ipiranga",
-                "Batalha do Ipiranga",
-                "Revolta Paulista"
-              ]
-            },
-            {
-              id: 3,
-              year: 1889,
-              code: "MISTÉRIO-004",
-              clues: [
-                "A monarquia do Brasil já não era popular.",
-                "Um grupo de militares se juntou a líderes civis para mudar a forma de governo.",
-                "O imperador Dom Pedro II foi deposto e o Brasil se tornou uma República."
-              ],
-              solution: "Proclamação da República",
-              image: "../media/misterios/proclamacao_republica_1889.png",
-              icon: "🔍",
-              alternatives: [
-                "Proclamação da República", 
-                "Golpe Imperial",
-                "Revolução Federalista"
-              ]
-            },
-            {
-              id: 4,
-              year: 1988,
-              code: "MISTÉRIO-005",
-              clues: [
-                "Depois de um longo período sem liberdade, o Brasil precisava de novas leis.",
-                "Essa Constituição garantiu muitos direitos importantes, como o voto para todos os maiores de 16 anos.",
-                "Por isso, ela é chamada de 'Constituição Cidadã'."
-              ],
-              solution: "Constituição Federal de 1988",
-              image: "../media/misterios/constituicao_cidada_1988.png"
-              icon: "🔍",
-              alternatives: [
-                "Constituição Federal de 1988",
-                "Lei Áurea",
-                "Código Civil Brasileiro"
-              ]
-            }
-          ];
 
           const celebrationMessages = [
             "EXCELENTE WORK, SHERLOCK!",
@@ -323,7 +293,7 @@
           };
 
           const downloadAggregatedCSV = () => {
-            if (attempts.length === 0) return;
+            if (attempts.length === 0) return; 
             
             const endTime = new Date();
             const totalTime = startTime ? Math.round((endTime - startTime) / 1000) : 0;
@@ -393,6 +363,15 @@
             setShowBlockSelection(true);
           };
 
+          if (loading) {
+            return (
+                <div className="loading">
+                    <div className="spinner"></div>
+                    Carregando Banco de Dados...
+                </div>
+            );
+          }
+
           // Tela inicial
           if (!gameStarted && !showBlockSelection) {
             return (
@@ -430,7 +409,7 @@
                     <button
                       onClick={startGame}
                       disabled={!studentName.trim()}
-                      className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
+                      className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${ 
                         studentName.trim()
                           ? 'bg-amber-600 text-white hover:bg-amber-700 transform hover:scale-105 border-3 border-amber-800'
                           : 'bg-gray-400 text-gray-600 cursor-not-allowed border-3 border-gray-500'
@@ -508,11 +487,8 @@
                         Caso da Independência
                       </h3>
                       <p className="text-lg text-amber-100">
-                        5 mistérios para investigar
+                        {mysteries.length} mistérios para investigar
                       </p>
-                      <div className="mt-3 text-sm text-amber-200">
-                        1808 - 1988
-                      </div>
                     </button>
                   </div>
                   
@@ -546,20 +522,20 @@
                       </div>
                       <div className="text-right">
                         <div className="text-3xl font-bold text-amber-900">Score: {score}%</div>
-                        <div className="text-sm text-amber-700">Mistérios resolvidos: {solvedMysteries.length}/5</div>
+                        <div className="text-sm text-amber-700">Mistérios resolvidos: {solvedMysteries.length}/{mysteries.length}</div>
                       </div>
                     </div>
                     
                     <div className="mt-4 w-full bg-amber-200 rounded-full h-4 border-2 border-amber-400">
                       <div 
                         className="bg-gradient-to-r from-green-600 to-blue-600 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${(solvedMysteries.length / 5) * 100}%` }}
+                        style={{ width: `${(solvedMysteries.length / mysteries.length) * 100}%` }}
                       ></div>
                     </div>
                   </div>
 
                   {/* Mesa de dossiês */}
-                  {!currentMystery ? (
+                  {!currentMystery && currentMystery !== 0 ? (
                     <div className="bg-amber-100 rounded-xl border-4 border-amber-600 p-8">
                       <h2 className="text-3xl font-bold text-amber-900 text-center mb-6">
                         📂 Mesa de Investigação
@@ -594,7 +570,7 @@
                         ))}
                       </div>
                       
-                      {solvedMysteries.length === 5 && (
+                      {solvedMysteries.length === mysteries.length && (
                         <div className="text-center mt-8">
                           <button
                             onClick={() => setTimelinePhase(true)}

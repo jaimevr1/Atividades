@@ -1,0 +1,5317 @@
+[
+  {
+    "id": "op_id_001",
+    "statement": "João tem 3 carros de brinquedo no Roblox e ganhou mais 2. Quantos carros ele tem agora?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        3,
+        2,
+        5
+      ],
+      "result": 5,
+      "explanation": "A palavra 'ganhou MAIS' indica que estamos SOMANDO.",
+      "calculation": "3 + 2 = 5"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"João tem 3 carros de brinquedo no Roblox e ganhou mais 2. Quantos carros ele tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "A palavra 'ganhou MAIS' indica que estamos SOMANDO."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_002",
+    "statement": "Maria tinha 8 doces e comeu 3. Quantos doces sobraram?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        8,
+        3,
+        5
+      ],
+      "result": 5,
+      "explanation": "Ela COMEU alguns doces, então eles SAÍRAM.",
+      "calculation": "8 - 3 = 5"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Maria tinha 8 doces e comeu 3. Quantos doces sobraram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ela COMEU alguns doces, então eles SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_003",
+    "statement": "Pedro viu 6 vídeos do Diário do Bananinha e sua irmã viu mais 4. Quantos vídeos eles viram juntos?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        6,
+        4,
+        10
+      ],
+      "result": 10,
+      "explanation": "Estamos JUNTANDO os vídeos dos dois.",
+      "calculation": "6 + 4 = 10"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro viu 6 vídeos do Diário do Bananinha e sua irmã viu mais 4. Quantos vídeos eles viram juntos?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Estamos JUNTANDO os vídeos dos dois."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_004",
+    "statement": "Ana tinha 9 pipas e 4 voaram no vento. Quantas pipas ficaram?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        9,
+        4,
+        5
+      ],
+      "result": 5,
+      "explanation": "As pipas VOARAM, então SAÍRAM.",
+      "calculation": "9 - 4 = 5"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana tinha 9 pipas e 4 voaram no vento. Quantas pipas ficaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "As pipas VOARAM, então SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_005",
+    "statement": "Lucas tem 5 tênis e ganhou 3 novos. Quantos tênis ele possui agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        5,
+        3,
+        8
+      ],
+      "result": 8,
+      "explanation": "Ele GANHOU mais tênis, então SOMAMOS.",
+      "calculation": "5 + 3 = 8"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Lucas tem 5 tênis e ganhou 3 novos. Quantos tênis ele possui agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ele GANHOU mais tênis, então SOMAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_006",
+    "statement": "Julia construiu 12 casas no Minecraft e destruiu 5. Quantas casas restaram?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        12,
+        5,
+        7
+      ],
+      "result": 7,
+      "explanation": "Ela DESTRUIU casas, então TIRAMOS.",
+      "calculation": "12 - 5 = 7"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Julia construiu 12 casas no Minecraft e destruiu 5. Quantas casas restaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ela DESTRUIU casas, então TIRAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_007",
+    "statement": "Carlos coleciona 15 carros de brinquedo e ganhou 8 novos na festa. Quantos carros ele tem?",
+    "subject": "Matemática",
+    "context": "vehicles",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        15,
+        8,
+        23
+      ],
+      "result": 23,
+      "explanation": "Ele GANHOU mais carros, então SOMAMOS.",
+      "calculation": "15 + 8 = 23"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Carlos coleciona 15 carros de brinquedo e ganhou 8 novos na festa. Quantos carros ele tem?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ele GANHOU mais carros, então SOMAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_008",
+    "statement": "Beatriz tinha 20 doces de aniversário e distribuiu 12. Quantos doces sobraram?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        20,
+        12,
+        8
+      ],
+      "result": 8,
+      "explanation": "Ela DISTRIBUIU doces, então eles SAÍRAM.",
+      "calculation": "20 - 12 = 8"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Beatriz tinha 20 doces de aniversário e distribuiu 12. Quantos doces sobraram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ela DISTRIBUIU doces, então eles SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_009",
+    "statement": "Roberto assistiu 18 vídeos de motos no YouTube e sua mãe deixou ele ver mais 7. Quantos vídeos no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        18,
+        7,
+        25
+      ],
+      "result": 25,
+      "explanation": "Somamos os vídeos que ele já viu com os novos.",
+      "calculation": "18 + 7 = 25"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Roberto assistiu 18 vídeos de motos no YouTube e sua mãe deixou ele ver mais 7. Quantos vídeos no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos os vídeos que ele já viu com os novos."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_010",
+    "statement": "Livia tinha 25 bicicletas no jogo e perdeu 9 na competição. Quantas bicicletas restaram?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        25,
+        9,
+        16
+      ],
+      "result": 16,
+      "explanation": "Ela PERDEU bicicletas, então TIRAMOS.",
+      "calculation": "25 - 9 = 16"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Livia tinha 25 bicicletas no jogo e perdeu 9 na competição. Quantas bicicletas restaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ela PERDEU bicicletas, então TIRAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_011",
+    "statement": "Gabriel coleta 125 moedas no Roblox e gastou 78 numa skin. Quantas moedas sobraram?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        125,
+        78,
+        47
+      ],
+      "result": 47,
+      "explanation": "Ele GASTOU moedas, então elas SAÍRAM.",
+      "calculation": "125 - 78 = 47"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Gabriel coleta 125 moedas no Roblox e gastou 78 numa skin. Quantas moedas sobraram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele GASTOU moedas, então elas SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_012",
+    "statement": "Sofia juntou 89 diamantes no Minecraft com mais 156 que achou. Quantos diamantes ela tem?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        89,
+        156,
+        245
+      ],
+      "result": 245,
+      "explanation": "Ela ACHOU mais diamantes, então SOMAMOS.",
+      "calculation": "89 + 156 = 245"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia juntou 89 diamantes no Minecraft com mais 156 que achou. Quantos diamantes ela tem?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ela ACHOU mais diamantes, então SOMAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_013",
+    "statement": "Mateus tinha 200 seguidores e 45 pararam de seguir. Quantos seguidores ficaram?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        200,
+        45,
+        155
+      ],
+      "result": 155,
+      "explanation": "Alguns PARARAM de seguir, então SAÍRAM.",
+      "calculation": "200 - 45 = 155"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Mateus tinha 200 seguidores e 45 pararam de seguir. Quantos seguidores ficaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Alguns PARARAM de seguir, então SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_014",
+    "statement": "Isadora dormiu 8 horas na segunda e 9 horas na terça. Quantas horas dormiu no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        8,
+        9,
+        17
+      ],
+      "result": 17,
+      "explanation": "Somamos as horas dos dois dias.",
+      "calculation": "8 + 9 = 17"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Isadora dormiu 8 horas na segunda e 9 horas na terça. Quantas horas dormiu no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos as horas dos dois dias."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_015",
+    "statement": "Diego tinha 350 blocos no Minecraft e usou 127 para construir. Quantos blocos sobraram?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        350,
+        127,
+        223
+      ],
+      "result": 223,
+      "explanation": "Ele USOU blocos para construir, então SAÍRAM.",
+      "calculation": "350 - 127 = 223"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego tinha 350 blocos no Minecraft e usou 127 para construir. Quantos blocos sobraram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele USOU blocos para construir, então SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_01/bloco_01_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_01/bloco_01_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_016",
+    "statement": "Carolina tem 4 grupos de amigos no Roblox. Cada grupo tem 6 pessoas. Quantas pessoas no total?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        4,
+        6,
+        24
+      ],
+      "result": 24,
+      "explanation": "Temos GRUPOS IGUAIS (4 grupos com 6 pessoas cada). É MULTIPLICAÇÃO.",
+      "calculation": "4 × 6 = 24"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Carolina tem 4 grupos de amigos no Roblox. Cada grupo tem 6 pessoas. Quantas pessoas no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Temos GRUPOS IGUAIS (4 grupos com 6 pessoas cada). É MULTIPLICAÇÃO."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_017",
+    "statement": "Vitor colecionou 35 cartas Pokémon e deu 12 para o amigo. Quantas cartas ficaram?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        35,
+        12,
+        23
+      ],
+      "result": 23,
+      "explanation": "Ele DEU cartas, então elas SAÍRAM.",
+      "calculation": "35 - 12 = 23"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Vitor colecionou 35 cartas Pokémon e deu 12 para o amigo. Quantas cartas ficaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele DEU cartas, então elas SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_018",
+    "statement": "Laura comprou 3 pacotes de doces. Cada pacote tem 8 doces. Quantos doces no total?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        3,
+        8,
+        24
+      ],
+      "result": 24,
+      "explanation": "Cada pacote tem a mesma quantidade de doces.",
+      "calculation": "3 × 8 = 24"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Laura comprou 3 pacotes de doces. Cada pacote tem 8 doces. Quantos doces no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada pacote tem a mesma quantidade de doces."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_019",
+    "statement": "Rafael tinha 45 tênis de coleção e comprou mais 18. Quantos tênis ele possui agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        45,
+        18,
+        63
+      ],
+      "result": 63,
+      "explanation": "Ele COMPROU mais tênis, então SOMAMOS.",
+      "calculation": "45 + 18 = 63"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Rafael tinha 45 tênis de coleção e comprou mais 18. Quantos tênis ele possui agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ele COMPROU mais tênis, então SOMAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_020",
+    "statement": "Camila assiste 5 influencers diferentes. Cada um posta 7 vídeos por semana. Quantos vídeos por semana?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        5,
+        7,
+        35
+      ],
+      "result": 35,
+      "explanation": "Cada influencer posta a mesma quantidade.",
+      "calculation": "5 × 7 = 35"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Camila assiste 5 influencers diferentes. Cada um posta 7 vídeos por semana. Quantos vídeos por semana?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada influencer posta a mesma quantidade."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_021",
+    "statement": "Artur tem 6 motos virtuais no jogo. Cada moto custa 15 moedas. Quanto gastou no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        6,
+        15,
+        90
+      ],
+      "result": 90,
+      "explanation": "Cada moto custa o mesmo valor.",
+      "calculation": "6 × 15 = 90"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Artur tem 6 motos virtuais no jogo. Cada moto custa 15 moedas. Quanto gastou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada moto custa o mesmo valor."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_022",
+    "statement": "Juliana tinha 80 seguidores no TikTok e ganhou 25 novos. Quantos seguidores tem agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        80,
+        25,
+        105
+      ],
+      "result": 105,
+      "explanation": "Ela GANHOU novos seguidores, então SOMAMOS.",
+      "calculation": "80 + 25 = 105"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Juliana tinha 80 seguidores no TikTok e ganhou 25 novos. Quantos seguidores tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ela GANHOU novos seguidores, então SOMAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_023",
+    "statement": "Guilherme tinha 120 blocos no Minecraft e usou 65 numa construção. Quantos blocos restam?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        120,
+        65,
+        55
+      ],
+      "result": 55,
+      "explanation": "Ele USOU blocos, então eles SAÍRAM.",
+      "calculation": "120 - 65 = 55"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Guilherme tinha 120 blocos no Minecraft e usou 65 numa construção. Quantos blocos restam?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele USOU blocos, então eles SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_024",
+    "statement": "Alice coleta 12 itens por fase do jogo. Ela passou 8 fases. Quantos itens coletou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        12,
+        8,
+        96
+      ],
+      "result": 96,
+      "explanation": "Cada fase dá a mesma quantidade de itens.",
+      "calculation": "12 × 8 = 96"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Alice coleta 12 itens por fase do jogo. Ela passou 8 fases. Quantos itens coletou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada fase dá a mesma quantidade de itens."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_025",
+    "statement": "Bruno dormiu 9 horas na sexta e 11 horas no sábado. Quantas horas dormiu no fim de semana?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        9,
+        11,
+        20
+      ],
+      "result": 20,
+      "explanation": "Somamos as horas dos dois dias.",
+      "calculation": "9 + 11 = 20"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Bruno dormiu 9 horas na sexta e 11 horas no sábado. Quantas horas dormiu no fim de semana?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos as horas dos dois dias."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_026",
+    "statement": "Leticia comprou 4 pares de tênis novos. Cada par custou 25 reais. Quanto gastou no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        4,
+        25,
+        100
+      ],
+      "result": 100,
+      "explanation": "Cada par de tênis custa o mesmo valor.",
+      "calculation": "4 × 25 = 100"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Leticia comprou 4 pares de tênis novos. Cada par custou 25 reais. Quanto gastou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada par de tênis custa o mesmo valor."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_027",
+    "statement": "Ricardo tinha 150 moedas no Roblox e comprou um carro por 89 moedas. Quantas moedas sobraram?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        150,
+        89,
+        61
+      ],
+      "result": 61,
+      "explanation": "Ele COMPROU algo, então as moedas SAÍRAM.",
+      "calculation": "150 - 89 = 61"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ricardo tinha 150 moedas no Roblox e comprou um carro por 89 moedas. Quantas moedas sobraram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele COMPROU algo, então as moedas SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_028",
+    "statement": "Mariana empinou 7 pipas ontem e 12 pipas hoje. Quantas pipas empinou no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        7,
+        12,
+        19
+      ],
+      "result": 19,
+      "explanation": "Somamos as pipas dos dois dias.",
+      "calculation": "7 + 12 = 19"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Mariana empinou 7 pipas ontem e 12 pipas hoje. Quantas pipas empinou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos as pipas dos dois dias."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_029",
+    "statement": "Pedro tem 9 bicicletas de coleção. Cada bicicleta tem 2 rodas. Quantas rodas no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        9,
+        2,
+        18
+      ],
+      "result": 18,
+      "explanation": "Cada bicicleta tem a mesma quantidade de rodas.",
+      "calculation": "9 × 2 = 18"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro tem 9 bicicletas de coleção. Cada bicicleta tem 2 rodas. Quantas rodas no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada bicicleta tem a mesma quantidade de rodas."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_030",
+    "statement": "Sara tinha 95 doces de Halloween e comeu 28. Quantos doces ainda tem?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        95,
+        28,
+        67
+      ],
+      "result": 67,
+      "explanation": "Ela COMEU doces, então eles SAÍRAM.",
+      "calculation": "95 - 28 = 67"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sara tinha 95 doces de Halloween e comeu 28. Quantos doces ainda tem?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ela COMEU doces, então eles SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_02/bloco_02_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_02/bloco_02_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_031",
+    "statement": "João assiste 8 influencers. Cada um faz 12 vídeos por mês. Quantos vídeos por mês no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        8,
+        12,
+        96
+      ],
+      "result": 96,
+      "explanation": "Cada influencer faz a mesma quantidade de vídeos.",
+      "calculation": "8 × 12 = 96"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"João assiste 8 influencers. Cada um faz 12 vídeos por mês. Quantos vídeos por mês no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada influencer faz a mesma quantidade de vídeos."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_032",
+    "statement": "Valentina construiu 75 casas no Minecraft e destruiu 23. Quantas casas restaram?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        75,
+        23,
+        52
+      ],
+      "result": 52,
+      "explanation": "Ela DESTRUIU casas, então elas SAÍRAM.",
+      "calculation": "75 - 23 = 52"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Valentina construiu 75 casas no Minecraft e destruiu 23. Quantas casas restaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ela DESTRUIU casas, então elas SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_033",
+    "statement": "Thago colecionou 45 carros de brinquedo e ganhou 37 no aniversário. Quantos carros tem agora?",
+    "subject": "Matemática",
+    "context": "vehicles",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        45,
+        37,
+        82
+      ],
+      "result": 82,
+      "explanation": "Ele GANHOU mais carros, então SOMAMOS.",
+      "calculation": "45 + 37 = 82"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Thago colecionou 45 carros de brinquedo e ganhou 37 no aniversário. Quantos carros tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ele GANHOU mais carros, então SOMAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_034",
+    "statement": "Beatriz dorme 11 horas por noite. Em 6 noites, quantas horas dormiu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        11,
+        6,
+        66
+      ],
+      "result": 66,
+      "explanation": "Cada noite ela dorme a mesma quantidade de horas.",
+      "calculation": "11 × 6 = 66"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Beatriz dorme 11 horas por noite. Em 6 noites, quantas horas dormiu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada noite ela dorme a mesma quantidade de horas."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_035",
+    "statement": "Gabriel tinha 200 seguidores e perdeu 45. Quantos seguidores ficaram?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        200,
+        45,
+        155
+      ],
+      "result": 155,
+      "explanation": "Ele PERDEU seguidores, então eles SAÍRAM.",
+      "calculation": "200 - 45 = 155"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Gabriel tinha 200 seguidores e perdeu 45. Quantos seguidores ficaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele PERDEU seguidores, então eles SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_036",
+    "statement": "Luca dividiu 24 doces igualmente entre 6 amigos. Quantos doces cada amigo recebeu?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        24,
+        6,
+        4
+      ],
+      "result": 4,
+      "explanation": "A palavra 'dividiu igualmente' indica DIVISÃO.",
+      "calculation": "24 ÷ 6 = 4"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Luca dividiu 24 doces igualmente entre 6 amigos. Quantos doces cada amigo recebeu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "A palavra 'dividiu igualmente' indica DIVISÃO."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_037",
+    "statement": "Sofia tem 7 grupos de seguidores. Cada grupo tem 45 pessoas. Quantos seguidores no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        7,
+        45,
+        315
+      ],
+      "result": 315,
+      "explanation": "Temos GRUPOS IGUAIS de seguidores.",
+      "calculation": "7 × 45 = 315"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia tem 7 grupos de seguidores. Cada grupo tem 45 pessoas. Quantos seguidores no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Temos GRUPOS IGUAIS de seguidores."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_038",
+    "statement": "Daniel tinha 180 blocos no Minecraft e comprou mais 95. Quantos blocos tem agora?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        180,
+        95,
+        275
+      ],
+      "result": 275,
+      "explanation": "Ele COMPROU mais blocos, então SOMAMOS.",
+      "calculation": "180 + 95 = 275"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Daniel tinha 180 blocos no Minecraft e comprou mais 95. Quantos blocos tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ele COMPROU mais blocos, então SOMAMOS."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_039",
+    "statement": "Isabella queria repartir 36 tênis da coleção em 9 caixas iguais. Quantos tênis em cada caixa?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        36,
+        9,
+        4
+      ],
+      "result": 4,
+      "explanation": "A palavra 'repartir' em caixas iguais é DIVISÃO.",
+      "calculation": "36 ÷ 9 = 4"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Isabella queria repartir 36 tênis da coleção em 9 caixas iguais. Quantos tênis em cada caixa?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "A palavra 'repartir' em caixas iguais é DIVISÃO."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_040",
+    "statement": "Matheus tinha 250 moedas no Roblox e gastou 89 numa skin. Quantas moedas restaram?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        250,
+        89,
+        161
+      ],
+      "result": 161,
+      "explanation": "Ele GASTOU moedas, então elas SAÍRAM.",
+      "calculation": "250 - 89 = 161"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Matheus tinha 250 moedas no Roblox e gastou 89 numa skin. Quantas moedas restaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele GASTOU moedas, então elas SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_041",
+    "statement": "Ana Julia tem 72 doces e quer dividir igualmente entre 12 crianças. Quantos doces cada uma vai receber?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        72,
+        12,
+        6
+      ],
+      "result": 6,
+      "explanation": "A palavra 'dividir igualmente' indica DIVISÃO.",
+      "calculation": "72 ÷ 12 = 6"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana Julia tem 72 doces e quer dividir igualmente entre 12 crianças. Quantos doces cada uma vai receber?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "A palavra 'dividir igualmente' indica DIVISÃO."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_042",
+    "statement": "Fernando coleciona motos. Ele tem 15 motos clássicas e comprou 28 motos modernas. Quantas motos tem no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        15,
+        28,
+        43
+      ],
+      "result": 43,
+      "explanation": "Ele COMPROU mais motos, então SOMAMOS as duas coleções.",
+      "calculation": "15 + 28 = 43"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Fernando coleciona motos. Ele tem 15 motos clássicas e comprou 28 motos modernas. Quantas motos tem no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Ele COMPROU mais motos, então SOMAMOS as duas coleções."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_043",
+    "statement": "Caroline assiste o Diário do Bananinha 3 vezes por semana durante 8 semanas. Quantos episódios assistiu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        3,
+        8,
+        24
+      ],
+      "result": 24,
+      "explanation": "Cada semana ela assiste a mesma quantidade.",
+      "calculation": "3 × 8 = 24"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Caroline assiste o Diário do Bananinha 3 vezes por semana durante 8 semanas. Quantos episódios assistiu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada semana ela assiste a mesma quantidade."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_044",
+    "statement": "Roberto tinha 300 seguidores no YouTube e perdeu 125 porque ficou sem postar. Quantos seguidores ficaram?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        300,
+        125,
+        175
+      ],
+      "result": 175,
+      "explanation": "Ele PERDEU seguidores, então eles SAÍRAM.",
+      "calculation": "300 - 125 = 175"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Roberto tinha 300 seguidores no YouTube e perdeu 125 porque ficou sem postar. Quantos seguidores ficaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Ele PERDEU seguidores, então eles SAÍRAM."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_045",
+    "statement": "Maria tem 60 pipas para repartir igualmente entre 5 amigas. Quantas pipas cada amiga vai receber?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "easy",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        60,
+        5,
+        12
+      ],
+      "result": 12,
+      "explanation": "A palavra 'repartir igualmente' indica DIVISÃO.",
+      "calculation": "60 ÷ 5 = 12"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Maria tem 60 pipas para repartir igualmente entre 5 amigas. Quantas pipas cada amiga vai receber?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "A palavra 'repartir igualmente' indica DIVISÃO."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_03/bloco_03_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_03/bloco_03_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_046",
+    "statement": "Lucas joga Roblox há 3 anos e coleciona skins. Ele tem 24 skins raras e 18 skins comuns. Quantas skins ele possui no total?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        24,
+        18,
+        42
+      ],
+      "result": 42,
+      "explanation": "Somamos skins raras com skins comuns para encontrar o total.",
+      "calculation": "24 + 18 = 42"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Lucas joga Roblox há 3 anos e coleciona skins. Ele tem 24 skins raras e 18 skins comuns. Quantas skins ele possui no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos skins raras com skins comuns para encontrar o total."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_047",
+    "statement": "Sofia construiu uma cidade no Minecraft com 156 blocos. Durante uma explosão, ela perdeu 67 blocos. Quantos blocos sobraram na construção?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        156,
+        67,
+        89
+      ],
+      "result": 89,
+      "explanation": "Subtraímos os blocos perdidos do total original.",
+      "calculation": "156 - 67 = 89"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia construiu uma cidade no Minecraft com 156 blocos. Durante uma explosão, ela perdeu 67 blocos. Quantos blocos sobraram na construção?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Subtraímos os blocos perdidos do total original."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_048",
+    "statement": "Pedro assiste 6 YouTubers diferentes. Cada um posta 4 vídeos por semana. Quantos vídeos Pedro pode assistir semanalmente?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        6,
+        4,
+        24
+      ],
+      "result": 24,
+      "explanation": "Multiplicamos número de YouTubers pela quantidade de vídeos de cada um.",
+      "calculation": "6 × 4 = 24"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro assiste 6 YouTubers diferentes. Cada um posta 4 vídeos por semana. Quantos vídeos Pedro pode assistir semanalmente?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Multiplicamos número de YouTubers pela quantidade de vídeos de cada um."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_049",
+    "statement": "Ana comprou 84 cartas Pokémon e quer organizar em grupos de 12 cartas cada. Quantos grupos completos ela conseguirá formar?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        84,
+        12,
+        7
+      ],
+      "result": 7,
+      "explanation": "Dividimos total de cartas pela quantidade por grupo.",
+      "calculation": "84 ÷ 12 = 7"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana comprou 84 cartas Pokémon e quer organizar em grupos de 12 cartas cada. Quantos grupos completos ela conseguirá formar?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Dividimos total de cartas pela quantidade por grupo."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_050",
+    "statement": "Mateus coleciona tênis há 2 anos. Começou com 15 pares e a cada mês comprava 3 pares novos. Quantos pares possui após 8 meses?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        15,
+        8,
+        3,
+        15,
+        24,
+        39
+      ],
+      "result": 15,
+      "explanation": "Somamos os tênis iniciais com os comprados em 8 meses (8 × 3).",
+      "calculation": "15 + (8 × 3) = 15 + 24 = 39"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Mateus coleciona tênis há 2 anos. Começou com 15 pares e a cada mês comprava 3 pares novos. Quantos pares possui após 8 meses?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos os tênis iniciais com os comprados em 8 meses (8 × 3)."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_051",
+    "statement": "Giulia tinha 145 moedas no Roblox. Comprou uma skin por 89 moedas e depois ganhou 56 moedas numa competição. Quantas moedas ela tem agora?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        145,
+        89,
+        56,
+        56,
+        56,
+        112
+      ],
+      "result": 56,
+      "explanation": "Calculamos: moedas iniciais - gasto + ganho.",
+      "calculation": "(145 - 89) + 56 = 56 + 56 = 112"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Giulia tinha 145 moedas no Roblox. Comprou uma skin por 89 moedas e depois ganhou 56 moedas numa competição. Quantas moedas ela tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Calculamos: moedas iniciais - gasto + ganho."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_052",
+    "statement": "Roberto construiu 3 casas no Minecraft. A primeira usou 78 blocos, a segunda 92 blocos, a terceira 65 blocos. Quantos blocos ele usou no total?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        78,
+        92,
+        65,
+        235
+      ],
+      "result": 235,
+      "explanation": "Somamos os blocos das três casas.",
+      "calculation": "78 + 92 + 65 = 235"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Roberto construiu 3 casas no Minecraft. A primeira usou 78 blocos, a segunda 92 blocos, a terceira 65 blocos. Quantos blocos ele usou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos os blocos das três casas."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_053",
+    "statement": "Marina comprou 5 pacotes de figurinhas com 12 figurinhas cada. Ela já tinha 38 figurinhas. Quantas figurinhas possui agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        5,
+        12,
+        38,
+        60,
+        38,
+        98
+      ],
+      "result": 60,
+      "explanation": "Calculamos figurinhas compradas (5 × 12) e somamos com as que já tinha.",
+      "calculation": "(5 × 12) + 38 = 60 + 38 = 98"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina comprou 5 pacotes de figurinhas com 12 figurinhas cada. Ela já tinha 38 figurinhas. Quantas figurinhas possui agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Calculamos figurinhas compradas (5 × 12) e somamos com as que já tinha."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_054",
+    "statement": "Diego tinha 240 seguidores no TikTok. Ganhou 95 novos seguidores mas 23 pararam de seguir. Quantos seguidores tem agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        240,
+        95,
+        23,
+        312
+      ],
+      "result": 312,
+      "explanation": "Somamos novos seguidores e subtraímos os que pararam de seguir.",
+      "calculation": "240 + 95 - 23 = 312"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego tinha 240 seguidores no TikTok. Ganhou 95 novos seguidores mas 23 pararam de seguir. Quantos seguidores tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Somamos novos seguidores e subtraímos os que pararam de seguir."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_055",
+    "statement": "Beatriz empacotou 96 doces em caixas de 8 doces cada. Vendeu 7 caixas completas. Quantas caixas ainda possui?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        96,
+        8,
+        7,
+        12,
+        7,
+        5
+      ],
+      "result": 12,
+      "explanation": "Calculamos total de caixas (96 ÷ 8) e subtraímos as vendidas.",
+      "calculation": "(96 ÷ 8) - 7 = 12 - 7 = 5"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Beatriz empacotou 96 doces em caixas de 8 doces cada. Vendeu 7 caixas completas. Quantas caixas ainda possui?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Calculamos total de caixas (96 ÷ 8) e subtraímos as vendidas."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_056",
+    "statement": "João tem 60 carros de brinquedo. Ele deu metade para seu irmão. Quantos carros João deu?",
+    "subject": "Matemática",
+    "context": "vehicles",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        60,
+        2,
+        30
+      ],
+      "result": 30,
+      "explanation": "Metade significa dividir por 2.",
+      "calculation": "60 ÷ 2 = 30"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"João tem 60 carros de brinquedo. Ele deu metade para seu irmão. Quantos carros João deu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Metade significa dividir por 2."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_057",
+    "statement": "Sofia fez 80 brigadeiros para festa. Vendeu três quartos da quantidade. Quantos brigadeiros ela vendeu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        80,
+        4,
+        3,
+        20,
+        3,
+        60
+      ],
+      "result": 20,
+      "explanation": "Três quartos = 3/4. Calculamos (80 ÷ 4) × 3.",
+      "calculation": "(80 ÷ 4) × 3 = 20 × 3 = 60"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia fez 80 brigadeiros para festa. Vendeu três quartos da quantidade. Quantos brigadeiros ela vendeu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Três quartos = 3/4. Calculamos (80 ÷ 4) × 3."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_058",
+    "statement": "Lucas joga videogame 4 horas por dia. Se reduzir um terço desse tempo, quantas horas jogará?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        4,
+        4,
+        3,
+        4,
+        1,
+        33,
+        2,
+        67
+      ],
+      "result": 4,
+      "explanation": "Um terço de 4 = 4 ÷ 3 ≈ 1,3. Subtraímos do tempo total.",
+      "calculation": "4 - (4 ÷ 3) = 4 - 1,33 = 2,67 horas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Lucas joga videogame 4 horas por dia. Se reduzir um terço desse tempo, quantas horas jogará?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Um terço de 4 = 4 ÷ 3 ≈ 1,3. Subtraímos do tempo total."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_059",
+    "statement": "Ana tinha 90 adesivos. Usou dois quintos para decorar o caderno. Quantos adesivos ela usou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        90,
+        5,
+        2,
+        18,
+        2,
+        36
+      ],
+      "result": 18,
+      "explanation": "Dois quintos = 2/5. Calculamos (90 ÷ 5) × 2.",
+      "calculation": "(90 ÷ 5) × 2 = 18 × 2 = 36"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana tinha 90 adesivos. Usou dois quintos para decorar o caderno. Quantos adesivos ela usou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Dois quintos = 2/5. Calculamos (90 ÷ 5) × 2."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_060",
+    "statement": "Pedro economizou 120 reais. Gastou um quarto com jogos e outro quarto com lanche. Quanto dinheiro sobrou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        120,
+        120,
+        2,
+        120,
+        60,
+        60
+      ],
+      "result": 120,
+      "explanation": "Gastou 1/4 + 1/4 = 2/4 = metade. Sobrou a outra metade.",
+      "calculation": "120 - (120 ÷ 2) = 120 - 60 = 60"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro economizou 120 reais. Gastou um quarto com jogos e outro quarto com lanche. Quanto dinheiro sobrou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Gastou 1/4 + 1/4 = 2/4 = metade. Sobrou a outra metade."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_04/bloco_04_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_04/bloco_04_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_061",
+    "statement": "Se 3 pacotes de cartas custam 45 reais, quanto custam 7 pacotes?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        45,
+        3,
+        7,
+        15,
+        7,
+        105
+      ],
+      "result": 15,
+      "explanation": "Cada pacote custa 45 ÷ 3 = 15 reais. Então 7 × 15.",
+      "calculation": "(45 ÷ 3) × 7 = 15 × 7 = 105"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Se 3 pacotes de cartas custam 45 reais, quanto custam 7 pacotes?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada pacote custa 45 ÷ 3 = 15 reais. Então 7 × 15."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_062",
+    "statement": "Marina lê 25 páginas em 5 dias. Mantendo esse ritmo, quantas páginas lerá em 12 dias?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        25,
+        5,
+        12,
+        5,
+        12,
+        60
+      ],
+      "result": 5,
+      "explanation": "Lê 25 ÷ 5 = 5 páginas por dia. Em 12 dias: 5 × 12.",
+      "calculation": "(25 ÷ 5) × 12 = 5 × 12 = 60"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina lê 25 páginas em 5 dias. Mantendo esse ritmo, quantas páginas lerá em 12 dias?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Lê 25 ÷ 5 = 5 páginas por dia. Em 12 dias: 5 × 12."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_063",
+    "statement": "Diego fez 24 gols em 6 jogos. Se continuar nesse desempenho, quantos gols fará em 15 jogos?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        24,
+        6,
+        15,
+        4,
+        15,
+        60
+      ],
+      "result": 4,
+      "explanation": "Faz 24 ÷ 6 = 4 gols por jogo. Em 15 jogos: 4 × 15.",
+      "calculation": "(24 ÷ 6) × 15 = 4 × 15 = 60"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego fez 24 gols em 6 jogos. Se continuar nesse desempenho, quantos gols fará em 15 jogos?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Faz 24 ÷ 6 = 4 gols por jogo. Em 15 jogos: 4 × 15."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_064",
+    "statement": "Se 8 crianças comem 32 doces, quantos doces comerão 12 crianças?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        32,
+        8,
+        12,
+        4,
+        12,
+        48
+      ],
+      "result": 4,
+      "explanation": "Cada criança come 32 ÷ 8 = 4 doces. Então 12 × 4.",
+      "calculation": "(32 ÷ 8) × 12 = 4 × 12 = 48"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Se 8 crianças comem 32 doces, quantos doces comerão 12 crianças?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Cada criança come 32 ÷ 8 = 4 doces. Então 12 × 4."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_065",
+    "statement": "Júlia economiza 15 reais em 3 semanas. Em quantas semanas economizará 60 reais?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        60,
+        15,
+        3,
+        60,
+        5,
+        12
+      ],
+      "result": 60,
+      "explanation": "Economiza 15 ÷ 3 = 5 reais por semana. Para 60 reais: 60 ÷ 5.",
+      "calculation": "60 ÷ (15 ÷ 3) = 60 ÷ 5 = 12"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Júlia economiza 15 reais em 3 semanas. Em quantas semanas economizará 60 reais?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Economiza 15 ÷ 3 = 5 reais por semana. Para 60 reais: 60 ÷ 5."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_066",
+    "statement": "Gustavo tinha 200 seguidores. Se ganhou 50% a mais, quantos seguidores tem agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        200,
+        200,
+        0,
+        5,
+        200,
+        100,
+        300
+      ],
+      "result": 200,
+      "explanation": "50% de 200 = 100. Somamos: 200 + 100.",
+      "calculation": "200 + (200 × 0,5) = 200 + 100 = 300"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Gustavo tinha 200 seguidores. Se ganhou 50% a mais, quantos seguidores tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "50% de 200 = 100. Somamos: 200 + 100."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_067",
+    "statement": "Sofia comprou uma mochila de 80 reais com 25% de desconto. Quanto ela pagou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        80,
+        80,
+        0,
+        25,
+        80,
+        20,
+        60
+      ],
+      "result": 80,
+      "explanation": "25% de 80 = 20 reais de desconto. Pagou 80 - 20.",
+      "calculation": "80 - (80 × 0,25) = 80 - 20 = 60"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia comprou uma mochila de 80 reais com 25% de desconto. Quanto ela pagou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "25% de 80 = 20 reais de desconto. Pagou 80 - 20."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_068",
+    "statement": "Pedro acertou 75% de um teste com 40 questões. Quantas questões ele acertou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        40,
+        0,
+        75,
+        30
+      ],
+      "result": 30,
+      "explanation": "75% de 40 questões = 0,75 × 40.",
+      "calculation": "40 × 0,75 = 30"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro acertou 75% de um teste com 40 questões. Quantas questões ele acertou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "75% de 40 questões = 0,75 × 40."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_069",
+    "statement": "Ana comeu 30% de uma pizza de 8 pedaços. Quantos pedaços ela comeu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        8,
+        0,
+        3,
+        2,
+        4,
+        2
+      ],
+      "result": 2,
+      "explanation": "30% de 8 = 0,3 × 8.",
+      "calculation": "8 × 0,3 = 2,4 ≈ 2 pedaços"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana comeu 30% de uma pizza de 8 pedaços. Quantos pedaços ela comeu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "30% de 8 = 0,3 × 8."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_070",
+    "statement": "Lucas tinha 120 moedas no jogo e perdeu 40% delas. Quantas moedas ele perdeu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        120,
+        0,
+        4,
+        48
+      ],
+      "result": 48,
+      "explanation": "40% de 120 = 0,4 × 120.",
+      "calculation": "120 × 0,4 = 48"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Lucas tinha 120 moedas no jogo e perdeu 40% delas. Quantas moedas ele perdeu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "40% de 120 = 0,4 × 120."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_071",
+    "statement": "Beatriz estuda 2 horas e 45 minutos por dia. Quantos minutos ela estuda por semana?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        165,
+        7,
+        1155
+      ],
+      "result": 1155,
+      "explanation": "2h45min = 165 minutos por dia. Em 7 dias: 165 × 7.",
+      "calculation": "165 × 7 = 1155 minutos"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Beatriz estuda 2 horas e 45 minutos por dia. Quantos minutos ela estuda por semana?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "2h45min = 165 minutos por dia. Em 7 dias: 165 × 7."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_072",
+    "statement": "Diego percorre 1,8 km para ir à escola. Indo e voltando 5 vezes por semana, quantos km percorre?",
+    "subject": "Matemática",
+    "context": "school",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        1,
+        8,
+        2,
+        5,
+        3,
+        6,
+        5,
+        18
+      ],
+      "result": 3,
+      "explanation": "Ida e volta = 1,8 × 2 = 3,6 km por dia. Em 5 dias: 3,6 × 5.",
+      "calculation": "(1,8 × 2) × 5 = 3,6 × 5 = 18 km"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego percorre 1,8 km para ir à escola. Indo e voltando 5 vezes por semana, quantos km percorre?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Ida e volta = 1,8 × 2 = 3,6 km por dia. Em 5 dias: 3,6 × 5."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_073",
+    "statement": "Marina começou a jogar às 14h30 e parou às 17h15. Por quanto tempo ela jogou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        17,
+        15,
+        14,
+        30,
+        2,
+        45
+      ],
+      "result": 2,
+      "explanation": "Calculamos a diferença: 17h15 - 14h30.",
+      "calculation": "17:15 - 14:30 = 2h45min"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina começou a jogar às 14h30 e parou às 17h15. Por quanto tempo ela jogou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Calculamos a diferença: 17h15 - 14h30."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_074",
+    "statement": "João assiste vídeos de 12 minutos cada. Se assistiu por 1 hora e 36 minutos, quantos vídeos viu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        96,
+        12,
+        8
+      ],
+      "result": 8,
+      "explanation": "1h36min = 96 minutos. Dividimos por 12 minutos por vídeo.",
+      "calculation": "96 ÷ 12 = 8"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"João assiste vídeos de 12 minutos cada. Se assistiu por 1 hora e 36 minutos, quantos vídeos viu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "1h36min = 96 minutos. Dividimos por 12 minutos por vídeo."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_075",
+    "statement": "Sofia dorme 8 horas e 20 minutos por noite durante uma semana. Quantas horas dormiu no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        8,
+        33,
+        7,
+        58,
+        33
+      ],
+      "result": 58,
+      "explanation": "8h20min = 8,33 horas por noite. Em 7 noites: 8,33 × 7.",
+      "calculation": "8,33 × 7 = 58,33 horas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia dorme 8 horas e 20 minutos por noite durante uma semana. Quantas horas dormiu no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "8h20min = 8,33 horas por noite. Em 7 noites: 8,33 × 7."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_05/bloco_05_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_05/bloco_05_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_076",
+    "statement": "Carlos tem o triplo de cartas que Bruno. Juntos têm 180 cartas. Quantas cartas Carlos possui?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        180,
+        4,
+        3,
+        45,
+        3,
+        135
+      ],
+      "result": 45,
+      "explanation": "Bruno = X, Carlos = 3X. Total: X + 3X = 180, então 4X = 180.",
+      "calculation": "180 ÷ 4 × 3 = 45 × 3 = 135"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Carlos tem o triplo de cartas que Bruno. Juntos têm 180 cartas. Quantas cartas Carlos possui?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Bruno = X, Carlos = 3X. Total: X + 3X = 180, então 4X = 180."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_077",
+    "statement": "Ana e Júlia colecionam adesivos. Ana tem 15 a mais que Júlia. Se Ana der 8 adesivos para Júlia, quem terá mais?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        1
+      ],
+      "result": null,
+      "explanation": "Diferença inicial: 15. Ana perde 8, Júlia ganha 8. Nova diferença: 15 - 16 = -1.",
+      "calculation": "Júlia terá 1 adesivo a mais"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana e Júlia colecionam adesivos. Ana tem 15 a mais que Júlia. Se Ana der 8 adesivos para Júlia, quem terá mais?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Diferença inicial: 15. Ana perde 8, Júlia ganha 8. Nova diferença: 15 - 16 = -1."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_078",
+    "statement": "Pedro tinha algumas moedas. Gastou metade, depois ganhou 20, ficando com 35. Quantas moedas tinha inicialmente?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        35,
+        20,
+        2,
+        15,
+        2,
+        30
+      ],
+      "result": 15,
+      "explanation": "Se ficou com 35 após ganhar 20, tinha 15 antes. Se 15 é metade, o total inicial era 30.",
+      "calculation": "(35 - 20) × 2 = 15 × 2 = 30"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro tinha algumas moedas. Gastou metade, depois ganhou 20, ficando com 35. Quantas moedas tinha inicialmente?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Se ficou com 35 após ganhar 20, tinha 15 antes. Se 15 é metade, o total inicial era 30."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_079",
+    "statement": "Marina organizou seus livros: 1/3 são de aventura, 1/4 são de mistério, o resto são romances. Se tem 60 livros, quantos são romances?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        60,
+        20,
+        15,
+        25
+      ],
+      "result": 25,
+      "explanation": "Aventura: 60 ÷ 3 = 20. Mistério: 60 ÷ 4 = 15. Romances: 60 - 20 - 15.",
+      "calculation": "60 - 20 - 15 = 25"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina organizou seus livros: 1/3 são de aventura, 1/4 são de mistério, o resto são romances. Se tem 60 livros, quantos são romances?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Aventura: 60 ÷ 3 = 20. Mistério: 60 ÷ 4 = 15. Romances: 60 - 20 - 15."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_080",
+    "statement": "Diego fez um teste com questões valendo 2, 3 e 5 pontos. Acertou 4 de 2 pontos, 3 de 3 pontos e 2 de 5 pontos. Qual sua pontuação total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        8,
+        9,
+        10,
+        27
+      ],
+      "result": 27,
+      "explanation": "Soma: (4 × 2) + (3 × 3) + (2 × 5).",
+      "calculation": "8 + 9 + 10 = 27"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego fez um teste com questões valendo 2, 3 e 5 pontos. Acertou 4 de 2 pontos, 3 de 3 pontos e 2 de 5 pontos. Qual sua pontuação total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Soma: (4 × 2) + (3 × 3) + (2 × 5)."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_081",
+    "statement": "Sofia comprou 4 jogos: o primeiro custou 25 reais, o segundo 30% a mais que o primeiro, o terceiro metade do segundo, o quarto o dobro do terceiro. Quanto gastou no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        25,
+        32,
+        5,
+        16,
+        25,
+        32,
+        5,
+        106,
+        25
+      ],
+      "result": 106,
+      "explanation": "1º: 25, 2º: 25 + 7,5 = 32,5, 3º: 16,25, 4º: 32,5. Total: 25 + 32,5 + 16,25 + 32,5.",
+      "calculation": "25 + 32,5 + 16,25 + 32,5 = 106,25"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia comprou 4 jogos: o primeiro custou 25 reais, o segundo 30% a mais que o primeiro, o terceiro metade do segundo, o quarto o dobro do terceiro. Quanto gastou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "1º: 25, 2º: 25 + 7,5 = 32,5, 3º: 16,25, 4º: 32,5. Total: 25 + 32,5 + 16,25 + 32,5."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_082",
+    "statement": "Lucas organizou torneio com 64 jogadores. A cada rodada elimina-se metade. Após quantas rodadas restará apenas 1 campeão?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        6
+      ],
+      "result": null,
+      "explanation": "64 → 32 → 16 → 8 → 4 → 2 → 1. São 6 rodadas.",
+      "calculation": "6 rodadas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Lucas organizou torneio com 64 jogadores. A cada rodada elimina-se metade. Após quantas rodadas restará apenas 1 campeão?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "64 → 32 → 16 → 8 → 4 → 2 → 1. São 6 rodadas."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_083",
+    "statement": "Ana investiu 200 reais. No 1º mês rendeu 10%, no 2º mês perdeu 5% do total. Quanto tem agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        200,
+        1,
+        1,
+        0,
+        95,
+        209
+      ],
+      "result": 209,
+      "explanation": "Após 1º mês: 200 × 1,1 = 220. Após 2º mês: 220 × 0,95 = 209.",
+      "calculation": "200 × 1,1 × 0,95 = 209"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana investiu 200 reais. No 1º mês rendeu 10%, no 2º mês perdeu 5% do total. Quanto tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Após 1º mês: 200 × 1,1 = 220. Após 2º mês: 220 × 0,95 = 209."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_084",
+    "statement": "Pedro comprou ações de uma empresa por 150 reais. O valor subiu 20%, depois caiu 15%. Qual o valor atual?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        150,
+        1,
+        2,
+        0,
+        85,
+        153
+      ],
+      "result": 153,
+      "explanation": "Após subida: 150 × 1,2 = 180. Após queda: 180 × 0,85 = 153.",
+      "calculation": "150 × 1,2 × 0,85 = 153"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro comprou ações de uma empresa por 150 reais. O valor subiu 20%, depois caiu 15%. Qual o valor atual?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Após subida: 150 × 1,2 = 180. Após queda: 180 × 0,85 = 153."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_085",
+    "statement": "Beatriz tem uma coleção que cresce 25% a cada mês. Começou com 40 itens. Quantos terá após 3 meses?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        40,
+        1,
+        25,
+        40,
+        1,
+        953,
+        78,
+        12
+      ],
+      "result": 40,
+      "explanation": "Após cada mês multiplica por 1,25: 40 × 1,25³.",
+      "calculation": "40 × 1,25³ = 40 × 1,953 = 78,12"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Beatriz tem uma coleção que cresce 25% a cada mês. Começou com 40 itens. Quantos terá após 3 meses?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Após cada mês multiplica por 1,25: 40 × 1,25³."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_086",
+    "statement": "Uma escola tem 480 alunos. 40% são meninas, e dessas, 25% praticam esportes. Quantas meninas praticam esportes?",
+    "subject": "Matemática",
+    "context": "school",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        480,
+        0,
+        4,
+        0,
+        25,
+        48
+      ],
+      "result": 48,
+      "explanation": "Meninas: 480 × 0,4 = 192. Que praticam esporte: 192 × 0,25 = 48.",
+      "calculation": "480 × 0,4 × 0,25 = 48"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Uma escola tem 480 alunos. 40% são meninas, e dessas, 25% praticam esportes. Quantas meninas praticam esportes?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Meninas: 480 × 0,4 = 192. Que praticam esporte: 192 × 0,25 = 48."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_087",
+    "statement": "Carlos economiza R$ 50 por mês durante um ano. No final, gasta 60% do total numa bike. Quanto sobrou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        50,
+        12,
+        600,
+        0,
+        6,
+        600,
+        360,
+        240
+      ],
+      "result": 600,
+      "explanation": "Total economizado: 50 × 12 = 600. Gastou: 600 × 0,6 = 360. Sobrou: 600 - 360.",
+      "calculation": "(50 × 12) - (600 × 0,6) = 600 - 360 = 240"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Carlos economiza R$ 50 por mês durante um ano. No final, gasta 60% do total numa bike. Quanto sobrou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Total economizado: 50 × 12 = 600. Gastou: 600 × 0,6 = 360. Sobrou: 600 - 360."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_088",
+    "statement": "Marina faz bolos para vender. Cada bolo usa 3 ovos e rende R$ 15 de lucro. Se ela tem 84 ovos, qual será seu lucro total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        84,
+        3,
+        15,
+        28,
+        15,
+        420
+      ],
+      "result": 28,
+      "explanation": "Bolos possíveis: 84 ÷ 3 = 28. Lucro total: 28 × 15.",
+      "calculation": "(84 ÷ 3) × 15 = 28 × 15 = 420"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina faz bolos para vender. Cada bolo usa 3 ovos e rende R$ 15 de lucro. Se ela tem 84 ovos, qual será seu lucro total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Bolos possíveis: 84 ÷ 3 = 28. Lucro total: 28 × 15."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_089",
+    "statement": "Diego tem 3 vezes mais jogos que Felipe, e Felipe tem 12 jogos a mais que Bruno. Se Bruno tem 18 jogos, quantos jogos Diego possui?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        18,
+        12,
+        3,
+        30,
+        3,
+        90
+      ],
+      "result": 30,
+      "explanation": "Bruno: 18, Felipe: 18 + 12 = 30, Diego: 30 × 3 = 90.",
+      "calculation": "(18 + 12) × 3 = 30 × 3 = 90"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego tem 3 vezes mais jogos que Felipe, e Felipe tem 12 jogos a mais que Bruno. Se Bruno tem 18 jogos, quantos jogos Diego possui?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Bruno: 18, Felipe: 18 + 12 = 30, Diego: 30 × 3 = 90."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_090",
+    "statement": "Uma receita para 4 pessoas usa 200g de farinha e 150ml de leite. Para fazer para 14 pessoas, quanto precisarei de cada ingrediente?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "medium",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        700,
+        525
+      ],
+      "result": null,
+      "explanation": "Proporção: 14 ÷ 4 = 3,5 vezes mais. Farinha: 200 × 3,5, Leite: 150 × 3,5.",
+      "calculation": "Farinha: 700g, Leite: 525ml"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Uma receita para 4 pessoas usa 200g de farinha e 150ml de leite. Para fazer para 14 pessoas, quanto precisarei de cada ingrediente?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Proporção: 14 ÷ 4 = 3,5 vezes mais. Farinha: 200 × 3,5, Leite: 150 × 3,5."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_06/bloco_06_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_06/bloco_06_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_091",
+    "statement": "Lucas comprou 3 skins no Roblox por 50 moedas cada uma, depois vendeu 1 skin por 45 moedas. Quantas moedas ele gastou no total?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        3,
+        50,
+        45,
+        150,
+        45,
+        105
+      ],
+      "result": 150,
+      "explanation": "Primeiro calculamos o gasto total (3 × 50 = 150), depois subtraímos o que ele recuperou (150 - 45).",
+      "calculation": "(3 × 50) - 45 = 150 - 45 = 105"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Lucas comprou 3 skins no Roblox por 50 moedas cada uma, depois vendeu 1 skin por 45 moedas. Quantas moedas ele gastou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Primeiro calculamos o gasto total (3 × 50 = 150), depois subtraímos o que ele recuperou (150 - 45)."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_092",
+    "statement": "Sofia construiu 4 casas no Minecraft, cada uma com 12 blocos. Depois destruiu 2 casas completas. Quantos blocos sobraram?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        4,
+        12,
+        2,
+        12,
+        48,
+        24,
+        24
+      ],
+      "result": 48,
+      "explanation": "Calculamos total de blocos (4 × 12 = 48), depois subtraímos os blocos destruídos (2 × 12 = 24).",
+      "calculation": "(4 × 12) - (2 × 12) = 48 - 24 = 24"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia construiu 4 casas no Minecraft, cada uma com 12 blocos. Depois destruiu 2 casas completas. Quantos blocos sobraram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Calculamos total de blocos (4 × 12 = 48), depois subtraímos os blocos destruídos (2 × 12 = 24)."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_093",
+    "statement": "Pedro assistiu o Diário do Bananinha por 5 dias, 3 episódios por dia. No 6º dia assistiu mais 4 episódios. Quantos episódios assistiu no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        5,
+        3,
+        4,
+        15,
+        4,
+        19
+      ],
+      "result": 15,
+      "explanation": "Primeiro calculamos episódios dos 5 dias (5 × 3 = 15), depois somamos os 4 do último dia.",
+      "calculation": "(5 × 3) + 4 = 15 + 4 = 19"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro assistiu o Diário do Bananinha por 5 dias, 3 episódios por dia. No 6º dia assistiu mais 4 episódios. Quantos episódios assistiu no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Primeiro calculamos episódios dos 5 dias (5 × 3 = 15), depois somamos os 4 do último dia."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_094",
+    "statement": "Ana empinou pipas por 3 semanas. Na primeira semana empinou 8 pipas, na segunda 12, na terceira perdeu metade das que tinha empinado. Quantas pipas perdeu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        8,
+        12,
+        2,
+        20,
+        2,
+        10
+      ],
+      "result": 20,
+      "explanation": "Somamos pipas das duas primeiras semanas (8 + 12 = 20), depois calculamos metade.",
+      "calculation": "(8 + 12) ÷ 2 = 20 ÷ 2 = 10"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana empinou pipas por 3 semanas. Na primeira semana empinou 8 pipas, na segunda 12, na terceira perdeu metade das que tinha empinado. Quantas pipas perdeu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Somamos pipas das duas primeiras semanas (8 + 12 = 20), depois calculamos metade."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_095",
+    "statement": "Ricardo coleciona 150 cartas Pokémon em 6 pacotes iguais, depois doa 2 pacotes completos para amigos. Quantas cartas ficaram com ele?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        150,
+        2,
+        25,
+        150,
+        50,
+        100
+      ],
+      "result": 150,
+      "explanation": "Calculamos cartas por pacote (150 ÷ 6 = 25), depois subtraímos 2 pacotes doados (2 × 25 = 50).",
+      "calculation": "150 - (2 × 25) = 150 - 50 = 100"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ricardo coleciona 150 cartas Pokémon em 6 pacotes iguais, depois doa 2 pacotes completos para amigos. Quantas cartas ficaram com ele?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Calculamos cartas por pacote (150 ÷ 6 = 25), depois subtraímos 2 pacotes doados (2 × 25 = 50)."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_096",
+    "statement": "Guilherme tinha 200 seguidores no TikTok. No primeiro mês ganhou metade a mais, no segundo mês perdeu metade dos que tinha. Quantos seguidores tem agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        200,
+        100,
+        300,
+        300,
+        2,
+        150
+      ],
+      "result": 300,
+      "explanation": "Primeiro mês: 200 + (200 ÷ 2) = 300. Segundo mês: 300 ÷ 2 = 150.",
+      "calculation": "200 + 100 = 300, depois 300 ÷ 2 = 150"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Guilherme tinha 200 seguidores no TikTok. No primeiro mês ganhou metade a mais, no segundo mês perdeu metade dos que tinha. Quantos seguidores tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Primeiro mês: 200 + (200 ÷ 2) = 300. Segundo mês: 300 ÷ 2 = 150."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_097",
+    "statement": "Beatriz comprou tênis com desconto. O preço era 120 reais, mas pagou apenas três quartos do valor. Quanto pagou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        120,
+        4,
+        3,
+        30,
+        3,
+        90
+      ],
+      "result": 30,
+      "explanation": "Três quartos significa 3 partes de 4. Calculamos 120 ÷ 4 = 30, depois 30 × 3.",
+      "calculation": "(120 ÷ 4) × 3 = 30 × 3 = 90"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Beatriz comprou tênis com desconto. O preço era 120 reais, mas pagou apenas três quartos do valor. Quanto pagou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Três quartos significa 3 partes de 4. Calculamos 120 ÷ 4 = 30, depois 30 × 3."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_098",
+    "statement": "Carlos joga Minecraft 8 horas por semana. Se ele reduzir pela metade, quantas horas jogará em 4 semanas?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        8,
+        2,
+        4,
+        4,
+        4,
+        16
+      ],
+      "result": 4,
+      "explanation": "Metade de 8 é 4 horas por semana. Em 4 semanas: 4 × 4.",
+      "calculation": "(8 ÷ 2) × 4 = 4 × 4 = 16"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Carlos joga Minecraft 8 horas por semana. Se ele reduzir pela metade, quantas horas jogará em 4 semanas?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Metade de 8 é 4 horas por semana. Em 4 semanas: 4 × 4."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_099",
+    "statement": "Laura tinha 80 doces e comeu um quarto no primeiro dia, um quarto no segundo dia. Quantos doces sobraram?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        80,
+        20,
+        20,
+        80,
+        40,
+        40
+      ],
+      "result": 80,
+      "explanation": "Um quarto de 80 = 20. Comeu 20 + 20 = 40. Sobraram 80 - 40.",
+      "calculation": "80 - (20 + 20) = 80 - 40 = 40"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Laura tinha 80 doces e comeu um quarto no primeiro dia, um quarto no segundo dia. Quantos doces sobraram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Um quarto de 80 = 20. Comeu 20 + 20 = 40. Sobraram 80 - 40."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_100",
+    "statement": "Diego construiu uma torre de 60 blocos no Minecraft. Se cada andar tem um quinto dos blocos totais, quantos andares tem a torre?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        60,
+        60,
+        5,
+        60,
+        12,
+        5
+      ],
+      "result": 60,
+      "explanation": "Um quinto de 60 é 12 blocos por andar. Dividimos total por blocos por andar.",
+      "calculation": "60 ÷ (60 ÷ 5) = 60 ÷ 12 = 5"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego construiu uma torre de 60 blocos no Minecraft. Se cada andar tem um quinto dos blocos totais, quantos andares tem a torre?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Um quinto de 60 é 12 blocos por andar. Dividimos total por blocos por andar."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_101",
+    "statement": "Valentina joga Roblox 2 horas e 30 minutos por dia. Em quantos minutos ela joga em uma semana completa?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        150,
+        7,
+        1050
+      ],
+      "result": 1050,
+      "explanation": "2h30min = 150 minutos por dia. Em 7 dias: 150 × 7.",
+      "calculation": "150 × 7 = 1050 minutos"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Valentina joga Roblox 2 horas e 30 minutos por dia. Em quantos minutos ela joga em uma semana completa?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "2h30min = 150 minutos por dia. Em 7 dias: 150 × 7."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_102",
+    "statement": "João dorme 9 horas por noite. Se ele for dormir às 22h30, a que horas vai acordar?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        22,
+        30,
+        9,
+        0,
+        7,
+        30
+      ],
+      "result": 7,
+      "explanation": "22h30 + 9h = 31h30. Como passou de 24h, subtraímos 24h = 7h30.",
+      "calculation": "22:30 + 9:00 = 7:30 (do dia seguinte)"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"João dorme 9 horas por noite. Se ele for dormir às 22h30, a que horas vai acordar?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "22h30 + 9h = 31h30. Como passou de 24h, subtraímos 24h = 7h30."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_103",
+    "statement": "Marina percorre 1,5 km para ir à escola. Se ela vai e volta 5 vezes por semana, quantos quilômetros percorre?",
+    "subject": "Matemática",
+    "context": "school",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        1,
+        5,
+        2,
+        5,
+        3,
+        5,
+        15
+      ],
+      "result": 3,
+      "explanation": "Ida e volta = 1,5 × 2 = 3 km por dia. Em 5 dias: 3 × 5.",
+      "calculation": "(1,5 × 2) × 5 = 3 × 5 = 15 km"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina percorre 1,5 km para ir à escola. Se ela vai e volta 5 vezes por semana, quantos quilômetros percorre?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Ida e volta = 1,5 × 2 = 3 km por dia. Em 5 dias: 3 × 5."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_104",
+    "statement": "Thiago assistiu 4 filmes, cada um com 1 hora e 45 minutos. Quantas horas assistiu no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        105,
+        4,
+        420,
+        7
+      ],
+      "result": 420,
+      "explanation": "1h45min = 105 minutos cada filme. 4 filmes = 420 minutos = 7 horas.",
+      "calculation": "105 × 4 = 420 min = 7 horas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Thiago assistiu 4 filmes, cada um com 1 hora e 45 minutos. Quantas horas assistiu no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "1h45min = 105 minutos cada filme. 4 filmes = 420 minutos = 7 horas."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_105",
+    "statement": "Isabel empina pipa das 15h às 17h30 todos os sábados por 4 semanas. Quantas horas empinou no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        2,
+        5,
+        4,
+        10
+      ],
+      "result": 10,
+      "explanation": "De 15h às 17h30 = 2h30 = 2,5 horas por sábado. Em 4 semanas: 2,5 × 4.",
+      "calculation": "2,5 × 4 = 10 horas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Isabel empina pipa das 15h às 17h30 todos os sábados por 4 semanas. Quantas horas empinou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "De 15h às 17h30 = 2h30 = 2,5 horas por sábado. Em 4 semanas: 2,5 × 4."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_07/bloco_07_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_07/bloco_07_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_106",
+    "statement": "Gabriel tem o dobro de moedas no Roblox que Ana. Se juntos têm 180 moedas, quantas moedas Gabriel possui?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        180,
+        3,
+        60,
+        60,
+        2,
+        120
+      ],
+      "result": 60,
+      "explanation": "Se Gabriel tem o dobro, Ana tem X e Gabriel tem 2X. X + 2X = 180, então 3X = 180.",
+      "calculation": "180 ÷ 3 = 60 (Ana), 60 × 2 = 120 (Gabriel)"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Gabriel tem o dobro de moedas no Roblox que Ana. Se juntos têm 180 moedas, quantas moedas Gabriel possui?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Se Gabriel tem o dobro, Ana tem X e Gabriel tem 2X. X + 2X = 180, então 3X = 180."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_107",
+    "statement": "Sofia comprou 3 jogos por preços diferentes: o segundo custou 20 reais a mais que o primeiro, o terceiro custou metade do segundo. Se gastou 110 reais no total, quanto custou o primeiro jogo?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        30
+      ],
+      "result": 30,
+      "explanation": "Primeiro jogo = X, segundo = X + 20, terceiro = (X + 20) ÷ 2. Total = 110.",
+      "calculation": "Resolvendo: X = 30 reais"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia comprou 3 jogos por preços diferentes: o segundo custou 20 reais a mais que o primeiro, o terceiro custou metade do segundo. Se gastou 110 reais no total, quanto custou o primeiro jogo?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Primeiro jogo = X, segundo = X + 20, terceiro = (X + 20) ÷ 2. Total = 110."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_108",
+    "statement": "Pedro e Lucas colecionam carros de brinquedo. Pedro tem 12 carros a mais que Lucas. Se Pedro der 8 carros para Lucas, quem terá mais carros?",
+    "subject": "Matemática",
+    "context": "vehicles",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        4
+      ],
+      "result": null,
+      "explanation": "Diferença inicial: 12 carros. Pedro perde 8, Lucas ganha 8. Diferença final: 12 - 16 = -4.",
+      "calculation": "Lucas terá 4 carros a mais que Pedro"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro e Lucas colecionam carros de brinquedo. Pedro tem 12 carros a mais que Lucas. Se Pedro der 8 carros para Lucas, quem terá mais carros?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Diferença inicial: 12 carros. Pedro perde 8, Lucas ganha 8. Diferença final: 12 - 16 = -4."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_109",
+    "statement": "Em um servidor de Minecraft, há 3 vezes mais jogadores de manhã que à tarde. Se à tarde há 45 jogadores, quantos há de manhã?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        45,
+        3,
+        135
+      ],
+      "result": 135,
+      "explanation": "Se há 3 vezes mais de manhã, multiplicamos jogadores da tarde por 3.",
+      "calculation": "45 × 3 = 135 jogadores"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Em um servidor de Minecraft, há 3 vezes mais jogadores de manhã que à tarde. Se à tarde há 45 jogadores, quantos há de manhã?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Se há 3 vezes mais de manhã, multiplicamos jogadores da tarde por 3."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_110",
+    "statement": "Camila divide suas 60 figurinhas igualmente entre suas amigas. Se cada amiga recebeu 12 figurinhas, quantas amigas ela tem?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        60,
+        12,
+        5
+      ],
+      "result": 5,
+      "explanation": "Dividimos total de figurinhas pela quantidade que cada uma recebeu.",
+      "calculation": "60 ÷ 12 = 5 amigas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Camila divide suas 60 figurinhas igualmente entre suas amigas. Se cada amiga recebeu 12 figurinhas, quantas amigas ela tem?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Dividimos total de figurinhas pela quantidade que cada uma recebeu."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_111",
+    "statement": "Na sala de informática há 15 computadores. Se 3 estão quebrados e os alunos trabalham em duplas, quantas duplas podem usar os computadores?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        15,
+        3,
+        2,
+        12,
+        2,
+        6
+      ],
+      "result": 12,
+      "explanation": "Computadores funcionando: 15 - 3 = 12. Duplas que podem usar: 12 ÷ 2.",
+      "calculation": "(15 - 3) ÷ 2 = 12 ÷ 2 = 6 duplas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Na sala de informática há 15 computadores. Se 3 estão quebrados e os alunos trabalham em duplas, quantas duplas podem usar os computadores?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Computadores funcionando: 15 - 3 = 12. Duplas que podem usar: 12 ÷ 2."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_112",
+    "statement": "A merenda escolar serve 240 alunos por dia. Se cada bandeja comporta 8 pratos, quantas bandejas são necessárias?",
+    "subject": "Matemática",
+    "context": "school",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        240,
+        8,
+        30
+      ],
+      "result": 30,
+      "explanation": "Dividimos total de alunos pela capacidade de cada bandeja.",
+      "calculation": "240 ÷ 8 = 30 bandejas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"A merenda escolar serve 240 alunos por dia. Se cada bandeja comporta 8 pratos, quantas bandejas são necessárias?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Dividimos total de alunos pela capacidade de cada bandeja."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_113",
+    "statement": "Para a festa junina, cada turma deve arrecadar 150 reais. Se a turma do 4º ano já arrecadou dois terços do valor, quanto ainda falta?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        150,
+        100,
+        50
+      ],
+      "result": 50,
+      "explanation": "Dois terços de 150 = (150 ÷ 3) × 2 = 100. Falta: 150 - 100.",
+      "calculation": "150 - 100 = 50 reais"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Para a festa junina, cada turma deve arrecadar 150 reais. Se a turma do 4º ano já arrecadou dois terços do valor, quanto ainda falta?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Dois terços de 150 = (150 ÷ 3) × 2 = 100. Falta: 150 - 100."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_114",
+    "statement": "Na biblioteca escolar há 8 estantes com 45 livros cada. Se 60 livros foram emprestados, quantos livros restaram?",
+    "subject": "Matemática",
+    "context": "school",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        8,
+        45,
+        60,
+        360,
+        60,
+        300
+      ],
+      "result": 360,
+      "explanation": "Total de livros: 8 × 45 = 360. Livros restantes: 360 - 60.",
+      "calculation": "(8 × 45) - 60 = 360 - 60 = 300"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Na biblioteca escolar há 8 estantes com 45 livros cada. Se 60 livros foram emprestados, quantos livros restaram?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Total de livros: 8 × 45 = 360. Livros restantes: 360 - 60."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_115",
+    "statement": "O recreio dura 20 minutos. Se já se passaram três quartos do tempo, quantos minutos ainda restam?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        20,
+        15,
+        5
+      ],
+      "result": 5,
+      "explanation": "Três quartos de 20 = (20 ÷ 4) × 3 = 15. Restam: 20 - 15.",
+      "calculation": "20 - 15 = 5 minutos"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"O recreio dura 20 minutos. Se já se passaram três quartos do tempo, quantos minutos ainda restam?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Três quartos de 20 = (20 ÷ 4) × 3 = 15. Restam: 20 - 15."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_116",
+    "statement": "Mateus quer comprar um jogo que custa 89 reais. Ele economiza 12 reais por semana. Em quantas semanas terá dinheiro suficiente?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        89,
+        12,
+        7,
+        4,
+        8
+      ],
+      "result": 7,
+      "explanation": "Dividimos o preço do jogo pela quantia economizada por semana.",
+      "calculation": "89 ÷ 12 = 7,4... ≈ 8 semanas"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Mateus quer comprar um jogo que custa 89 reais. Ele economiza 12 reais por semana. Em quantas semanas terá dinheiro suficiente?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Dividimos o preço do jogo pela quantia economizada por semana."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_117",
+    "statement": "Ana comprou 3 doces por 2,50 reais cada e pagou com uma nota de 10 reais. Quanto recebeu de troco?",
+    "subject": "Matemática",
+    "context": "home",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        10,
+        0,
+        3,
+        2,
+        50,
+        10,
+        0,
+        7,
+        50,
+        2,
+        50
+      ],
+      "result": 10,
+      "explanation": "Gasto total: 3 × 2,50 = 7,50. Troco: 10,00 - 7,50.",
+      "calculation": "10,00 - (3 × 2,50) = 10,00 - 7,50 = 2,50"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Ana comprou 3 doces por 2,50 reais cada e pagou com uma nota de 10 reais. Quanto recebeu de troco?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Gasto total: 3 × 2,50 = 7,50. Troco: 10,00 - 7,50."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_118",
+    "statement": "Julia vende pipas por 15 reais cada. Se ela vendeu 8 pipas e gastou 45 reais com materiais, qual foi seu lucro?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        8,
+        15,
+        45,
+        120,
+        45,
+        75
+      ],
+      "result": 120,
+      "explanation": "Receita: 8 × 15 = 120. Lucro: receita - gastos = 120 - 45.",
+      "calculation": "(8 × 15) - 45 = 120 - 45 = 75 reais"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Julia vende pipas por 15 reais cada. Se ela vendeu 8 pipas e gastou 45 reais com materiais, qual foi seu lucro?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "Receita: 8 × 15 = 120. Lucro: receita - gastos = 120 - 45."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_119",
+    "statement": "Roberto compra cartas Pokémon em pacotes de 24 reais com 6 cartas cada. Quantos reais ele paga por carta?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        24,
+        6,
+        4
+      ],
+      "result": 4,
+      "explanation": "Dividimos o preço do pacote pela quantidade de cartas.",
+      "calculation": "24 ÷ 6 = 4 reais por carta"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Roberto compra cartas Pokémon em pacotes de 24 reais com 6 cartas cada. Quantos reais ele paga por carta?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "Dividimos o preço do pacote pela quantidade de cartas."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_120",
+    "statement": "Beatriz tinha 85 reais, gastou 1/3 com tênis e 1/5 com roupas. Quanto dinheiro sobrou?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        85,
+        28,
+        17,
+        85,
+        45,
+        40
+      ],
+      "result": 85,
+      "explanation": "1/3 de 85 ≈ 28, 1/5 de 85 = 17. Gasto total: 28 + 17 = 45. Sobrou: 85 - 45.",
+      "calculation": "85 - (28 + 17) = 85 - 45 = 40 reais"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Beatriz tinha 85 reais, gastou 1/3 com tênis e 1/5 com roupas. Quanto dinheiro sobrou?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "1/3 de 85 ≈ 28, 1/5 de 85 = 17. Gasto total: 28 + 17 = 45. Sobrou: 85 - 45."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_08/bloco_08_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_08/bloco_08_questao_15_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_121",
+    "statement": "Pedro constrói torres no Minecraft seguindo um padrão: 1ª torre tem 5 blocos, 2ª tem 8 blocos, 3ª tem 11 blocos. Quantos blocos terá a 5ª torre?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        5,
+        8,
+        11,
+        14,
+        17,
+        3
+      ],
+      "result": null,
+      "explanation": "O padrão aumenta 3 blocos por torre. 4ª torre: 11 + 3 = 14, 5ª torre: 14 + 3 = 17.",
+      "calculation": "5, 8, 11, 14, 17 (padrão +3)"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro constrói torres no Minecraft seguindo um padrão: 1ª torre tem 5 blocos, 2ª tem 8 blocos, 3ª tem 11 blocos. Quantos blocos terá a 5ª torre?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "O padrão aumenta 3 blocos por torre. 4ª torre: 11 + 3 = 14, 5ª torre: 14 + 3 = 17."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_1_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_1_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_122",
+    "statement": "Sofia coleciona moedas do Roblox: no 1º dia ganhou 10, no 2º dia ganhou 20, no 3º dia ganhou 40. Se continuar esse padrão, quantas moedas ganhará no 5º dia?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        10,
+        20,
+        40,
+        80,
+        160,
+        2
+      ],
+      "result": null,
+      "explanation": "O padrão dobra a cada dia. 4º dia: 40 × 2 = 80, 5º dia: 80 × 2 = 160.",
+      "calculation": "10, 20, 40, 80, 160 (padrão ×2)"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia coleciona moedas do Roblox: no 1º dia ganhou 10, no 2º dia ganhou 20, no 3º dia ganhou 40. Se continuar esse padrão, quantas moedas ganhará no 5º dia?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "O padrão dobra a cada dia. 4º dia: 40 × 2 = 80, 5º dia: 80 × 2 = 160."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_2_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_2_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_123",
+    "statement": "Lucas organiza seus tênis em fileiras: 1ª fileira tem 2 pares, 2ª tem 4, 3ª tem 8. Quantos pares terá na 6ª fileira?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        2,
+        4,
+        8,
+        16,
+        32,
+        64
+      ],
+      "result": null,
+      "explanation": "Padrão dobra: 4ª fileira = 16, 5ª = 32, 6ª = 64.",
+      "calculation": "2, 4, 8, 16, 32, 64"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Lucas organiza seus tênis em fileiras: 1ª fileira tem 2 pares, 2ª tem 4, 3ª tem 8. Quantos pares terá na 6ª fileira?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Padrão dobra: 4ª fileira = 16, 5ª = 32, 6ª = 64."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_3_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_3_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_124",
+    "statement": "Marina planta flores seguindo sequência: 1º canteiro tem 3 flores, 2º tem 7, 3º tem 11, 4º tem 15. Quantas flores terá o 7º canteiro?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        3,
+        7,
+        11,
+        15,
+        19,
+        23,
+        27
+      ],
+      "result": null,
+      "explanation": "Padrão +4: 5º = 19, 6º = 23, 7º = 27.",
+      "calculation": "3, 7, 11, 15, 19, 23, 27"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina planta flores seguindo sequência: 1º canteiro tem 3 flores, 2º tem 7, 3º tem 11, 4º tem 15. Quantas flores terá o 7º canteiro?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Padrão +4: 5º = 19, 6º = 23, 7º = 27."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_4_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_4_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_125",
+    "statement": "Diego assiste vídeos por semana: 1ª semana 2 vídeos, 2ª semana 6, 3ª semana 18. Se continuar multiplicando por 3, quantos vídeos assistirá na 5ª semana?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        2,
+        6,
+        18,
+        54,
+        162
+      ],
+      "result": null,
+      "explanation": "Padrão ×3: 4ª semana = 18 × 3 = 54, 5ª semana = 54 × 3 = 162.",
+      "calculation": "2, 6, 18, 54, 162"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Diego assiste vídeos por semana: 1ª semana 2 vídeos, 2ª semana 6, 3ª semana 18. Se continuar multiplicando por 3, quantos vídeos assistirá na 5ª semana?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Padrão ×3: 4ª semana = 18 × 3 = 54, 5ª semana = 54 × 3 = 162."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_5_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_5_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_126",
+    "statement": "Um torneio de Roblox tem 64 jogadores. A cada rodada, metade é eliminada. Após 4 rodadas, quantos jogadores restam?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        64,
+        32,
+        16,
+        8,
+        4
+      ],
+      "result": null,
+      "explanation": "1ª rodada: 64÷2=32, 2ª: 32÷2=16, 3ª: 16÷2=8, 4ª: 8÷2=4.",
+      "calculation": "64 → 32 → 16 → 8 → 4 jogadores"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Um torneio de Roblox tem 64 jogadores. A cada rodada, metade é eliminada. Após 4 rodadas, quantos jogadores restam?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "1ª rodada: 64÷2=32, 2ª: 32÷2=16, 3ª: 16÷2=8, 4ª: 8÷2=4."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_6_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_6_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_127",
+    "statement": "Carolina tem 3 vezes mais seguidores que Bruno. Se Carolina perdesse 200 seguidores e Bruno ganhasse 200, eles teriam o mesmo número. Quantos seguidores Carolina tem?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        600,
+        200
+      ],
+      "result": null,
+      "explanation": "C = 3B. Depois das mudanças: C - 200 = B + 200, então C = B + 400. Substituindo: B + 400 = 3B.",
+      "calculation": "Carolina: 600, Bruno: 200"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Carolina tem 3 vezes mais seguidores que Bruno. Se Carolina perdesse 200 seguidores e Bruno ganhasse 200, eles teriam o mesmo número. Quantos seguidores Carolina tem?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "C = 3B. Depois das mudanças: C - 200 = B + 200, então C = B + 400. Substituindo: B + 400 = 3B."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_7_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_7_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_128",
+    "statement": "Artur compra, vende e troca cartas. Começou com 50, comprou 30, vendeu 1/4 do total, depois trocou 20 por 35 novas. Quantas cartas tem agora?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        50,
+        30,
+        20,
+        20,
+        35,
+        75
+      ],
+      "result": 75,
+      "explanation": "Início: 50, após compra: 80, vendeu 20 (1/4 de 80): ficou com 60, trocou 20 por 35: 60 - 20 + 35.",
+      "calculation": "50 + 30 - 20 - 20 + 35 = 75"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Artur compra, vende e troca cartas. Começou com 50, comprou 30, vendeu 1/4 do total, depois trocou 20 por 35 novas. Quantas cartas tem agora?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Início: 50, após compra: 80, vendeu 20 (1/4 de 80): ficou com 60, trocou 20 por 35: 60 - 20 + 35."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_8_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_8_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_129",
+    "statement": "Isabel empina pipas há 6 semanas. Nas primeiras 3 semanas empinou 4 por semana, nas últimas 3 empinou o dobro por semana. Quantas pipas empinou no total?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "adição",
+      "numbers": [
+        3,
+        4,
+        3,
+        8,
+        12,
+        24,
+        36
+      ],
+      "result": 12,
+      "explanation": "Primeiras 3 semanas: 3 × 4 = 12. Últimas 3 semanas: 3 × 8 = 24. Total: 12 + 24.",
+      "calculation": "(3 × 4) + (3 × 8) = 12 + 24 = 36"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Isabel empina pipas há 6 semanas. Nas primeiras 3 semanas empinou 4 por semana, nas últimas 3 empinou o dobro por semana. Quantas pipas empinou no total?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "adição",
+        "explanation": "Primeiras 3 semanas: 3 × 4 = 12. Últimas 3 semanas: 3 × 8 = 24. Total: 12 + 24."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_9_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_9_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_130",
+    "statement": "Gustavo divide sua coleção de 120 carros entre 3 amigos de forma que o primeiro receba o dobro do segundo, e o terceiro receba metade do primeiro. Quantos carros recebe o segundo amigo?",
+    "subject": "Matemática",
+    "context": "vehicles",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "divisão",
+      "numbers": [
+        120,
+        4,
+        30
+      ],
+      "result": 30,
+      "explanation": "2º amigo = X, 1º = 2X, 3º = X. Total: 2X + X + X = 120, então 4X = 120.",
+      "calculation": "120 ÷ 4 = 30 carros"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Gustavo divide sua coleção de 120 carros entre 3 amigos de forma que o primeiro receba o dobro do segundo, e o terceiro receba metade do primeiro. Quantos carros recebe o segundo amigo?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "divisão",
+        "explanation": "2º amigo = X, 1º = 2X, 3º = X. Total: 2X + X + X = 120, então 4X = 120."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_10_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_10_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_131",
+    "statement": "Uma escola organizou gincana: 5 times, cada time perdeu 1/5 dos integrantes na 1ª prova. Se sobraram 240 alunos no total, quantos alunos havia inicialmente?",
+    "subject": "Matemática",
+    "context": "school",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        240,
+        4,
+        5,
+        60,
+        5,
+        300
+      ],
+      "result": 60,
+      "explanation": "Se perderam 1/5, sobraram 4/5. Se 240 representa 4/5 do total, o total inicial era 240 ÷ 4 × 5.",
+      "calculation": "(240 ÷ 4) × 5 = 60 × 5 = 300"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Uma escola organizou gincana: 5 times, cada time perdeu 1/5 dos integrantes na 1ª prova. Se sobraram 240 alunos no total, quantos alunos havia inicialmente?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Se perderam 1/5, sobraram 4/5. Se 240 representa 4/5 do total, o total inicial era 240 ÷ 4 × 5."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_11_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_11_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_132",
+    "statement": "Marina e Julia colecionam tênis. Marina tem 2/3 da quantidade de Julia. Se Marina comprasse 15 pares e Julia vendesse 25, elas teriam quantidades iguais. Quantos tênis Marina possui?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "subtração",
+      "numbers": [
+        80
+      ],
+      "result": null,
+      "explanation": "M = 2J/3. Após mudanças: M + 15 = J - 25, então 2J/3 + 15 = J - 25. Resolvendo: J = 120, M = 80.",
+      "calculation": "Marina: 80 tênis"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Marina e Julia colecionam tênis. Marina tem 2/3 da quantidade de Julia. Se Marina comprasse 15 pares e Julia vendesse 25, elas teriam quantidades iguais. Quantos tênis Marina possui?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "subtração",
+        "explanation": "M = 2J/3. Após mudanças: M + 15 = J - 25, então 2J/3 + 15 = J - 25. Resolvendo: J = 120, M = 80."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_12_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_12_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_133",
+    "statement": "Pedro construiu cidade no Minecraft em formato quadrado. Aumentou cada lado em 50%, e a área aumentou em quantos por cento?",
+    "subject": "Matemática",
+    "context": "toys",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        125
+      ],
+      "result": null,
+      "explanation": "Lado original = L, área = L². Novo lado = 1,5L, nova área = 2,25L². Aumento: 125%.",
+      "calculation": "Área aumentou 125%"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Pedro construiu cidade no Minecraft em formato quadrado. Aumentou cada lado em 50%, e a área aumentou em quantos por cento?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Lado original = L, área = L². Novo lado = 1,5L, nova área = 2,25L². Aumento: 125%."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_13_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_13_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_134",
+    "statement": "Torneio de videogame: 128 participantes, taxa de inscrição 25 reais. Prêmios: 1º lugar 40% do total, 2º lugar 25%, 3º lugar 15%, organização fica com resto. Quanto a organização recebeu?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        3200,
+        20,
+        640
+      ],
+      "result": 640,
+      "explanation": "Total arrecadado: 128 × 25 = 3200. Prêmios: 40% + 25% + 15% = 80%. Organização: 20%.",
+      "calculation": "3200 × 20% = 640 reais"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Torneio de videogame: 128 participantes, taxa de inscrição 25 reais. Prêmios: 1º lugar 40% do total, 2º lugar 25%, 3º lugar 15%, organização fica com resto. Quanto a organização recebeu?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "Total arrecadado: 128 × 25 = 3200. Prêmios: 40% + 25% + 15% = 80%. Organização: 20%."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_14_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_14_explicacao.mp3"
+    }
+  },
+  {
+    "id": "op_id_135",
+    "statement": "Sofia economiza dinheiro: no 1º mês guardou 50 reais, nos meses seguintes sempre guardou 20% a mais que o mês anterior. Quanto guardou no 4º mês?",
+    "subject": "Matemática",
+    "context": "general",
+    "difficulty": "hard",
+    "ageRange": "8-12",
+    "originalActivity": "Quiz de Identificação de Operações Matemáticas",
+    "mathematics": {
+      "operation": "multiplicação",
+      "numbers": [
+        50,
+        1,
+        2,
+        86,
+        40
+      ],
+      "result": 86,
+      "explanation": "1º mês: 50, 2º: 50 × 1,2 = 60, 3º: 60 × 1,2 = 72, 4º: 72 × 1,2 = 86,4.",
+      "calculation": "50 × 1,2³ = 86,40 reais"
+    },
+    "competencies": {
+      "operation_identification": {
+        "type": "multiple_choice",
+        "question": "Qual operação matemática deve ser usada para resolver: \"Sofia economiza dinheiro: no 1º mês guardou 50 reais, nos meses seguintes sempre guardou 20% a mais que o mês anterior. Quanto guardou no 4º mês?\"?",
+        "options": [
+          "adição",
+          "subtração",
+          "multiplicação",
+          "divisão"
+        ],
+        "correctAnswer": "multiplicação",
+        "explanation": "1º mês: 50, 2º: 50 × 1,2 = 60, 3º: 60 × 1,2 = 72, 4º: 72 × 1,2 = 86,4."
+      }
+    },
+    "audio": {
+      "enunciado": "matematica/bloco_09/bloco_09_questao_15_enunciado.mp3",
+      "explicacao": "matematica/bloco_09/bloco_09_questao_15_explicacao.mp3"
+    }
+  }
+]
