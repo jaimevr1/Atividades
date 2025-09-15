@@ -3,872 +3,383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detective da História - Independência do Brasil</title>
-    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <title>Detective da História - Independência</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('../media/fonts/OpenDyslexic-Regular.otf') format('opentype');
+          font-weight: normal; font-style: normal;
         }
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #92400e 0%, #ea580c 50%, #dc2626 100%);
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('../media/fonts/OpenDyslexic-Bold.otf') format('opentype');
+          font-weight: bold; font-style: normal;
         }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #ea580c;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+        body { font-family: 'Comic Sans MS', cursive, sans-serif; }
+        .font-dyslexic { font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif; }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="loading">
-            <div class="spinner"></div>
-            Carregando Detective da História...
-        </div>
-    </div>
+    <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        
-        const DetectiveHistoriaIndependencia = () => {
-          const [studentName, setStudentName] = useState('');
-          const [fontSize, setFontSize] = useState(localStorage.getItem('selectedFont') || 'comic');
-          const [gameStarted, setGameStarted] = useState(false);
-          const [showBlockSelection, setShowBlockSelection] = useState(false);
-          const [investigationPhase, setInvestigationPhase] = useState(true);
-          const [currentMystery, setCurrentMystery] = useState(null);
-          const [revealedClues, setRevealedClues] = useState([]);
-          const [solvedMysteries, setSolvedMysteries] = useState([]);
-          const [score, setScore] = useState(100);
-          const [attempts, setAttempts] = useState([]);
-          const [startTime, setStartTime] = useState(null);
-          const [showCelebration, setShowCelebration] = useState(false);
-          const [celebrationMessage, setCelebrationMessage] = useState('');
-          const [showError, setShowError] = useState(false);
-          const [errorMessage, setErrorMessage] = useState('');
-          const [timelinePhase, setTimelinePhase] = useState(false);
-          const [timelineOrder, setTimelineOrder] = useState([]);
-          const [connections, setConnections] = useState([]);
-          const [gameCompleted, setGameCompleted] = useState(false);
-          const [allSessionData, setAllSessionData] = useState([]);
+        const { useState, useEffect, useRef } = React;
 
-          // Listas de sons de feedback
-          const feedbackSounds = {
-            acertos: [
-              'acerto_1.mp3',
-              'acerto_2.mp3', 
-              'acerto_3.mp3',
-              'acerto_4.mp3'
-            ],
-            erros: [
-              'erro_1.mp3',
-              'erro_2.mp3',
-              'erro_3.mp3', 
-              'erro_4.mp3'
-            ]
-          };
-
-          // Função para tocar som de feedback (acerto/erro)
-          const playFeedbackSound = (isCorrect) => {
-            try {
-              const soundType = isCorrect ? 'acertos' : 'erros';
-              const sounds = feedbackSounds[soundType];
-              const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-              const soundPath = `../media/sons/feedback/${soundType}/${randomSound}`;
-              
-              const feedbackAudio = new Audio(soundPath);
-              feedbackAudio.volume = 0.7; // Volume médio para feedback
-              feedbackAudio.play().catch(error => {
-                console.log('Som de feedback não encontrado:', soundPath);
-              });
-            } catch (error) {
-              console.log('Erro ao reproduzir som de feedback:', error);
-            }
-          };
-
-          // Dossiês de investigação
-          const mysteries = [
-            {
-              id: 0,
-              year: 1808,
-              code: "MISTÉRIO-001",
-              clues: [
-                "A família de um rei precisou fugir de Napoleão Bonaparte.",
-                "Eles atravessaram o oceano e trouxeram a corte para o Brasil.",
-                "O Brasil deixou de ser apenas uma colônia e o porto do Rio de Janeiro foi aberto."
-              ],
-              solution: "Abertura dos Portos às Nações Amigas",
-              image: "../media/misterios/familia_real_1808.png",
-              icon: "🔍",
-              alternatives: [
-                "Abertura dos Portos às Nações Amigas",
-                "Criação do Reino Unido",
-                "Invasão Napoleônica no Brasil"
-              ]
-            },
-            {
-              id: 1,
-              year: 1821,
-              code: "MISTÉRIO-002", 
-              clues: [
-                "A família real precisou voltar para Portugal.",
-                "A corte portuguesa queria que o Brasil voltasse a ser apenas uma colônia.",
-                "O príncipe herdeiro, Dom Pedro, foi aconselhado a ficar no Brasil."
-              ],
-              solution: "O Dia do Fico",
-              image: "../media/misterios/dia_do_fico_1821.png",
-              icon: "🔍",
-              alternatives: [
-                "O Dia do Fico",
-                "Regresso Real Forçado",
-                "Revolução Pernambucana"
-              ]
-            },
-            {
-              id: 2,
-              year: 1822,
-              code: "MISTÉRIO-003",
-              clues: [
-                "Um príncipe estava viajando por São Paulo.",
-                "Ele recebeu uma carta de Portugal exigindo que voltasse imediatamente.",
-                "Às margens de um rio, ele levantou sua espada e gritou 'Independência ou Morte!'."
-              ],
-              solution: "O Grito do Ipiranga",
-              image: "../media/misterios/grito_ipiranga_1822.png", 
-              icon: "🔍",
-              alternatives: [
-                "O Grito do Ipiranga",
-                "Batalha do Ipiranga",
-                "Revolta Paulista"
-              ]
-            },
-            {
-              id: 3,
-              year: 1889,
-              code: "MISTÉRIO-004",
-              clues: [
-                "A monarquia do Brasil já não era popular.",
-                "Um grupo de militares se juntou a líderes civis para mudar a forma de governo.",
-                "O imperador Dom Pedro II foi deposto e o Brasil se tornou uma República."
-              ],
-              solution: "Proclamação da República",
-              image: "../media/misterios/proclamacao_republica_1889.png",
-              icon: "🔍",
-              alternatives: [
-                "Proclamação da República", 
-                "Golpe Imperial",
-                "Revolução Federalista"
-              ]
-            },
-            {
-              id: 4,
-              year: 1988,
-              code: "MISTÉRIO-005",
-              clues: [
-                "Depois de um longo período sem liberdade, o Brasil precisava de novas leis.",
-                "Essa Constituição garantiu muitos direitos importantes, como o voto para todos os maiores de 16 anos.",
-                "Por isso, ela é chamada de 'Constituição Cidadã'."
-              ],
-              solution: "Constituição Federal de 1988",
-              image: "../media/misterios/constituicao_cidada_1988.png"
-              icon: "🔍",
-              alternatives: [
-                "Constituição Federal de 1988",
-                "Lei Áurea",
-                "Código Civil Brasileiro"
-              ]
-            }
-          ];
-
-          const celebrationMessages = [
-            "EXCELENTE WORK, SHERLOCK!",
-            "CÉREBRO FUNCIONANDO! Esfrega as mãos!",
-            "CASO RESOLVIDO! Comemoração style detetive!",
-            "INVESTIGADOR NATO! Faz pose de detetive!",
-            "SHERLOCK BRASILEIRO! Ajusta o chapéu!"
-          ];
-
-          const errorMessages = [
-            "Ops! Analise as evidências novamente...",
-            "Investigação incompleta! Revise as pistas!",
-            "Não foi dessa vez! Examine melhor!",
-            "Quase detetive! Olhe os detalhes!",
-            "Pense como um investigador!"
-          ];
-
-          useEffect(() => {
-            if (gameStarted && !showBlockSelection) {
-              setStartTime(new Date());
-            }
-          }, [gameStarted, showBlockSelection]);
-
-          const getFontStyle = () => ({
-            fontSize: '24px',
-            fontFamily: fontSize === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
-                       fontSize === 'comic' ? "'Comic Sans MS', cursive" :
-                       "'Comic Sans MS', sans-serif"
-          });
-
-          const startGame = () => {
-            if (studentName.trim()) {
-              setShowBlockSelection(true);
-            }
-          };
-
-          const handleBlockSelect = () => {
-            setGameStarted(true);
-            setShowBlockSelection(false);
-          };
-
-          const openMystery = (mysteryId) => {
-            setCurrentMystery(mysteryId);
-            setRevealedClues([]);
-          };
-
-          const revealNextClue = () => {
-            if (revealedClues.length < 3) {
-              setRevealedClues(prev => [...prev, revealedClues.length]);
-              
-              if (revealedClues.length === 0) {
-                const randomMessage = celebrationMessages[Math.floor(Math.random() * celebrationMessages.length)];
-                setCelebrationMessage(randomMessage);
-                setShowCelebration(true);
-                setTimeout(() => setShowCelebration(false), 2000);
-              }
-            }
-          };
-
-          const selectSolution = (selectedSolution) => {
-            const mystery = mysteries[currentMystery];
-            const isCorrect = selectedSolution === mystery.solution;
-            
-            const attemptData = {
-              timestamp: new Date(),
-              mysteryId: currentMystery,
-              mysteryCode: mystery.code,
-              correctSolution: mystery.solution,
-              selectedSolution: selectedSolution,
-              correct: isCorrect,
-              cluesRevealed: revealedClues.length,
-              investigationTime: Math.round((new Date() - startTime) / 1000)
-            };
-            setAttempts(prev => [...prev, attemptData]);
-
-            // Tocar som de feedback imediatamente
-            playFeedbackSound(isCorrect);
-
-            if (isCorrect) {
-              setSolvedMysteries(prev => [...prev, currentMystery]);
-              const randomMessage = celebrationMessages[Math.floor(Math.random() * celebrationMessages.length)];
-              setCelebrationMessage(randomMessage);
-              setShowCelebration(true);
-              setTimeout(() => setShowCelebration(false), 2500);
-              
-              if (solvedMysteries.length + 1 >= 5) {
-                setTimeout(() => setTimelinePhase(true), 1500);
-              }
-            } else {
-              setScore(prev => Math.max(0, prev - 10));
-              const randomError = errorMessages[Math.floor(Math.random() * errorMessages.length)];
-              setErrorMessage(randomError);
-              setShowError(true);
-              setTimeout(() => setShowError(false), 2500);
-            }
-            
-            setCurrentMystery(null);
-            setRevealedClues([]);
-          };
-
-          const handleTimelineConnection = (fromIndex, toIndex) => {
-            const newConnection = { from: fromIndex, to: toIndex };
-            setConnections(prev => [...prev, newConnection]);
-            
-            if (connections.length + 1 >= 4) {
-              setTimeout(() => {
-                setCelebrationMessage("CASO RESOLVIDO! Comemoração style detetive!");
-                setShowCelebration(true);
-                setTimeout(() => setShowCelebration(false), 3000);
-                setTimeout(() => setGameCompleted(true), 1000);
-              }, 500);
-            }
-          };
-
-          const downloadAggregatedCSV = () => {
-            if (attempts.length === 0) return;
-            
-            const endTime = new Date();
-            const totalTime = startTime ? Math.round((endTime - startTime) / 1000) : 0;
-            const errorCount = attempts.filter(attempt => !attempt.correct).length;
-            
-            const csvData = [
-              ['Nome', 'Materia', 'Atividade', 'Bloco', 'Questao', 'Tempo_Execucao', 'Acertos', 'Erros', 'Score']
-            ];
-
-            csvData.push([
-              studentName,
-              'Historia',
-              'Detective da Historia',
-              'Caso Independencia',
-              `${attempts.length}_misterios`,
-              `${totalTime}s`,
-              solvedMysteries.length,
-              errorCount,
-              `${score}%`
-            ]);
-            
-            const csvContent = csvData.map(row => row.join(',')).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `Detective_Independencia_${studentName}_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          };
-
-          const handleSessionEnd = () => {
-            downloadAggregatedCSV();
-            setStudentName('');
-            setGameStarted(false);
-            setShowBlockSelection(false);
-            setInvestigationPhase(true);
-            setTimelinePhase(false);
-            setCurrentMystery(null);
-            setRevealedClues([]);
-            setSolvedMysteries([]);
-            setScore(100);
-            setAttempts([]);
-            setStartTime(null);
-            setTimelineOrder([]);
-            setConnections([]);
-            setGameCompleted(false);
-            setShowCelebration(false);
-            setShowError(false);
-            setAllSessionData([]);
-          };
-
-          const resetGame = () => {
-            setInvestigationPhase(true);
-            setTimelinePhase(false);
-            setCurrentMystery(null);
-            setRevealedClues([]);
-            setSolvedMysteries([]);
-            setScore(100);
-            setAttempts([]);
-            setTimelineOrder([]);
-            setConnections([]);
-            setGameCompleted(false);
-            setGameStarted(false);
-            setShowBlockSelection(true);
-          };
-
-          // Tela inicial
-          if (!gameStarted && !showBlockSelection) {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-amber-800 via-orange-900 to-red-900 p-4" style={getFontStyle()}>
-                <div className="max-w-2xl mx-auto bg-amber-100 rounded-lg shadow-xl p-8 border-4 border-amber-600">
-                  <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-amber-900 mb-4">
-                      🕵️ Detective da História
-                    </h1>
-                    <h2 className="text-2xl font-semibold text-amber-800 mb-4">
-                      📁 CASO: Independência do Brasil
-                    </h2>
-                    <div className="bg-amber-200 rounded-lg p-4 border-2 border-amber-400">
-                      <p className="text-lg text-amber-800">
-                        🔍 MISSÃO: Investigar 5 dossiês históricos e resolver o caso da Independência Brasileira
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label className="block text-lg font-semibold text-amber-900 mb-3">
-                      👤 Nome do Detective:
-                    </label>
-                    <input
-                      type="text"
-                      value={studentName}
-                      onChange={(e) => setStudentName(e.target.value)}
-                      className="w-full p-4 border-3 border-amber-400 rounded-lg text-lg focus:border-amber-600 focus:outline-none bg-white"
-                      placeholder="Digite seu nome, detetive..."
-                      autoFocus
-                    />
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <button
-                      onClick={startGame}
-                      disabled={!studentName.trim()}
-                      className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
-                        studentName.trim()
-                          ? 'bg-amber-600 text-white hover:bg-amber-700 transform hover:scale-105 border-3 border-amber-800'
-                          : 'bg-gray-400 text-gray-600 cursor-not-allowed border-3 border-gray-500'
-                      }`}
-                    >
-                      🔍 Iniciar Investigação
-                    </button>
-                    <a
-                      href="../index.html"
-                      className="block w-full px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold"
-                    >
-                      ← Voltar ao Portal
-                    </a>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          // Tela de seleção de blocos (apenas um bloco disponível)
-          if (showBlockSelection && !gameStarted) {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-amber-800 via-orange-900 to-red-900 p-4" style={getFontStyle()}>
-                <div className="max-w-4xl mx-auto bg-amber-100 rounded-lg shadow-xl p-8 border-4 border-amber-600">
-                  <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-amber-900 mb-4">
-                      Olá, {studentName}! 🕵️
-                    </h1>
-                    <p className="text-xl text-amber-800">
-                      Prepare-se para investigar o caso da Independência do Brasil:
-                    </p>
-                  </div>
-                  
-                  {/* Tutorial */}
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-6">
-                    <h3 className="text-2xl font-bold text-amber-900 mb-4 text-center">
-                      🔍 Como Investigar
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                      <div className="bg-blue-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">1️⃣</div>
-                        <div className="text-sm font-semibold">Abra os dossiês</div>
-                        <div className="text-xs text-gray-600">Clique nos mistérios</div>
-                      </div>
-                      <div className="bg-green-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">2️⃣</div>
-                        <div className="text-sm font-semibold">Colete pistas</div>
-                        <div className="text-xs text-gray-600">Revele evidências</div>
-                      </div>
-                      <div className="bg-yellow-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">3️⃣</div>
-                        <div className="text-sm font-semibold">Faça deduções</div>
-                        <div className="text-xs text-gray-600">Escolha a solução</div>
-                      </div>
-                      <div className="bg-purple-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">4️⃣</div>
-                        <div className="text-sm font-semibold">Resolva o caso</div>
-                        <div className="text-xs text-gray-600">Timeline final</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Linha divisória */}
-                  <div className="border-t border-gray-200 my-6"></div>
-
-                  <div className="text-center">
-                    <button
-                      onClick={handleBlockSelect}
-                      className="px-12 py-6 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl border-4 border-amber-700 hover:from-amber-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105 text-center"
-                    >
-                      <div className="text-6xl mb-3">
-                        🕵️‍♂️
-                      </div>
-                      <h3 className="font-bold text-2xl text-white mb-2">
-                        Caso da Independência
-                      </h3>
-                      <p className="text-lg text-amber-100">
-                        5 mistérios para investigar
-                      </p>
-                      <div className="mt-3 text-sm text-amber-200">
-                        1808 - 1988
-                      </div>
-                    </button>
-                  </div>
-                  
-                  <div className="text-center mt-8">
-                    <button
-                      onClick={handleSessionEnd}
-                      className="px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-bold text-lg transform hover:scale-105"
-                    >
-                      Finalizar Sessão
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          // Tela de investigação de dossiês
-          if (investigationPhase && !timelinePhase && gameStarted) {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-amber-800 via-orange-900 to-red-900 p-4" style={getFontStyle()}>
-                <div className="max-w-6xl mx-auto">
-                  
-                  {/* Header investigativo */}
-                  <div className="bg-amber-100 rounded-xl border-4 border-amber-600 p-6 mb-6">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h1 className="text-2xl font-bold text-amber-900">
-                          🕵️ Detective {studentName}
-                        </h1>
-                        <p className="text-lg text-amber-800">CASO: Independência do Brasil</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl font-bold text-amber-900">Score: {score}%</div>
-                        <div className="text-sm text-amber-700">Mistérios resolvidos: {solvedMysteries.length}/5</div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 w-full bg-amber-200 rounded-full h-4 border-2 border-amber-400">
-                      <div 
-                        className="bg-gradient-to-r from-green-600 to-blue-600 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${(solvedMysteries.length / 5) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  {/* Mesa de dossiês */}
-                  {!currentMystery ? (
-                    <div className="bg-amber-100 rounded-xl border-4 border-amber-600 p-8">
-                      <h2 className="text-3xl font-bold text-amber-900 text-center mb-6">
-                        📂 Mesa de Investigação
-                      </h2>
-                      <p className="text-lg text-amber-800 text-center mb-8">
-                        Clique em um dossiê para começar a investigação:
-                      </p>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {mysteries.map((mystery) => (
-                          <button
-                            key={mystery.id}
-                            onClick={() => openMystery(mystery.id)}
-                            disabled={solvedMysteries.includes(mystery.id)}
-                            className={`
-                              relative p-6 rounded-xl border-4 transition-all duration-300 transform
-                              ${solvedMysteries.includes(mystery.id)
-                                ? 'bg-green-200 border-green-500 opacity-75'
-                                : 'bg-yellow-200 border-yellow-600 hover:bg-yellow-300 hover:scale-105 cursor-pointer shadow-lg hover:shadow-xl'
-                              }
-                            `}
-                          >
-                            <div className="text-center">
-                              <div className="text-4xl mb-2">{mystery.icon}</div>
-                              <div className="text-lg font-bold text-gray-800">{mystery.code}</div>
-                              <div className="text-sm text-gray-700">Ano: {mystery.year}</div>
-                              {solvedMysteries.includes(mystery.id) && (
-                                <div className="absolute top-2 right-2 text-2xl">✅</div>
-                              )}
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                      
-                      {solvedMysteries.length === 5 && (
-                        <div className="text-center mt-8">
-                          <button
-                            onClick={() => setTimelinePhase(true)}
-                            className="px-8 py-4 bg-blue-600 text-white rounded-xl border-4 border-blue-800 hover:bg-blue-700 transition-all transform hover:scale-105 text-xl font-bold"
-                          >
-                            🧩 Organizar Evidências na Timeline
-                          </button>
-                        </div>
-                      )}
-
-                      <div className="text-center mt-6">
-                        <button
-                          onClick={resetGame}
-                          className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold transform hover:scale-105"
-                        >
-                          ← Voltar
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    // Interface de investigação do mistério
-                    <div className="bg-amber-100 rounded-xl border-4 border-amber-600 p-8">
-                      <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-bold text-amber-900">
-                          📋 {mysteries[currentMystery].code}
-                        </h2>
-                        <button
-                          onClick={() => setCurrentMystery(null)}
-                          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                        >
-                          ← Voltar à Mesa
-                        </button>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Área de evidências */}
-                        <div className="bg-white rounded-lg border-3 border-gray-400 p-6">
-                          <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                            🔍 Evidências Coletadas
-                          </h3>
-                          
-                          <div className="bg-gray-200 rounded-lg p-4 mb-4">
-                            <div className="w-full h-40 bg-gray-300 rounded-lg flex items-center justify-center text-gray-600 text-sm">
-                              Evidência Fotográfica {mysteries[currentMystery].year}
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            {revealedClues.map((clueIndex) => (
-                              <div key={clueIndex} className="bg-yellow-100 rounded-lg p-3 border-2 border-yellow-400 animate-pulse">
-                                <p className="text-gray-800 font-medium">
-                                  <span className="font-bold text-yellow-800">Pista {clueIndex + 1}:</span> {mysteries[currentMystery].clues[clueIndex]}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                          
-                          {revealedClues.length < 3 && (
-                            <button
-                              onClick={revealNextClue}
-                              className="w-full mt-4 px-6 py-3 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all transform hover:scale-105 font-bold border-3 border-yellow-700"
-                            >
-                              🔍 Revelar Próxima Pista ({revealedClues.length + 1}/3)
-                            </button>
-                          )}
-                        </div>
-                        
-                        {/* Área de soluções */}
-                        <div className="bg-white rounded-lg border-3 border-gray-400 p-6">
-                          <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                            🎯 Qual é o evento histórico?
-                          </h3>
-                          
-                          {revealedClues.length === 3 ? (
-                            <div className="space-y-4">
-                              <p className="text-lg text-gray-700 text-center mb-6">
-                                Com base nas evidências, qual evento histórico você identifica?
-                              </p>
-                              
-                              {mysteries[currentMystery].alternatives.map((alternative, index) => (
-                                <button
-                                  key={index}
-                                  onClick={() => selectSolution(alternative)}
-                                  className="w-full p-4 bg-blue-100 hover:bg-blue-200 rounded-lg border-2 border-blue-300 hover:border-blue-500 transition-all transform hover:scale-105 text-left"
-                                >
-                                  <span className="font-bold text-blue-800">{index + 1}. </span>
-                                  <span className="text-gray-800">{alternative}</span>
-                                </button>
-                              ))}
-                            </div>
-                          ) : (
-                            <div className="text-center py-8">
-                              <div className="text-6xl mb-4 animate-bounce">🔍</div>
-                              <p className="text-lg text-gray-600">
-                                Colete todas as 3 pistas antes de fazer sua dedução!
-                              </p>
-                              <p className="text-sm text-gray-500 mt-2">
-                                Pistas coletadas: {revealedClues.length}/3
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Celebração */}
-                {showCelebration && (
-                  <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white text-2xl font-bold text-center p-6 rounded-xl border-4 border-green-800 animate-bounce z-50 shadow-2xl">
-                    {celebrationMessage}
-                  </div>
-                )}
-
-                {/* Popup de erro */}
-                {showError && (
-                  <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-600 text-white text-xl font-bold text-center p-6 rounded-xl border-4 border-red-800 animate-pulse z-50 shadow-2xl">
-                    {errorMessage}
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          // Fase de timeline e conexões
-          if (timelinePhase && !gameCompleted) {
-            const sortedMysteries = [...mysteries].sort((a, b) => a.year - b.year);
-            
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-amber-800 via-orange-900 to-red-900 p-4" style={getFontStyle()}>
-                <div className="max-w-6xl mx-auto">
-                  
-                  <div className="bg-amber-100 rounded-xl border-4 border-amber-600 p-6 mb-6 text-center">
-                    <h2 className="text-3xl font-bold text-amber-900 mb-4">
-                      🧩 FASE FINAL: Organização das Evidências
-                    </h2>
-                    <p className="text-lg text-amber-800">
-                      Conecte os eventos na ordem cronológica clicando de um para o outro:
-                    </p>
-                  </div>
-                  
-                  <div className="bg-white rounded-xl border-4 border-gray-400 p-8">
-                    <h3 className="text-2xl font-bold text-center mb-6 text-gray-800">
-                      📈 Linha do Tempo da Independência
-                    </h3>
-                    
-                    <div className="flex justify-between items-center relative">
-                      {sortedMysteries.map((mystery, index) => (
-                        <button
-                          key={mystery.id}
-                          onClick={() => {
-                            if (timelineOrder.length === 0 || timelineOrder[timelineOrder.length - 1] !== index) {
-                              const newOrder = [...timelineOrder, index];
-                              setTimelineOrder(newOrder);
-                              
-                              if (newOrder.length > 1) {
-                                handleTimelineConnection(newOrder[newOrder.length - 2], index);
-                              }
-                            }
-                          }}
-                          className={`
-                            flex-1 mx-2 p-4 rounded-xl border-4 transition-all duration-300 text-center
-                            ${timelineOrder.includes(index)
-                              ? 'bg-green-200 border-green-500 text-green-800'
-                              : 'bg-blue-100 border-blue-400 hover:bg-blue-200 hover:scale-105 cursor-pointer text-blue-800'}
-                          `}
-                        >
-                          <div className="text-3xl mb-2">{mystery.icon}</div>
-                          <div className="text-xl font-bold">{mystery.year}</div>
-                          <div className="text-sm font-semibold">{mystery.solution}</div>
-                          {timelineOrder.includes(index) && (
-                            <div className="text-2xl mt-2">✅</div>
-                          )}
-                        </button>
-                      ))}
-                      
-                      {/* Linhas de conexão */}
-                      <svg className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                        {connections.map((connection, index) => (
-                          <line
-                            key={index}
-                            x1={`${(connection.from / 4) * 100}%`}
-                            y1="50%"
-                            x2={`${(connection.to / 4) * 100}%`}
-                            y2="50%"
-                            stroke="#059669"
-                            strokeWidth="4"
-                            strokeDasharray="10,5"
-                            className="animate-pulse"
-                          />
-                        ))}
-                      </svg>
-                    </div>
-                    
-                    <div className="text-center mt-8">
-                      <p className="text-lg text-gray-700 mb-4">
-                        Conexões feitas: {connections.length}/4
-                      </p>
-                      <button
-                        onClick={() => setTimelineOrder([])}
-                        className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors border-3 border-orange-700 mr-4"
-                      >
-                        🔄 Reiniciar Conexões
-                      </button>
-                      <button
-                        onClick={resetGame}
-                        className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold transform hover:scale-105"
-                      >
-                        ← Voltar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Celebração */}
-                {showCelebration && (
-                  <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-600 text-white text-2xl font-bold text-center p-6 rounded-xl border-4 border-green-800 animate-bounce z-50 shadow-2xl">
-                    {celebrationMessage}
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          // Tela de caso resolvido
-          if (gameCompleted) {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-amber-800 via-orange-900 to-red-900 p-4" style={getFontStyle()}>
-                <div className="max-w-3xl mx-auto bg-amber-100 rounded-xl border-4 border-amber-600 p-8 text-center">
-                  <h1 className="text-4xl font-bold mb-6 text-amber-900">
-                    🎉 CASO RESOLVIDO!
-                  </h1>
-                  
-                  <div className="bg-white rounded-lg border-3 border-gray-400 p-6 mb-6">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                      Detective {studentName.toUpperCase()}
-                    </h2>
-                    
-                    <div className="text-6xl mb-4">
-                      {score >= 90 ? '🏆' : score >= 70 ? '🌟' : '🕵️'}
-                    </div>
-                    
-                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                      <p className="text-2xl font-bold text-gray-800 mb-2">
-                        Score Final: {score}%
-                      </p>
-                      <p className="text-lg text-gray-600 mb-2">
-                        Mistérios resolvidos: {solvedMysteries.length}/5
-                      </p>
-                      <p className="text-lg font-semibold text-blue-600">
-                        {score >= 90 ? 'Detective Master! Caso perfeito!' :
-                         score >= 70 ? 'Bom trabalho investigativo!' :
-                         'Continue desenvolvendo suas habilidades!'}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <button
-                      onClick={resetGame}
-                      className="w-full px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xl font-bold transform hover:scale-105 border-3 border-blue-800"
-                    >
-                      🔍 Escolher Outro Caso
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          return null;
+        // ===================================================================================
+        // --- CONFIGURAÇÃO DA ATIVIDADE ---
+        // ===================================================================================
+        const activityConfig = {
+            title: "Detective da História: Independência",
+            subject: "historia",
+            activity: "detective_historia",
+            emoji: "🕵️",
+            primaryColor: "amber",
         };
 
-        ReactDOM.render(<DetectiveHistoriaIndependencia />, document.getElementById('root'));
+        const activityBlocks = [
+            {
+                id: 1,
+                title: "O Caso da Independência",
+                difficulty: "Intermediário",
+                emoji: "📜",
+                color: "from-amber-500 to-red-600",
+                description: "Investigue 5 dossiês para desvendar os segredos da Independência do Brasil.",
+                questions: [
+                    {
+                        id: "misterio_1",
+                        year: 1808,
+                        code: "MISTÉRIO-001",
+                        icon: "🚢",
+                        clues: [
+                            "A família de um rei precisou fugir de Napoleão Bonaparte.",
+                            "Eles atravessaram o oceano e trouxeram a corte para o Brasil.",
+                            "O Brasil deixou de ser apenas uma colônia e o porto do Rio de Janeiro foi aberto."
+                        ],
+                        options: [
+                            { id: "a", text: "Abertura dos Portos às Nações Amigas", correct: true },
+                            { id: "b", text: "Criação do Reino Unido" },
+                            { id: "c", text: "Invasão Napoleônica no Brasil" }
+                        ]
+                    },
+                    {
+                        id: "misterio_2",
+                        year: 1821,
+                        code: "MISTÉRIO-002",
+                        icon: "👑",
+                        clues: [
+                            "A família real precisou voltar para Portugal.",
+                            "A corte portuguesa queria que o Brasil voltasse a ser apenas uma colônia.",
+                            "O príncipe herdeiro, Dom Pedro, foi aconselhado a ficar no Brasil."
+                        ],
+                        options: [
+                            { id: "a", text: "O Dia do Fico", correct: true },
+                            { id: "b", text: "Regresso Real Forçado" },
+                            { id: "c", text: "Revolução Pernambucana" }
+                        ]
+                    },
+                    {
+                        id: "misterio_3",
+                        year: 1822,
+                        code: "MISTÉRIO-003",
+                        icon: "📢",
+                        clues: [
+                            "Um príncipe estava viajando por São Paulo.",
+                            "Ele recebeu uma carta de Portugal exigindo que voltasse imediatamente.",
+                            "Às margens de um rio, ele levantou sua espada e gritou 'Independência ou Morte!'."
+                        ],
+                        options: [
+                            { id: "a", text: "O Grito do Ipiranga", correct: true },
+                            { id: "b", text: "Batalha do Ipiranga" },
+                            { id: "c", text: "Revolta Paulista" }
+                        ]
+                    },
+                    {
+                        id: "misterio_4",
+                        year: 1889,
+                        code: "MISTÉRIO-004",
+                        icon: "🏛️",
+                        clues: [
+                            "A monarquia do Brasil já não era popular.",
+                            "Um grupo de militares se juntou a líderes civis para mudar a forma de governo.",
+                            "O imperador Dom Pedro II foi deposto e o Brasil se tornou uma República."
+                        ],
+                        options: [
+                            { id: "a", text: "Proclamação da República", correct: true },
+                            { id: "b", text: "Golpe Imperial" },
+                            { id: "c", text: "Revolução Federalista" }
+                        ]
+                    },
+                    {
+                        id: "misterio_5",
+                        year: 1988,
+                        code: "MISTÉRIO-005",
+                        icon: "⚖️",
+                        clues: [
+                            "Depois de um longo período sem liberdade, o Brasil precisava de novas leis.",
+                            "Essa Constituição garantiu muitos direitos importantes, como o voto para todos.",
+                            "Por isso, ela é chamada de 'Constituição Cidadã'."
+                        ],
+                        options: [
+                            { id: "a", text: "Constituição Federal de 1988", correct: true },
+                            { id: "b", text: "Lei Áurea" },
+                            { id: "c", text: "Código Civil Brasileiro" }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const MediaManager = {
+            basePath: '../media',
+            getClueAudioPath: (blockId, questionId, clueIndex) => {
+                return `${MediaManager.basePath}/audios/${activityConfig.subject}/${activityConfig.activity}/bloco_${blockId}/${questionId}_pista_${clueIndex + 1}.mp3`;
+            }
+        };
+
+        activityBlocks.forEach(block => {
+            block.questions.forEach(q => {
+                q.clues = q.clues.map((clueText, index) => ({
+                    text: clueText,
+                    audio: MediaManager.getClueAudioPath(block.id, q.id, index)
+                }));
+            });
+        });
+
+        const SoundSystem = {
+            play: (src) => { try { new Audio(src).play().catch(e => {}); } catch (e) {} },
+            success: () => SoundSystem.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`),
+            error: () => SoundSystem.play(`../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`),
+            click: () => SoundSystem.play('../media/sons/feedback/click.mp3')
+        };
+
+        const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
+            <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-800 via-orange-900 to-red-900 flex items-center justify-center p-4`}>
+                <div className="bg-amber-100 rounded-lg shadow-xl p-8 border-4 border-amber-600 max-w-2xl w-full">
+                    <div className="text-center mb-8">
+                        <h1 className="text-4xl font-bold text-amber-900 mb-4">{activityConfig.emoji} {activityConfig.title}</h1>
+                        <div className="bg-amber-200 rounded-lg p-4 border-2 border-amber-400">
+                            <p className="text-lg text-amber-800">MISSÃO: Investigar 5 dossiês históricos e resolver o caso da Independência do Brasil.</p>
+                        </div>
+                    </div>
+                    <div className="mb-6">
+                        <label className="block text-lg font-semibold text-amber-900 mb-3">👤 Nome do Detective:</label>
+                        <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="w-full p-4 border-2 border-amber-400 rounded-lg text-lg focus:border-amber-600" placeholder="Digite seu nome, detetive..." />
+                    </div>
+                    <div className="flex items-center justify-between my-4">
+                        <span className="text-sm font-medium text-amber-900">🔤 Fonte para dislexia:</span>
+                        <button onClick={() => { const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS'; setFont(newFont); localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal'); }} className={`px-4 py-2 rounded-lg font-medium transition-all ${font === 'OpenDyslexic' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                            {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                        </button>
+                    </div>
+                    <div className="space-y-4 mt-6">
+                        <button onClick={() => onStart(studentName)} disabled={!studentName.trim()} className={`w-full py-4 rounded-lg text-xl font-bold transition-all ${studentName.trim() ? 'bg-amber-600 text-white hover:bg-amber-700' : 'bg-gray-400 text-gray-600 cursor-not-allowed'}`}>🔍 Iniciar Investigação</button>
+                        <a href="../index.html" className="block w-full py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 text-lg font-semibold">🏠 Voltar ao Portal</a>
+                    </div>
+                </div>
+            </div>
+        );
+        
+        const SummaryScreen = ({ result, onRestart, onBackToInitial }) => (
+            <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
+                    <h2 className="text-4xl font-bold mb-4 text-gray-800">🎊 Caso Concluído! 🎊</h2>
+                    <p className="text-2xl mb-8 text-gray-700">Você desvendou os mistérios do bloco <strong>{result.Bloco}</strong>!</p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div className="bg-purple-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-purple-600">{result.Acertos}</div>
+                            <div className="text-lg text-gray-700">Acertos</div>
+                        </div>
+                        <div className="bg-red-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-red-600">{result.Erros}</div>
+                            <div className="text-lg text-gray-700">Erros</div>
+                        </div>
+                        <div className="bg-orange-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-orange-600">{result.Tempo_Execucao}</div>
+                            <div className="text-lg text-gray-700">Tempo Total</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onClick={onRestart} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-2xl text-xl">🔄 Investigar Novamente</button>
+                        <button onClick={onBackToInitial} className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-8 rounded-2xl text-xl">🏠 Voltar ao Início</button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const ActivityScreen = ({ block, onBack, onComplete }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [revealedClues, setRevealedClues] = useState(0);
+            const [errors, setErrors] = useState(0);
+            const [startTime, setStartTime] = useState(Date.now());
+            const [feedback, setFeedback] = useState({ show: false, message: '' });
+
+            const question = block.questions[currentQuestionIndex];
+
+            const revealNextClue = () => {
+                if (revealedClues < 3) {
+                    SoundSystem.click();
+                    setRevealedClues(revealedClues + 1);
+                }
+            };
+
+            const handleAnswer = (option) => {
+                if (revealedClues < 3) return;
+
+                const isCorrect = option.correct === true;
+                let updatedErrors = errors;
+
+                if (isCorrect) {
+                    SoundSystem.success();
+                    setFeedback({ show: true, message: 'Correto!' });
+                } else {
+                    SoundSystem.error();
+                    updatedErrors = errors + 1;
+                    setErrors(updatedErrors);
+                    setFeedback({ show: true, message: 'Incorreto!' });
+                }
+
+                setTimeout(() => {
+                    setFeedback({ show: false, message: '' });
+                    if (currentQuestionIndex < block.questions.length - 1) {
+                        setCurrentQuestionIndex(currentQuestionIndex + 1);
+                        setRevealedClues(0);
+                    } else {
+                        onComplete({ block, acertos: block.questions.length - updatedErrors, erros: updatedErrors, tempoTotal: Math.round((Date.now() - startTime) / 1000) });
+                    }
+                }, 1500);
+            };
+
+            return (
+                <div className={`min-h-screen bg-gradient-to-br from-amber-800 via-orange-900 to-red-900 p-4`}>
+                    <div className="max-w-4xl mx-auto">
+                        <div className="bg-amber-100 rounded-xl border-4 border-amber-600 p-4 mb-6">
+                            <div className="flex justify-between items-center">
+                                <h1 className="text-2xl font-bold text-amber-900">{block.emoji} {block.title}</h1>
+                                <button onClick={onBack} className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">⬅️ Voltar</button>
+                            </div>
+                            <div className="w-full bg-amber-200 rounded-full h-4 mt-2"><div className={`bg-gradient-to-r from-green-500 to-blue-500 h-full rounded-full`} style={{ width: `${(currentQuestionIndex / block.questions.length) * 100}%` }}></div></div>
+                            <div className="text-center font-bold text-amber-800 mt-2">Mistério {currentQuestionIndex + 1} de {block.questions.length}</div>
+                        </div>
+
+                        <div className="bg-amber-100 rounded-xl border-4 border-amber-600 p-6">
+                            <h2 className="text-2xl font-bold text-amber-900 mb-4">📋 {question.code}</h2>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div className="bg-white p-4 rounded-lg border-2 border-gray-300">
+                                    <h3 className="font-bold text-lg text-center mb-2">🔍 Pistas</h3>
+                                    <div className="space-y-2">
+                                        {[...Array(3)].map((_, i) => (
+                                            <div key={i} className={`p-3 rounded-lg border-2 ${i < revealedClues ? 'bg-yellow-100 border-yellow-400' : 'bg-gray-100 border-gray-300'}`}>
+                                                {i < revealedClues ? (
+                                                    <div className="flex items-center justify-between">
+                                                        <p className="text-gray-800">{question.clues[i].text}</p>
+                                                        <button onClick={() => SoundSystem.play(question.clues[i].audio)} className="ml-2 text-xl">🔊</button>
+                                                    </div>
+                                                ) : <p className="text-gray-500">Pista {i + 1} Bloqueada</p>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {revealedClues < 3 && <button onClick={revealNextClue} className="w-full mt-4 py-2 bg-yellow-500 text-white font-bold rounded-lg hover:bg-yellow-600">Revelar Pista</button>}
+                                </div>
+                                <div className="bg-white p-4 rounded-lg border-2 border-gray-300">
+                                    <h3 className="font-bold text-lg text-center mb-2">🎯 Solução</h3>
+                                    {revealedClues < 3 ? (
+                                        <div className="text-center text-gray-500 p-8">Revele todas as pistas para deduzir a solução.</div>
+                                    ) : (
+                                        <div className="space-y-3">
+                                            {question.options.map(opt => <button key={opt.id} onClick={() => handleAnswer(opt)} className="w-full p-3 text-left rounded-lg border-2 border-blue-300 bg-blue-50 hover:bg-blue-100">{opt.text}</button>)}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        {feedback.show && <div className="fixed top-10 left-1/2 -translate-x-1/2 text-white font-bold py-3 px-6 rounded-xl shadow-lg z-50 bg-black bg-opacity-70">{feedback.message}</div>}
+                    </div>
+                </div>
+            );
+        };
+
+        const AtividadeTemplate = () => {
+            const [studentName, setStudentName] = useState(localStorage.getItem('studentName') || '');
+            const [font, setFont] = useState(localStorage.getItem('selectedFont') === 'dyslexic' ? 'OpenDyslexic' : 'Comic Sans MS');
+            const [currentScreen, setCurrentScreen] = useState('initial');
+            const [sessionResults, setSessionResults] = useState([]);
+            const [lastResult, setLastResult] = useState(null);
+
+            useEffect(() => {
+                document.title = activityConfig.title;
+                document.body.className = font === 'OpenDyslexic' ? 'font-dyslexic' : '';
+            }, [font]);
+
+            const handleStart = (name) => {
+                if (name.trim()) {
+                    setStudentName(name);
+                    localStorage.setItem('studentName', name);
+                    setCurrentScreen('activity');
+                }
+            };
+
+            const handleCompleteBlock = (result) => {
+                const score = Math.round(((result.block.questions.length - result.erros) / result.block.questions.length) * 100);
+                const newResult = {
+                    Nome: studentName,
+                    Materia: activityConfig.subject,
+                    Atividade: activityConfig.activity,
+                    Bloco: result.block.title,
+                    Questao: `${result.block.questions.length}_misterios`,
+                    Tempo_Execucao: `${result.tempoTotal}s`,
+                    Acertos: result.block.questions.length - result.erros,
+                    Erros: result.erros,
+                    Score: `${score}%`
+                };
+                setSessionResults(prev => [...prev, newResult]);
+                setLastResult(newResult);
+                setCurrentScreen('summary');
+            };
+
+            const handleFinishSession = () => {
+                if (sessionResults.length === 0) {
+                    alert("Nenhuma atividade foi completada para gerar o relatório.");
+                    return;
+                }
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = sessionResults.map(r => Object.values(r).join(',')).join('\n');
+                const blob = new Blob([header + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') ;
+                const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `${activityConfig.activity}_${studentNameForFile}_${dateStr}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                alert(`🎉 Dados exportados com sucesso!`);
+            };
+            
+            const restartActivity = () => {
+                setCurrentScreen('activity');
+            };
+
+            switch (currentScreen) {
+                case 'initial':
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
+                case 'activity':
+                    return <ActivityScreen block={activityBlocks[0]} onBack={() => setCurrentScreen('initial')} onComplete={handleCompleteBlock} />;
+                case 'summary':
+                    return <SummaryScreen result={lastResult} onRestart={restartActivity} onBackToInitial={() => setCurrentScreen('initial')} />;
+                default:
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
+            }
+        };
+
+        ReactDOM.render(<AtividadeTemplate />, document.getElementById('root'));
     </script>
 </body>
 </html>

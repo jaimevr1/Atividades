@@ -4,921 +4,398 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Corrida da História do Brasil</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('../media/fonts/OpenDyslexic-Regular.otf') format('opentype');
+          font-weight: normal; font-style: normal;
         }
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('../media/fonts/OpenDyslexic-Bold.otf') format('opentype');
+          font-weight: bold; font-style: normal;
         }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+        body { font-family: 'Comic Sans MS', cursive, sans-serif; }
+        .font-dyslexic { font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif; }
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="loading">
-            <div class="spinner"></div>
-            Carregando Corrida da História do Brasil...
-        </div>
-    </div>
+    <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
-        
-        const CorridaHistoriaBrasil = () => {
-          const [studentName, setStudentName] = useState('');
-          const [fontSize, setFontSize] = useState(localStorage.getItem('selectedFont') || 'dyslexic');
-          const [gameStarted, setGameStarted] = useState(false);
-          const [selectedBlock, setSelectedBlock] = useState(0);
-          const [showBlockSelection, setShowBlockSelection] = useState(false);
-          const [currentEvent, setCurrentEvent] = useState(null);
-          const [timeLeft, setTimeLeft] = useState(8);
-          const [maxTime, setMaxTime] = useState(8);
-          const [score, setScore] = useState(0);
-          const [eventQueue, setEventQueue] = useState([]);
-          const [completedEvents, setCompletedEvents] = useState([]);
-          const [attempts, setAttempts] = useState([]);
-          const [startTime, setStartTime] = useState(null);
-          const [showCelebration, setShowCelebration] = useState(false);
-          const [celebrationMessage, setCelebrationMessage] = useState('');
-          const [showError, setShowError] = useState(false);
-          const [errorMessage, setErrorMessage] = useState('');
-          const [gameCompleted, setGameCompleted] = useState(false);
-          const [isExpertMode, setIsExpertMode] = useState(false);
-          const [studentBadges, setStudentBadges] = useState({});
-          const [sessionBadges, setSessionBadges] = useState([]);
-          const [allSessionData, setAllSessionData] = useState([]);
+        const { useState, useEffect, useRef } = React;
 
-          // Listas de sons de feedback
-          const feedbackSounds = {
-            acertos: [
-              'acerto_1.mp3',
-              'acerto_2.mp3', 
-              'acerto_3.mp3',
-              'acerto_4.mp3'
-            ],
-            erros: [
-              'erro_1.mp3',
-              'erro_2.mp3',
-              'erro_3.mp3', 
-              'erro_4.mp3'
-            ]
-          };
-
-          // Função para tocar som de feedback (acerto/erro)
-          const playFeedbackSound = (isCorrect) => {
-            try {
-              const soundType = isCorrect ? 'acertos' : 'erros';
-              const sounds = feedbackSounds[soundType];
-              const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
-              const soundPath = `../media/sons/feedback/${soundType}/${randomSound}`;
-              
-              const feedbackAudio = new Audio(soundPath);
-              feedbackAudio.volume = 0.7; // Volume médio para feedback
-              feedbackAudio.play().catch(error => {
-                console.log('Som de feedback não encontrado:', soundPath);
-              });
-            } catch (error) {
-              console.log('Erro ao reproduzir som de feedback:', error);
-            }
-          };
-
-          // 6 blocos de eventos históricos
-          const eventBlocks = [
-            {
-              name: "Colonização e Invasões Holandesas",
-              timeline: [1500, 1549, 1555, 1624, 1630],
-              events: [
-                { id: 0, year: 1500, text: "A chegada de Pedro Álvares Cabral ao Brasil.", image: "../media/caminhos/ilustra_cabral.png", icon: "🚢" },
-                { id: 1, year: 1549, text: "A criação da primeira capital do Brasil, Salvador.", image: "../media/caminhos/ilustra_salvador.png", icon: "🏛️" },
-                { id: 2, year: 1555, text: "Os franceses chegam e tentam criar uma colônia no Rio de Janeiro.", image: "../media/caminhos/ilustra_franca_antartica.png", icon: "🇫🇷" },
-                { id: 3, year: 1624, text: "Os holandeses invadem e ocupam a cidade de Salvador.", image: "../media/caminhos/ilustra_holanda_salvador.png", icon: "🇳🇱" },
-                { id: 4, year: 1630, text: "A chegada de Maurício de Nassau, que modernizou Recife.", image: "../media/caminhos/ilustra_nassau.png", icon: "👑" }
-              ]
-            },
-            {
-              name: "Expansão e Mineração",
-              timeline: [1693, 1750, 1789, 1808, 1815],
-              events: [
-                { id: 0, year: 1693, text: "A descoberta de grandes jazidas de ouro em Minas Gerais.", image: "../media/caminhos/ilustra_ouro_minas.png", icon: "💰" },
-                { id: 1, year: 1750, text: "O Tratado de Madri definiu novas fronteiras entre Portugal e Espanha.", image: "../media/caminhos/ilustra_tratado_madri.png", icon: "📜" },
-                { id: 2, year: 1789, text: "Inconfidência Mineira, uma revolta contra os impostos de Portugal.", image: "../media/caminhos/ilustra_inconfidencia.png", icon: "💎" },
-                { id: 3, year: 1808, text: "A família real portuguesa fugiu de Napoleão e veio para o Brasil.", image: "../media/caminhos/ilustra_dom_joao.png", icon: "👑" },
-                { id: 4, year: 1815, text: "O Brasil deixou de ser colônia e se tornou Reino Unido.", image: "../media/caminhos/ilustra_reino_unido.png", icon: "🏰" }
-              ]
-            },
-            {
-              name: "Independência e Império",
-              timeline: [1822, 1824, 1831, 1840, 1850],
-              events: [
-                { id: 0, year: 1822, text: "O Grito do Ipiranga! O Brasil se torna independente.", image: "../media/caminhos/ilustra_grito_ipiranga.png", icon: "📢" },
-                { id: 1, year: 1824, text: "O Brasil tem sua primeira Constituição.", image: "../media/caminhos/ilustra_primeira_constituicao.png", icon: "📋" },
-                { id: 2, year: 1831, text: "Dom Pedro I abdicou do trono e deixou seu filho pequeno no Brasil.", image: "../media/caminhos/ilustra_abdicacao_dom_pedro.png", icon: "👑" },
-                { id: 3, year: 1840, text: "O jovem Dom Pedro II é coroado imperador.", image: "../media/caminhos/ilustra_dom_pedro_ii_jovem.png", icon: "👤" },
-                { id: 4, year: 1850, text: "A Lei Eusébio de Queirós proibiu o tráfico de escravos para o Brasil.", image: "../media/caminhos/ilustra_lei_eusebio.png", icon: "⛓️" }
-              ]
-            },
-            {
-              name: "Abolição e República Velha",
-              timeline: [1888, 1889, 1930, 1932, 1937],
-              events: [
-                { id: 0, year: 1888, text: "A Princesa Isabel assinou a Lei Áurea, acabando com a escravidão.", image: "../media/caminhos/ilustra_lei_aurea.png", icon: "⛓️" },
-                { id: 1, year: 1889, text: "A Proclamação da República, o Brasil deixa de ter imperador.", image: "../media/caminhos/ilustra_proclamacao_republica.png", icon: "🏛️" },
-                { id: 2, year: 1930, text: "A Revolução de 1930 leva Getúlio Vargas ao poder.", image: "../media/caminhos/ilustra_revolucao_30.png", icon: "🚂" },
-                { id: 3, year: 1932, text: "A Revolução Constitucionalista em São Paulo.", image: "../media/caminhos/ilustra_revolucao_32.png", icon: "⚔️" },
-                { id: 4, year: 1937, text: "Getúlio Vargas cria o Estado Novo e fecha o Congresso.", image: "../media/caminhos/ilustra_estado_novo.png", icon: "🏛️" }
-              ]
-            },
-            {
-              name: "Brasil Contemporâneo",
-              timeline: [1950, 1960, 1964, 1985, 1988],
-              events: [
-                { id: 0, year: 1950, text: "O Brasil sedia a Copa do Mundo.", image: "../media/caminhos/ilustra_copa_50.png", icon: "⚽" },
-                { id: 1, year: 1960, text: "A inauguração de Brasília, a nova capital do Brasil.", image: "../media/caminhos/ilustra_brasilia.png", icon: "🏗️" },
-                { id: 2, year: 1964, text: "O início da Ditadura Militar no Brasil.", image: "../media/caminhos/ilustra_ditadura.png", icon: "🪖" },
-                { id: 3, year: 1985, text: "O fim da Ditadura e a volta do voto direto para presidente.", image: "../media/caminhos/ilustra_fim_ditadura.png", icon: "🗳️" },
-                { id: 4, year: 1988, text: "A promulgação da Constituição Federal, a Constituição Cidadã.", image: "../media/caminhos/ilustra_constituicao_88.png", icon: "⚖️" }
-              ]
-            },
-            {
-              name: "Personalidades do Brasil",
-              timeline: [1822, 1888, 1930, 1950, 1985],
-              events: [
-                { id: 0, year: 1822, text: "Dom Pedro I proclamou a independência do Brasil.", image: "../media/caminhos/ilustra_dom_pedro_i.png", icon: "👑" },
-                { id: 1, year: 1888, text: "Princesa Isabel assinou a Lei Áurea, que aboliu a escravidão no Brasil.", image: "../media/caminhos/ilustra_princesa_isabel.png", icon: "✨" },
-                { id: 2, year: 1930, text: "Getúlio Vargas assumiu a presidência, iniciando a Era Vargas e governando por 15 anos.", image: "../media/caminhos/ilustra_getulio_vargas.png", icon: "🎩" },
-                { id: 3, year: 1950, text: "Juscelino Kubitschek foi responsável pela construção de Brasília.", image: "../media/caminhos/ilustra_jk.png", icon: "🏗️" },
-                { id: 4, year: 1985, text: "Tancredo Neves foi eleito o primeiro presidente civil após a Ditadura Militar, mas faleceu antes de assumir o cargo.", image: "../media/caminhos/ilustra_tancredo.png", icon: "🗳️" }
-              ]
-            }
-          ];
-
-          const blockTitles = [
-            "Colonização e Invasões Holandesas",
-            "Expansão e Mineração", 
-            "Independência e Império",
-            "Abolição e República Velha",
-            "Brasil Contemporâneo",
-            "Personalidades do Brasil"
-          ];
-
-          const celebrations = [
-            "RAPIDINHO! Soca o ar!",
-            "CERTEIRO! Pula de alegria!",
-            "VELOZ! Grita 'EEEE'!",
-            "NINJA DA HISTÓRIA! Faz pose de herói!",
-            "CRONÔMETRO HUMANO! Flexiona os músculos!"
-          ];
-
-          const errorMessages = [
-            "Ops! Pense no ano certo...",
-            "Atenção! Veja a data!",
-            "Tempo esgotado! Vamos tentar de novo!",
-            "Quase! Olhe a cronologia!",
-            "Pense: quando isso aconteceu?"
-          ];
-
-          // SISTEMA DE BADGES
-          const badgeSystem = {
-            blockBadges: [
-              {
-                blockId: 0,
-                name: "Colonização e Invasões Holandesas",
-                badges: {
-                  bronze: { title: "Navegador Colonial", icon: "🚢", requirement: "3+ estrelas", description: "Conheceu o período colonial" },
-                  silver: { title: "Defensor do Território", icon: "⚔️", requirement: "4+ estrelas", description: "Defendeu o Brasil colonial" },
-                  gold: { title: "Mestre Colonial", icon: "👑", requirement: "5 estrelas", description: "Dominou as invasões coloniais" },
-                  speed: { title: "Cronista Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Velocidade colonial máxima" }
-                }
-              },
-              {
-                blockId: 1,
-                name: "Expansão e Mineração",
-                badges: {
-                  bronze: { title: "Garimpeiro Novato", icon: "⛏️", requirement: "3+ estrelas", description: "Descobriu o ouro da história" },
-                  silver: { title: "Bandeirante Histórico", icon: "🗺️", requirement: "4+ estrelas", description: "Desbravou as minas do tempo" },
-                  gold: { title: "Senhor das Minas", icon: "💎", requirement: "5 estrelas", description: "Mestre da mineração histórica" },
-                  speed: { title: "Explorador Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Minerou conhecimento rapidamente" }
-                }
-              },
-              {
-                blockId: 2,
-                name: "Independência e Império",
-                badges: {
-                  bronze: { title: "Patriota Jovem", icon: "🇧🇷", requirement: "3+ estrelas", description: "Gritou pela independência" },
-                  silver: { title: "Herói da Independência", icon: "📢", requirement: "4+ estrelas", description: "Lutou pela liberdade" },
-                  gold: { title: "Imperador do Conhecimento", icon: "👑", requirement: "5 estrelas", description: "Reinou sobre a cronologia imperial" },
-                  speed: { title: "Libertador Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Independência em tempo recorde" }
-                }
-              },
-              {
-                blockId: 3,
-                name: "Abolição e República Velha",
-                badges: {
-                  bronze: { title: "Defensor da Liberdade", icon: "⛓️", requirement: "3+ estrelas", description: "Lutou contra a escravidão" },
-                  silver: { title: "Republicano Histórico", icon: "🏛️", requirement: "4+ estrelas", description: "Proclamou a república temporal" },
-                  gold: { title: "Libertador Supremo", icon: "🕊️", requirement: "5 estrelas", description: "Aboliu a ignorância histórica" },
-                  speed: { title: "Revolucionário Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Revolução cronológica rápida" }
-                }
-              },
-              {
-                blockId: 4,
-                name: "Brasil Contemporâneo",
-                badges: {
-                  bronze: { title: "Cidadão Moderno", icon: "🏗️", requirement: "3+ estrelas", description: "Conheceu o Brasil atual" },
-                  silver: { title: "Construtor de Brasília", icon: "🏛️", requirement: "4+ estrelas", description: "Edificou conhecimento moderno" },
-                  gold: { title: "Guardião da Democracia", icon: "🗳️", requirement: "5 estrelas", description: "Protegeu a história democrática" },
-                  speed: { title: "Visionário Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Futuro em alta velocidade" }
-                }
-              },
-              {
-                blockId: 5,
-                name: "Personalidades do Brasil",
-                badges: {
-                  bronze: { title: "Conhecedor de Líderes", icon: "🎖️", requirement: "3+ estrelas", description: "Conheceu grandes figuras brasileiras" },
-                  silver: { title: "Estudioso da Liderança", icon: "👑", requirement: "4+ estrelas", description: "Compreendeu o impacto dos líderes" },
-                  gold: { title: "Mestre da História dos Líderes", icon: "🏆", requirement: "5 estrelas", description: "Dominou a cronologia dos grandes líderes" },
-                  speed: { title: "Especialista Veloz", icon: "⚡", requirement: "5 estrelas + modo expert", description: "Expert em liderança histórica" }
-                }
-              }
-            ],
-
-            pointSystem: {
-              bronze: 2,
-              silver: 5,
-              gold: 10,
-              speed: 8
-            },
-
-            evaluateBadge: (blockId, stars, isExpertMode, totalAttempts) => {
-              const earnedBadges = [];
-
-              if (stars >= 5) {
-                earnedBadges.push('gold');
-              } else if (stars >= 4) {
-                earnedBadges.push('silver');
-              } else if (stars >= 3) {
-                earnedBadges.push('bronze');
-              }
-
-              if (stars >= 5 && isExpertMode) {
-                earnedBadges.push('speed');
-              }
-
-              return earnedBadges;
-            },
-
-            storage: {
-              saveStudentData: (studentName, blockId, stars, isExpertMode, attempts, badges) => {
-                const key = `corrida_historia_${studentName.replace(/[^a-zA-Z0-9]/g, '_')}`;
-                const existing = JSON.parse(localStorage.getItem(key) || '{}');
-                
-                if (!existing.blocks) existing.blocks = {};
-                existing.blocks[blockId] = {
-                  stars: stars,
-                  isExpertMode: isExpertMode,
-                  attempts: attempts,
-                  badges: badges,
-                  completedAt: new Date().toISOString()
-                };
-                
-                localStorage.setItem(key, JSON.stringify(existing));
-                return existing;
-              },
-              
-              loadStudentData: (studentName) => {
-                const key = `corrida_historia_${studentName.replace(/[^a-zA-Z0-9]/g, '_')}`;
-                return JSON.parse(localStorage.getItem(key) || '{}');
-              }
-            }
-          };
-
-          // Timer effect
-          useEffect(() => {
-            let interval;
-            if (currentEvent && timeLeft > 0) {
-              interval = setInterval(() => {
-                setTimeLeft(prev => prev - 1);
-              }, 1000);
-            } else if (currentEvent && timeLeft === 0) {
-              handleTimeout();
-            }
-            
-            return () => clearInterval(interval);
-          }, [currentEvent, timeLeft]);
-
-          // Inicializar jogo
-          useEffect(() => {
-            if (gameStarted && selectedBlock !== null) {
-              const events = [...eventBlocks[selectedBlock].events];
-              setEventQueue(shuffleArray(events));
-              setStartTime(new Date());
-              setTimeout(() => spawnNextEvent(shuffleArray(events)), 1000);
-            }
-          }, [gameStarted, selectedBlock]);
-
-          const shuffleArray = (array) => {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
-          };
-
-          const spawnNextEvent = (queue = eventQueue) => {
-            if (completedEvents.length >= 5) {
-              setGameCompleted(true);
-              return;
-            }
-
-            const remainingEvents = queue.filter(event => !completedEvents.some(completed => completed.id === event.id));
-            
-            if (remainingEvents.length === 0) {
-              setGameCompleted(true);
-              return;
-            }
-            
-            const nextEvent = remainingEvents[Math.floor(Math.random() * remainingEvents.length)];
-            setCurrentEvent(nextEvent);
-            setTimeLeft(maxTime);
-          };
-
-          const awardBadges = (blockId, stars, isExpertMode, totalAttempts) => {
-            const earnedBadges = badgeSystem.evaluateBadge(blockId, stars, isExpertMode, totalAttempts);
-            
-            const updatedData = badgeSystem.storage.saveStudentData(
-              studentName, blockId, stars, isExpertMode, totalAttempts, earnedBadges
-            );
-            
-            // Salvar dados da sessão para agregação
-            const sessionData = {
-              blockId,
-              blockName: blockTitles[blockId],
-              stars,
-              isExpertMode,
-              attempts: [...attempts],
-              badges: earnedBadges,
-              totalAttempts,
-              timestamp: new Date()
-            };
-            
-            setAllSessionData(prev => [...prev, sessionData]);
-            setSessionBadges(earnedBadges);
-            setStudentBadges(updatedData);
-            
-            return earnedBadges;
-          };
-
-          const handleSlotClick = (year) => {
-            if (!currentEvent) return;
-
-            const isCorrect = currentEvent.year === year;
-            const responseTime = maxTime - timeLeft;
-            
-            const attemptData = {
-              timestamp: new Date(),
-              eventId: currentEvent.id,
-              eventText: currentEvent.text,
-              eventYear: currentEvent.year,
-              slotClicked: year,
-              correct: isCorrect,
-              responseTime: responseTime,
-              timeRemaining: timeLeft
-            };
-            setAttempts(prev => [...prev, attemptData]);
-
-            // Tocar som de feedback imediatamente
-            playFeedbackSound(isCorrect);
-
-            if (isCorrect) {
-              setScore(prev => prev + 1);
-              setCompletedEvents(prev => [...prev, currentEvent]);
-              
-              const randomCelebration = celebrations[Math.floor(Math.random() * celebrations.length)];
-              setCelebrationMessage(randomCelebration);
-              setShowCelebration(true);
-              setTimeout(() => setShowCelebration(false), 2500);
-              
-              // Modo expert após 3 acertos
-              if (score + 1 >= 3 && !isExpertMode) {
-                setIsExpertMode(true);
-                setMaxTime(6);
-              }
-              
-              if (score + 1 >= 5) {
-                setTimeout(() => {
-                  const earnedBadges = awardBadges(selectedBlock, score + 1, isExpertMode, attempts.length + 1);
-                  setGameCompleted(true);
-                }, 1500);
-              } else {
-                setTimeout(() => spawnNextEvent(), 1500);
-              }
-            } else {
-              const randomError = errorMessages[Math.floor(Math.random() * errorMessages.length)];
-              setErrorMessage(randomError);
-              setShowError(true);
-              setTimeout(() => setShowError(false), 2000);
-              setTimeout(() => spawnNextEvent(), 2000);
-            }
-            
-            setCurrentEvent(null);
-          };
-
-          const handleTimeout = () => {
-            if (!currentEvent) return;
-            
-            const attemptData = {
-              timestamp: new Date(),
-              eventId: currentEvent.id,
-              eventText: currentEvent.text,
-              eventYear: currentEvent.year,
-              slotClicked: null,
-              correct: false,
-              responseTime: maxTime,
-              timeRemaining: 0
-            };
-            setAttempts(prev => [...prev, attemptData]);
-
-            // Tocar som de erro para timeout
-            playFeedbackSound(false);
-
-            setErrorMessage("Tempo esgotado! Vamos tentar de novo!");
-            setShowError(true);
-            setTimeout(() => setShowError(false), 2000);
-            setTimeout(() => spawnNextEvent(), 2000);
-            setCurrentEvent(null);
-          };
-
-          const downloadAggregatedCSV = () => {
-            if (allSessionData.length === 0) return;
-            
-            const csvData = [
-              ['Nome', 'Materia', 'Atividade', 'Bloco', 'Questao', 'Tempo_Execucao', 'Acertos', 'Erros', 'Score']
-            ];
-            
-            allSessionData.forEach(session => {
-              const errorCount = session.totalAttempts - session.stars;
-              const averageTime = session.attempts.length > 0 
-                ? Math.round(session.attempts.reduce((sum, attempt) => sum + attempt.responseTime, 0) / session.attempts.length)
-                : 8;
-              
-              csvData.push([
-                studentName,
-                'Historia',
-                'Corrida da Historia',
-                session.blockName,
-                `${session.totalAttempts}_eventos`,
-                `${averageTime}s`,
-                session.stars,
-                errorCount,
-                `${Math.round((session.stars / 5) * 100)}%`
-              ]);
-            });
-            
-            const csvContent = csvData.map(row => row.join(',')).join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `Corrida_Historia_Sessao_Completa_${studentName}_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          };
-
-          const handleSessionEnd = () => {
-            downloadAggregatedCSV();
-            setShowBlockSelection(false);
-            setStudentName('');
-            setGameStarted(false);
-            setGameCompleted(false);
-            setSelectedBlock(0);
-            setCurrentEvent(null);
-            setScore(0);
-            setEventQueue([]);
-            setCompletedEvents([]);
-            setAttempts([]);
-            setStartTime(null);
-            setTimeLeft(8);
-            setMaxTime(8);
-            setIsExpertMode(false);
-            setShowCelebration(false);
-            setShowError(false);
-            setAllSessionData([]);
-            setSessionBadges([]);
-          };
-
-          const startGame = () => {
-            if (studentName.trim()) {
-              setShowBlockSelection(true);
-            }
-          };
-
-          const handleBlockSelect = (blockIndex) => {
-            setSelectedBlock(blockIndex);
-            setGameStarted(true);
-            setShowBlockSelection(false);
-          };
-
-          const resetGame = () => {
-            setCurrentEvent(null);
-            setScore(0);
-            setEventQueue([]);
-            setCompletedEvents([]);
-            setAttempts([]);
-            setTimeLeft(8);
-            setMaxTime(8);
-            setIsExpertMode(false);
-            setShowCelebration(false);
-            setShowError(false);
-            setGameCompleted(false);
-            setGameStarted(false);
-            setShowBlockSelection(true);
-            setSessionBadges([]);
-          };
-
-          const BadgeDisplay = ({ badges, blockId }) => (
-            <div className="flex justify-center space-x-2 mb-4">
-              {badges.map((badgeType, index) => {
-                const badgeData = badgeSystem.blockBadges[blockId].badges[badgeType];
-                const bgColor = badgeType === 'gold' ? 'from-yellow-300 to-yellow-500' :
-                               badgeType === 'silver' ? 'from-gray-300 to-gray-500' :
-                               badgeType === 'speed' ? 'from-purple-300 to-purple-500' :
-                               'from-orange-300 to-orange-500';
-                
-                return (
-                  <div key={index} className={`text-center p-3 bg-gradient-to-b ${bgColor} rounded-lg border-2 border-yellow-600 shadow-lg`}>
-                    <div className="text-2xl mb-1">{badgeData.icon}</div>
-                    <div className="text-xs font-bold text-gray-800">{badgeData.title}</div>
-                    <div className="text-xs text-gray-600 mt-1">{badgeData.description}</div>
-                  </div>
-                );
-              })}
-            </div>
-          );
-
-          const getFontStyle = () => ({
-            fontSize: '24px',
-            fontFamily: fontSize === 'dyslexic' ? "'OpenDyslexic', sans-serif" : 
-                       fontSize === 'comic' ? "'Comic Sans MS', cursive" :
-                       "'Comic Sans MS', sans-serif"
-          });
-
-          // Tela inicial
-          if (!gameStarted && !showBlockSelection) {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4" style={getFontStyle()}>
-                <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8">
-                  <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">
-                    Corrida da História do Brasil
-                  </h1>
-                  
-                  <div className="mb-6">
-                    <label className="block text-lg font-semibold text-gray-700 mb-3">
-                      Digite seu nome:
-                    </label>
-                    <input
-                      type="text"
-                      value={studentName}
-                      onChange={(e) => setStudentName(e.target.value)}
-                      className="w-full p-4 border-2 border-gray-300 rounded-lg text-lg focus:border-blue-500 focus:outline-none"
-                      placeholder="Seu nome aqui..."
-                      autoFocus
-                    />
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <button
-                      onClick={startGame}
-                      disabled={!studentName.trim()}
-                      className={`w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
-                        studentName.trim()
-                          ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      Começar Corrida Histórica!
-                    </button>
-                    <a
-                      href="../index.html"
-                      className="block w-full px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold"
-                    >
-                      ← Voltar ao Portal
-                    </a>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          // Tela de seleção de blocos
-          if (showBlockSelection && !gameStarted) {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4" style={getFontStyle()}>
-                <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8">
-                  <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-gray-800 mb-4">
-                      Olá, {studentName}!
-                    </h1>
-                    <p className="text-xl text-gray-600">
-                      Escolha qual período histórico você quer correr contra o tempo:
-                    </p>
-                  </div>
-                  
-                  {/* Tutorial */}
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6 mb-6">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                      Como Jogar a Corrida
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                      <div className="bg-blue-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">1️⃣</div>
-                        <div className="text-sm font-semibold">Evento aparece</div>
-                        <div className="text-xs text-gray-600">No centro da tela</div>
-                      </div>
-                      <div className="bg-green-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">2️⃣</div>
-                        <div className="text-sm font-semibold">Timer de 8 segundos</div>
-                        <div className="text-xs text-gray-600">Corra contra o tempo!</div>
-                      </div>
-                      <div className="bg-yellow-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">3️⃣</div>
-                        <div className="text-sm font-semibold">Clique no ano</div>
-                        <div className="text-xs text-gray-600">Na linha do tempo</div>
-                      </div>
-                      <div className="bg-purple-100 rounded-lg p-4">
-                        <div className="text-2xl mb-2">4️⃣</div>
-                        <div className="text-sm font-semibold">Colete estrelas</div>
-                        <div className="text-xs text-gray-600">5 estrelas = vitória!</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Linha divisória */}
-                  <div className="border-t border-gray-200 my-6"></div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {blockTitles.map((title, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleBlockSelect(index)}
-                        className="p-6 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl border-3 border-blue-200 hover:border-blue-500 hover:from-blue-200 hover:to-purple-200 transition-all duration-300 transform hover:scale-105 text-center"
-                      >
-                        <div className="text-4xl mb-3">
-                          🏃‍♂️
-                        </div>
-                        <h3 className="font-bold text-lg text-gray-800 mb-2">
-                          {title}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          5 eventos contra o tempo
-                        </p>
-                        <div className="mt-3 text-xs text-gray-500">
-                          {eventBlocks[index].timeline[0]} - {eventBlocks[index].timeline[4]}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                  
-                  <div className="text-center mt-8">
-                    <button
-                      onClick={handleSessionEnd}
-                      className="px-8 py-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold text-lg transform hover:scale-105"
-                    >
-                      Finalizar Sessão
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          // Tela de jogo completado
-          if (gameCompleted) {
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4" style={getFontStyle()}>
-                <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 text-center">
-                  <h1 className="text-4xl font-bold mb-4 text-gray-800">
-                    {score >= 5 ? "MESTRE DO TEMPO!" : "PARABÉNS, " + studentName.toUpperCase() + "!"}
-                  </h1>
-                  
-                  <div className="mb-6">
-                    <p className="text-lg text-purple-600 font-semibold mb-2">
-                      {blockTitles[selectedBlock]}
-                    </p>
-                    <div className="text-8xl mb-4">
-                      {score >= 5 ? '🏆' : score >= 3 ? '🌟' : '💪'}
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                    <div className="flex justify-center mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <span key={i} className={`text-4xl mx-1 ${i < score ? 'text-yellow-500' : 'text-gray-300'}`}>
-                          ⭐
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-3xl font-bold text-gray-800 mb-2">
-                      {score} de 5 estrelas coletadas
-                    </p>
-                    
-                    {sessionBadges.length > 0 && (
-                      <div className="mb-4">
-                        <p className="text-lg font-bold text-purple-600 mb-3">🏆 Badges Conquistadas:</p>
-                        <BadgeDisplay badges={sessionBadges} blockId={selectedBlock} />
-                      </div>
-                    )}
-                    
-                    {isExpertMode && (
-                      <p className="text-lg font-bold text-purple-600 mb-2">
-                        🚀 MODO EXPERT ATIVADO!
-                      </p>
-                    )}
-                    <p className="text-lg font-semibold text-blue-600">
-                      {score >= 5 ? 'Você dominou este período histórico!' :
-                       score >= 3 ? 'Excelente velocidade histórica!' :
-                       'Continue treinando sua velocidade!'}
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <button
-                      onClick={resetGame}
-                      className="w-full px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-xl font-bold transform hover:scale-105"
-                    >
-                      Escolher Outro Período
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          }
-
-          // Tela principal do jogo
-          return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4" style={getFontStyle()}>
-              <div className="max-w-6xl mx-auto">
-                
-                <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-4 mb-6">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-800">
-                        {blockTitles[selectedBlock]}
-                      </h3>
-                      {isExpertMode && (
-                        <p className="text-lg font-bold text-purple-600">
-                          🚀 MODO EXPERT - Timer: 6s
-                        </p>
-                      )}
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center space-x-1 mb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <span key={i} className={`text-3xl ${i < score ? 'text-yellow-500' : 'text-gray-300'}`}>
-                            ⭐
-                          </span>
-                        ))}
-                      </div>
-                      <p className="text-sm text-gray-600">Estrelas: {score}/5</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6 mb-6">
-                  {currentEvent ? (
-                    <div className="text-center">
-                      <div className="mb-4">
-                        <div className="flex justify-center items-center mb-2">
-                          <span className="text-2xl font-bold text-gray-800 mr-3">⏰ {timeLeft}s</span>
-                          {isExpertMode && <span className="text-lg font-bold text-purple-600">MODO EXPERT</span>}
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-4 border-2 border-gray-300 overflow-hidden">
-                          <div 
-                            className={`h-full rounded-full transition-all duration-1000 ${
-                              timeLeft > maxTime * 0.6 ? 'bg-green-500' :
-                              timeLeft > maxTime * 0.3 ? 'bg-yellow-500' : 'bg-red-500'
-                            }`}
-                            style={{ width: `${(timeLeft / maxTime) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-xl border-3 border-yellow-200 p-6 pulse-animation">
-                        <div className="text-4xl mb-4">{currentEvent.icon}</div>
-                        <div className="bg-white/60 rounded-lg p-4 mb-4">
-                          <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-sm">
-                            Placeholder Imagem {currentEvent.year}
-                          </div>
-                        </div>
-                        <p className="text-lg font-semibold text-gray-800 leading-relaxed">
-                          {currentEvent.text}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-2">
-                          📅 Clique no ano correto na linha do tempo abaixo!
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <div className="text-6xl mb-4 animate-bounce">🏃‍♂️</div>
-                      <p className="text-2xl font-bold text-gray-800">
-                        Prepare-se! Próximo evento chegando...
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6 mb-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                    🎯 Linha do Tempo - Clique no ano correto!
-                  </h3>
-                  <div className="flex justify-between items-center">
-                    {eventBlocks[selectedBlock].timeline.map((year, index) => (
-                      <button
-                        key={year}
-                        onClick={() => handleSlotClick(year)}
-                        disabled={!currentEvent}
-                        className={`
-                          flex-1 mx-2 min-h-[80px] p-4 rounded-xl border-3 border-dashed
-                          transition-all duration-300 text-center font-bold
-                          ${currentEvent 
-                            ? 'border-orange-400 bg-orange-50 hover:border-orange-600 hover:bg-orange-100 hover:scale-105 cursor-pointer' 
-                            : 'border-gray-300 bg-gray-100 cursor-not-allowed'}
-                        `}
-                      >
-                        <div className="text-2xl font-black text-gray-800">{year}</div>
-                        {completedEvents.some(e => e.year === year) && (
-                          <div className="text-2xl mt-1">✅</div>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {showCelebration && (
-                  <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white text-2xl font-bold text-center p-6 rounded-xl border-4 border-green-600 animate-bounce z-50 shadow-2xl">
-                    {celebrationMessage}
-                  </div>
-                )}
-
-                {showError && (
-                  <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xl font-bold text-center p-6 rounded-xl border-4 border-red-600 animate-pulse z-50 shadow-2xl">
-                    {errorMessage}
-                  </div>
-                )}
-
-                <div className="bg-white/90 backdrop-blur-sm rounded-xl border-3 border-blue-200 p-6">
-                  <div className="text-center mt-6">
-                    <button
-                      onClick={resetGame}
-                      className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-bold transform hover:scale-105"
-                    >
-                      ← Voltar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
+        const activityConfig = {
+            title: "Corrida da História do Brasil",
+            subject: "historia",
+            activity: "corrida_historia",
+            emoji: "🏃‍♂️",
+            primaryColor: "blue",
         };
 
-        ReactDOM.render(<CorridaHistoriaBrasil />, document.getElementById('root'));
+        const activityBlocks = [
+            {
+                id: 1,
+                title: "Colonização e Invasões",
+                difficulty: "Iniciante",
+                emoji: "⛵",
+                color: "from-cyan-500 to-blue-600",
+                description: "Eventos da chegada dos europeus e primeiras disputas.",
+                questions: [
+                    { id: "evento_1", year: 1500, text: "A chegada de Pedro Álvares Cabral ao Brasil.", icon: "🚢" },
+                    { id: "evento_2", year: 1549, text: "A criação da primeira capital do Brasil, Salvador.", icon: "🏛️" },
+                    { id: "evento_3", year: 1555, text: "Os franceses tentam criar uma colônia no Rio de Janeiro.", icon: "🇫🇷" },
+                    { id: "evento_4", year: 1624, text: "Os holandeses invadem e ocupam a cidade de Salvador.", icon: "🇳🇱" },
+                    { id: "evento_5", year: 1630, text: "A chegada de Maurício de Nassau, que modernizou Recife.", icon: "👑" }
+                ],
+                timeline: [1500, 1549, 1555, 1624, 1630]
+            },
+            {
+                id: 2,
+                title: "Expansão e Mineração",
+                difficulty: "Iniciante",
+                emoji: "💎",
+                color: "from-yellow-500 to-amber-600",
+                description: "A busca por riquezas no interior do Brasil.",
+                questions: [
+                    { id: "evento_1", year: 1693, text: "A descoberta de grandes jazidas de ouro em Minas Gerais.", icon: "💰" },
+                    { id: "evento_2", year: 1750, text: "O Tratado de Madri definiu novas fronteiras.", icon: "📜" },
+                    { id: "evento_3", year: 1789, text: "Inconfidência Mineira, uma revolta contra os impostos.", icon: "💎" },
+                    { id: "evento_4", year: 1808, text: "A família real portuguesa fugiu de Napoleão e veio para o Brasil.", icon: "👑" },
+                    { id: "evento_5", year: 1815, text: "O Brasil deixou de ser colônia e se tornou Reino Unido.", icon: "🏰" }
+                ],
+                timeline: [1693, 1750, 1789, 1808, 1815]
+            },
+            {
+                id: 3,
+                title: "Independência e Império",
+                difficulty: "Intermediário",
+                emoji: "📢",
+                color: "from-green-500 to-emerald-600",
+                description: "O nascimento do Brasil como nação independente.",
+                questions: [
+                    { id: "evento_1", year: 1822, text: "O Grito do Ipiranga! O Brasil se torna independente.", icon: "📢" },
+                    { id: "evento_2", year: 1824, text: "O Brasil tem sua primeira Constituição.", icon: "📋" },
+                    { id: "evento_3", year: 1831, text: "Dom Pedro I abdicou do trono.", icon: "👑" },
+                    { id: "evento_4", year: 1840, text: "O jovem Dom Pedro II é coroado imperador.", icon: "👤" },
+                    { id: "evento_5", year: 1850, text: "A Lei Eusébio de Queirós proibiu o tráfico de escravos.", icon: "⛓️" }
+                ],
+                timeline: [1822, 1824, 1831, 1840, 1850]
+            }
+        ];
+
+        const MediaManager = {
+            basePath: '../media',
+            getMediaPath: (blockId, questionId, type) => `${MediaManager.basePath}/audios/${activityConfig.subject}/${activityConfig.activity}/bloco_${blockId}/${questionId}.${type}`
+        };
+
+        activityBlocks.forEach(block => {
+            block.questions.forEach(q => { q.audio = MediaManager.getMediaPath(block.id, q.id, 'mp3'); });
+        });
+
+        const SoundSystem = {
+            play: (src) => { try { new Audio(src).play().catch(e => {}); } catch (e) {} },
+            success: () => SoundSystem.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`),
+            error: () => SoundSystem.play(`../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`),
+            click: () => SoundSystem.play('../media/sons/feedback/click.mp3')
+        };
+
+        const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
+            <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
+                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
+                    <div className="text-center mb-8">
+                        <div className="text-6xl mb-4">{activityConfig.emoji}</div>
+                        <h1 className="text-3xl font-bold text-gray-800">{activityConfig.title}</h1>
+                        <p className="text-gray-600">Corra contra o tempo e mostre que você conhece a história!</p>
+                    </div>
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-lg font-bold text-gray-700 mb-2">👤 Qual é o seu nome?</label>
+                            <input type="text" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="w-full p-4 border-2 border-purple-300 rounded-xl text-lg text-center focus:outline-none focus:border-purple-500" placeholder="Digite seu nome aqui" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-700">🔤 Fonte para dislexia:</span>
+                            <button onClick={() => { const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS'; setFont(newFont); localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal'); }} className={`px-4 py-2 rounded-lg font-medium transition-all ${font === 'OpenDyslexic' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                                {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                            </button>
+                        </div>
+                        <button onClick={() => onStart(studentName)} disabled={!studentName.trim()} className={`w-full py-4 rounded-lg text-xl font-bold transition-all ${studentName.trim() ? `bg-gradient-to-r from-${activityConfig.primaryColor}-500 to-pink-500 text-white hover:shadow-lg` : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}>🏁 COMEÇAR CORRIDA!</button>
+                        <a href="../index.html" className="block w-full py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-semibold">🏠 Voltar ao Portal</a>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const BlockSelectionScreen = ({ studentName, onSelectBlock, onFinishSession }) => {
+            const groupedLevels = activityBlocks.reduce((acc, block) => {
+                if (!acc[block.difficulty]) acc[block.difficulty] = [];
+                acc[block.difficulty].push(block);
+                return acc;
+            }, {});
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-8">
+                            <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}!</h1>
+                            <p className="text-2xl text-white opacity-90">Escolha um período para correr contra o tempo!</p>
+                        </div>
+                        <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-8 text-white text-center">
+                            <h3 className="text-2xl font-bold mb-2">📜 Como Jogar</h3>
+                            <p>Um evento histórico aparecerá. Clique no ano correto na linha do tempo antes que o tempo acabe para ganhar uma estrela!</p>
+                        </div>
+                        {Object.entries(groupedLevels).map(([levelName, blocksInLevel]) => (
+                            <div key={levelName} className="mb-12">
+                                <h2 className="text-4xl font-bold text-center text-white mb-8">{levelName === 'Iniciante' && '🌱'} {levelName === 'Intermediário' && '⚡'} {levelName === 'Avançado' && '🔥'} {levelName}</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {blocksInLevel.map((block) => (
+                                        <div key={block.id} className="bg-white rounded-3xl shadow-xl p-6 transform transition-all hover:scale-105 cursor-pointer group" onClick={() => onSelectBlock(block)}>
+                                            <div className="text-center">
+                                                <div className="text-7xl mb-4">{block.emoji}</div>
+                                                <h3 className={`text-2xl font-bold mb-2 bg-gradient-to-r ${block.color} bg-clip-text text-transparent`}>{block.title}</h3>
+                                                <p className="text-gray-600 mb-4 text-lg">{block.description}</p>
+                                                <div className="bg-gray-100 rounded-xl p-4 mb-4"><p className="text-sm text-gray-600">⏱️ {block.questions.length} eventos contra o tempo</p></div>
+                                                <button className={`w-full bg-gradient-to-r ${block.color} text-white font-bold py-4 rounded-xl text-lg`}>🏁 CORRER</button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                        <div className="text-center bg-white/10 backdrop-blur-sm rounded-3xl p-6">
+                            <button onClick={onFinishSession} className="bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-lg hover:bg-green-600 mr-4">💾 Finalizar Sessão & Baixar Resultados</button>
+                            <button onClick={() => window.location.href = '../index.html'} className="bg-gray-500 text-white font-bold py-4 px-8 rounded-xl text-lg hover:bg-gray-600">🏠 Voltar ao Portal</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        const SummaryScreen = ({ result, onRestart, onBackToSelection }) => (
+            <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
+                    <h2 className="text-4xl font-bold mb-4 text-gray-800">🏁 Corrida Finalizada! 🏁</h2>
+                    <p className="text-2xl mb-8 text-gray-700">Você completou o bloco <strong>{result.Bloco}</strong>!</p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div className="bg-yellow-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-yellow-500">{result.Acertos} ⭐</div>
+                            <div className="text-lg text-gray-700">Estrelas</div>
+                        </div>
+                        <div className="bg-red-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-red-600">{result.Erros}</div>
+                            <div className="text-lg text-gray-700">Erros</div>
+                        </div>
+                        <div className="bg-orange-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-orange-600">{result.Tempo_Execucao}</div>
+                            <div className="text-lg text-gray-700">Tempo Total</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onClick={onRestart} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-2xl text-xl">🔄 Correr Novamente</button>
+                        <button onClick={onBackToSelection} className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-8 rounded-2xl text-xl">📚 Escolher Outro Período</button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const ActivityScreen = ({ block, onBack, onComplete }) => {
+            const [questions, setQuestions] = useState([]);
+            const [completed, setCompleted] = useState([]);
+            const [currentQuestion, setCurrentQuestion] = useState(null);
+            const [score, setScore] = useState(0);
+            const [errors, setErrors] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(8);
+            const [maxTime, setMaxTime] = useState(8);
+            const [isExpertMode, setIsExpertMode] = useState(false);
+            const [feedback, setFeedback] = useState({ show: false, message: '' });
+            const [startTime, setStartTime] = useState(Date.now());
+
+            useEffect(() => {
+                const shuffledQuestions = [...block.questions].sort(() => Math.random() - 0.5);
+                setQuestions(shuffledQuestions);
+                spawnNextEvent(shuffledQuestions, []);
+            }, [block]);
+
+            useEffect(() => {
+                let timer;
+                if (currentQuestion && timeLeft > 0) {
+                    timer = setInterval(() => setTimeLeft(t => t - 1), 1000);
+                } else if (currentQuestion && timeLeft === 0) {
+                    handleAnswer(null);
+                }
+                return () => clearInterval(timer);
+            }, [currentQuestion, timeLeft]);
+
+            const spawnNextEvent = (q, comp) => {
+                if (comp.length >= block.questions.length) {
+                    onComplete({ block, acertos: score, erros: errors, tempoTotal: Math.round((Date.now() - startTime) / 1000) });
+                    return;
+                }
+                const next = q.find(event => !comp.some(c => c.id === event.id));
+                setCurrentQuestion(next);
+                setTimeLeft(maxTime);
+            };
+
+            const handleAnswer = (year) => {
+                if (!currentQuestion) return;
+
+                const correct = year === currentQuestion.year;
+                let newCompleted = [...completed, currentQuestion];
+
+                if (correct) {
+                    SoundSystem.success();
+                    setScore(s => s + 1);
+                    setFeedback({ show: true, message: 'CERTEIRO! ' + (isExpertMode ? '🚀' : '👍') });
+                    if (score + 1 >= 3 && !isExpertMode) {
+                        setIsExpertMode(true);
+                        setMaxTime(6);
+                    }
+                } else {
+                    SoundSystem.error();
+                    setErrors(e => e + 1);
+                    setFeedback({ show: true, message: year === null ? 'Tempo Esgotado!' : 'Ano Errado!' });
+                }
+                
+                setCurrentQuestion(null);
+                setTimeout(() => {
+                    setFeedback({ show: false, message: '' });
+                    spawnNextEvent(questions, newCompleted);
+                }, 1500);
+            };
+
+            return (
+                <div className={`min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4`}>
+                    <div className="max-w-4xl mx-auto">
+                        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 mb-6">
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-800">{block.title}</h3>
+                                    {isExpertMode && <p className="text-lg font-bold text-purple-600">🚀 MODO EXPERT - 6s</p>}
+                                </div>
+                                <div className="text-right flex items-center gap-4">
+                                    <div className="flex items-center">{[...Array(5)].map((_, i) => <span key={i} className={`text-3xl ${i < score ? 'text-yellow-400' : 'text-gray-300'}`}>⭐</span>)}</div>
+                                    <button onClick={onBack} className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">⬅️ Voltar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 mb-6 min-h-[350px] flex items-center justify-center">
+                            {currentQuestion ? (
+                                <div className="text-center w-full">
+                                    <div className="mb-4">
+                                        <div className="flex justify-center items-center mb-2"><span className="text-2xl font-bold text-gray-800 mr-3">⏰ {timeLeft}s</span></div>
+                                        <div className="w-full bg-gray-200 rounded-full h-4 border-2 overflow-hidden"><div className={`h-full rounded-full transition-all duration-1000 ${timeLeft > maxTime * 0.6 ? 'bg-green-500' : timeLeft > maxTime * 0.3 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${(timeLeft / maxTime) * 100}%` }}></div></div>
+                                    </div>
+                                    <div className="bg-gradient-to-br from-yellow-100 to-orange-100 rounded-xl p-6 pulse-animation">
+                                        <div className="text-4xl mb-4">{currentQuestion.icon}</div>
+                                        <p className="text-xl font-semibold text-gray-800 leading-relaxed">{currentQuestion.text}</p>
+                                        <button onClick={() => SoundSystem.play(currentQuestion.audio)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600">🔊 Ouvir</button>
+                                    </div>
+                                </div>
+                            ) : <div className="text-center py-8"><div className="text-6xl mb-4 animate-bounce">🏁</div><p className="text-2xl font-bold text-gray-800">Prepare-se!</p></div>}
+                        </div>
+                        <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6">
+                            <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">🎯 Linha do Tempo - Clique no ano correto!</h3>
+                            <div className="grid grid-cols-5 gap-2">
+                                {block.timeline.map(year => <button key={year} onClick={() => handleAnswer(year)} disabled={!currentQuestion} className={`p-4 rounded-xl border-4 transition-all text-center font-bold text-xl ${!currentQuestion ? 'bg-gray-200 border-gray-300 text-gray-400' : 'border-orange-400 bg-orange-50 hover:bg-orange-200 hover:scale-105'}`}>{year}</button>)}
+                            </div>
+                        </div>
+                        {feedback.show && <div className="fixed top-10 left-1/2 -translate-x-1/2 text-white font-bold py-3 px-6 rounded-xl shadow-lg z-50 bg-black bg-opacity-70">{feedback.message}</div>}
+                    </div>
+                </div>
+            );
+        };
+
+        const AtividadeTemplate = () => {
+            const [studentName, setStudentName] = useState(localStorage.getItem('studentName') || '');
+            const [font, setFont] = useState(localStorage.getItem('selectedFont') === 'dyslexic' ? 'OpenDyslexic' : 'Comic Sans MS');
+            const [currentScreen, setCurrentScreen] = useState('initial');
+            const [selectedBlock, setSelectedBlock] = useState(null);
+            const [sessionResults, setSessionResults] = useState([]);
+            const [lastResult, setLastResult] = useState(null);
+
+            useEffect(() => {
+                document.title = activityConfig.title;
+                document.body.className = font === 'OpenDyslexic' ? 'font-dyslexic' : '';
+            }, [font]);
+
+            const handleStart = (name) => {
+                if (name.trim()) {
+                    setStudentName(name);
+                    localStorage.setItem('studentName', name);
+                    setCurrentScreen('blockSelection');
+                }
+            };
+
+            const handleSelectBlock = (block) => {
+                setSelectedBlock(block);
+                setCurrentScreen('activity');
+            };
+            
+            const handleCompleteBlock = (result) => {
+                const newResult = {
+                    Nome: studentName,
+                    Materia: activityConfig.subject,
+                    Atividade: activityConfig.activity,
+                    Bloco: result.block.title,
+                    Questao: `${result.block.questions.length}_eventos`,
+                    Tempo_Execucao: `${result.tempoTotal}s`,
+                    Acertos: result.acertos,
+                    Erros: result.erros,
+                    Score: '100%'
+                };
+                setSessionResults(prev => [...prev, newResult]);
+                setLastResult(newResult);
+                setCurrentScreen('summary');
+            };
+
+            const handleFinishSession = () => {
+                if (sessionResults.length === 0) {
+                    alert("Nenhuma atividade foi completada para gerar o relatório.");
+                    return;
+                }
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = sessionResults.map(r => Object.values(r).join(',')).join('\n');
+                const blob = new Blob([header + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+                const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `${activityConfig.activity}_${studentNameForFile}_${dateStr}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                alert("🎉 Dados exportados com sucesso!");
+            };
+
+            const restartBlock = () => {
+                setCurrentScreen('activity');
+            };
+
+            switch (currentScreen) {
+                case 'initial':
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
+                case 'blockSelection':
+                    return <BlockSelectionScreen studentName={studentName} onSelectBlock={handleSelectBlock} onFinishSession={handleFinishSession} />;
+                case 'activity':
+                    return <ActivityScreen block={selectedBlock} onBack={() => setCurrentScreen('blockSelection')} onComplete={handleCompleteBlock} />;
+                case 'summary':
+                    return <SummaryScreen result={lastResult} onRestart={restartBlock} onBackToSelection={() => setCurrentScreen('blockSelection')} />;
+                default:
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
+            }
+        };
+
+        ReactDOM.render(<AtividadeTemplate />, document.getElementById('root'));
     </script>
 </body>
 </html>

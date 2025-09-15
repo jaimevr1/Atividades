@@ -4,363 +4,373 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Construtor Minecraft</title>
-    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    
     <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('../media/fonts/OpenDyslexic-Regular.otf') format('opentype');
+          font-weight: normal; font-style: normal;
         }
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('../media/fonts/OpenDyslexic-Bold.otf') format('opentype');
+          font-weight: bold; font-style: normal;
         }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 2s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        body { font-family: 'Comic Sans MS', cursive, sans-serif; }
+        .font-dyslexic { font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif; }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="loading">
-            <div class="spinner"></div>
-            Carregando Atividade...
-        </div>
-    </div>
+    <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
-        const MinecraftConstructor = () => {
-            const [studentName, setStudentName] = useState('');
-            const [selectedFont, setSelectedFont] = useState(localStorage.getItem('selectedFont') || 'comic');
-            const [currentPhase, setCurrentPhase] = useState('inicio');
-            const [currentBlock, setCurrentBlock] = useState(null);
-            const [currentQuestion, setCurrentQuestion] = useState(0);
-            const [sessionResults, setSessionResults] = useState([]);
-            const [startTime, setStartTime] = useState(null);
-            const [grid, setGrid] = useState([]);
-            const [availableBlocks, setAvailableBlocks] = useState([]);
-            const [currentSum, setCurrentSum] = useState(0);
-            const [budget, setBudget] = useState(null);
-            const [targetStructure, setTargetStructure] = useState('');
-            const [isComplete, setIsComplete] = useState(false);
-            const [feedback, setFeedback] = useState('');
-            const [score, setScore] = useState(0);
+        const activityConfig = {
+            title: "Construtor Minecraft",
+            subject: "matematica",
+            activity: "minecraft_constructor",
+            emoji: "🧱",
+            primaryColor: "green",
+        };
 
-            const blockConfigs = {
-                1: {
-                  name: "Explorador (6-7 anos)",
-                  gridSize: { rows: 2, cols: 2 },
-                  blockTypes: [
+        const activityBlocks = [
+            {
+                id: 1,
+                title: "Explorador (6-7 anos)",
+                difficulty: "Iniciante",
+                emoji: "🌳",
+                color: "from-green-500 to-lime-600",
+                description: "Construções simples com somas básicas.",
+                gridSize: { rows: 2, cols: 2 },
+                blockTypes: [
                     { name: "Madeira", color: "#8B4513", value: 1 },
                     { name: "Pedra", color: "#808080", value: 2 },
                     { name: "Terra", color: "#654321", value: 3 }
-                  ],
-                  questions: [
-                    { structure: "Casa Pequena", target: 4, budget: null },
-                    { structure: "Torre Simples", target: 6, budget: null },
-                    { structure: "Ponte Básica", target: 5, budget: null },
-                    { structure: "Muro Baixo", target: 7, budget: null },
-                    { structure: "Fundação", target: 8, budget: null }
-                  ]
-                },
-                2: {
-                  name: "Construtor (8-9 anos)",
-                  gridSize: { rows: 3, cols: 3 },
-                  blockTypes: [
+                ],
+                questions: [
+                    { id: "q1", structure: "Casa Pequena", target: 4, budget: null },
+                    { id: "q2", structure: "Torre Simples", target: 6, budget: null },
+                    { id: "q3", structure: "Ponte Básica", target: 5, budget: null },
+                ]
+            },
+            {
+                id: 2,
+                title: "Construtor (8-9 anos)",
+                difficulty: "Intermediário",
+                emoji: "⚔️",
+                color: "from-gray-500 to-slate-600",
+                description: "Projetos maiores com orçamento limitado.",
+                gridSize: { rows: 3, cols: 3 },
+                blockTypes: [
                     { name: "Madeira", color: "#8B4513", value: 2 },
                     { name: "Pedra", color: "#808080", value: 3 },
                     { name: "Ferro", color: "#C0C0C0", value: 4 },
                     { name: "Ouro", color: "#FFD700", value: 5 }
-                  ],
-                  questions: [
-                    { structure: "Casa Média", target: 12, budget: 25 },
-                    { structure: "Torre com Base", target: 15, budget: 30 },
-                    { structure: "Ponte Reforçada", target: 18, budget: 35 },
-                    { structure: "Castelo Pequeno", target: 20, budget: 40 },
-                    { structure: "Fortaleza Inicial", target: 22, budget: 45 }
-                  ]
-                },
-                3: {
-                  name: "Arquiteto (10-11 anos)",
-                  gridSize: { rows: 3, cols: 4 },
-                  blockTypes: [
-                    { name: "Madeira", color: "#8B4513", value: 3, property: "Leve" },
-                    { name: "Pedra", color: "#808080", value: 5, property: "Resistente" },
-                    { name: "Ferro", color: "#C0C0C0", value: 7, property: "Durável" },
-                    { name: "Diamante", color: "#00FFFF", value: 10, property: "Raro" },
-                    { name: "Obsidiana", color: "#1a0033", value: 8, property: "Especial" }
-                  ],
-                  questions: [
-                    { structure: "Mansão", target: 35, budget: 60, special: "Use pelo menos 2 tipos diferentes" },
-                    { structure: "Castelo Grande", target: 42, budget: 70, special: "Base deve ser de Pedra ou Ferro" },
-                    { structure: "Torre Mágica", target: 50, budget: 80, special: "Deve conter pelo menos 1 Diamante" },
-                    { structure: "Fortaleza Suprema", target: 45, budget: 75, special: "Máximo 3 de cada tipo" },
-                    { structure: "Palácio Real", target: 55, budget: 90, special: "Use todos os tipos de bloco" }
-                  ]
-                }
-              };
+                ],
+                questions: [
+                    { id: "q1", structure: "Casa Média", target: 12, budget: 25 },
+                    { id: "q2", structure: "Torre com Base", target: 15, budget: 30 },
+                    { id: "q3", structure: "Ponte Reforçada", target: 18, budget: 35 },
+                ]
+            },
+            {
+                id: 3,
+                title: "Arquiteto (10-11 anos)",
+                difficulty: "Avançado",
+                emoji: "💎",
+                color: "from-cyan-500 to-blue-600",
+                description: "Construções complexas com regras especiais.",
+                gridSize: { rows: 3, cols: 4 },
+                blockTypes: [
+                    { name: "Madeira", color: "#8B4513", value: 3 },
+                    { name: "Pedra", color: "#808080", value: 5 },
+                    { name: "Ferro", color: "#C0C0C0", value: 7 },
+                    { name: "Diamante", color: "#00FFFF", value: 10 },
+                    { name: "Obsidiana", color: "#1a0033", value: 8 }
+                ],
+                questions: [
+                    { id: "q1", structure: "Mansão", target: 35, budget: 60, special: "Use pelo menos 2 tipos diferentes" },
+                    { id: "q2", structure: "Castelo Grande", target: 42, budget: 70, special: "Base de Pedra ou Ferro" },
+                    { id: "q3", structure: "Torre Mágica", target: 50, budget: 80, special: "Deve conter Diamante" },
+                ]
+            }
+        ];
 
-            const getFontStyle = () => ({
-                fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : "'Comic Sans MS', cursive"
-            });
+        const SoundSystem = {
+            play: (src) => { try { new Audio(src).play().catch(e => {}); } catch (e) {} },
+            success: () => SoundSystem.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`),
+            error: () => SoundSystem.play(`../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`),
+            click: () => SoundSystem.play('../media/sons/feedback/click.mp3')
+        };
 
-            const initializeGrid = (rows, cols) => Array(rows).fill().map(() => Array(cols).fill(null));
+        const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
+            <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-teal-500 to-blue-600 flex items-center justify-center p-4`}>
+                <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center">
+                    <h1 className="text-4xl font-bold text-gray-800 mb-4">{activityConfig.emoji} {activityConfig.title}</h1>
+                    <p className="text-lg text-gray-600 mb-6">Use blocos para construir estruturas e resolver desafios de soma.</p>
+                    <input type="text" placeholder="Digite seu nome" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="w-full p-4 border-2 border-gray-300 rounded-lg text-xl mb-6" />
+                    <div className="flex items-center justify-center my-4 gap-4">
+                        <span className="text-sm font-medium text-gray-700">🔤 Fonte para dislexia:</span>
+                        <button onClick={() => { const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS'; setFont(newFont); localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal'); }} className={`px-4 py-2 rounded-lg font-medium transition-all ${font === 'OpenDyslexic' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                            {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                        </button>
+                    </div>
+                    <button onClick={() => onStart(studentName)} disabled={!studentName.trim()} className={`w-full py-4 mt-4 bg-green-600 text-white font-bold text-xl rounded-lg hover:bg-green-700 disabled:opacity-50`}>Iniciar</button>
+                    <a href="../index.html" className="block w-full mt-4 px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600">Voltar ao Portal</a>
+                </div>
+            </div>
+        );
 
-            const calculateSum = (gridToCalculate) => {
-                let sum = 0;
-                gridToCalculate.forEach(row => row.forEach(cell => { if (cell) sum += cell.value; }));
-                return sum;
-            };
+        const BlockSelectionScreen = ({ studentName, onSelectBlock, onFinishSession }) => (
+            <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-8">
+                        <h1 className="text-5xl font-bold text-white mb-2">Olá, {studentName}!</h1>
+                        <p className="text-2xl text-white opacity-90">Escolha seu nível de desafio:</p>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 mb-8 text-white text-center">
+                        <h3 className="text-2xl font-bold mb-2">📜 Como Jogar</h3>
+                        <p>Arraste os blocos da paleta para a área de construção. Seu objetivo é fazer com que a soma dos valores dos blocos seja igual à Soma Alvo, sem estourar o orçamento!</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {activityBlocks.map(block => (
+                            <div key={block.id} className="bg-white rounded-3xl shadow-xl p-6 transform transition-all hover:scale-105 cursor-pointer group" onClick={() => onSelectBlock(block)}>
+                                <div className="text-center">
+                                    <div className="text-7xl mb-4">{block.emoji}</div>
+                                    <h3 className={`text-2xl font-bold mb-2 bg-gradient-to-r ${block.color} bg-clip-text text-transparent`}>{block.title}</h3>
+                                    <p className="text-gray-600 mb-4 text-lg">Grid: {block.gridSize.rows}x{block.gridSize.cols}</p>
+                                    <button className={`w-full bg-gradient-to-r ${block.color} text-white font-bold py-4 rounded-xl text-lg`}>Construir</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="text-center mt-8 bg-white/10 backdrop-blur-sm rounded-3xl p-6">
+                        <button onClick={onFinishSession} className="bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-lg hover:bg-green-600 mr-4">💾 Finalizar Sessão & Baixar Resultados</button>
+                    </div>
+                </div>
+            </div>
+        );
+        
+        const SummaryScreen = ({ result, onRestart, onBackToSelection }) => (
+            <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
+                    <h2 className="text-4xl font-bold mb-4 text-gray-800">🎊 Desafios Concluídos! 🎊</h2>
+                    <p className="text-2xl mb-8 text-gray-700">Você completou o nível <strong>{result.Bloco}</strong>!</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div className="bg-purple-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-purple-600">{result.Acertos} / {result.Acertos + result.Erros}</div>
+                            <div className="text-lg text-gray-700">Acertos</div>
+                        </div>
+                        <div className="bg-orange-50 rounded-2xl p-6">
+                            <div className="text-4xl font-bold text-orange-600">{result.Tempo_Execucao}</div>
+                            <div className="text-lg text-gray-700">Tempo Total</div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onClick={onRestart} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-2xl text-xl">🔄 Jogar Novamente</button>
+                        <button onClick={onBackToSelection} className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-8 rounded-2xl text-xl">📚 Escolher Outro Nível</button>
+                    </div>
+                </div>
+            </div>
+        );
 
-            const startQuestion = () => {
-                if (!currentBlock) return;
-                const config = blockConfigs[currentBlock];
-                const question = config.questions[currentQuestion];
-                const { rows, cols } = config.gridSize;
-                setGrid(initializeGrid(rows, cols));
-                setAvailableBlocks(config.blockTypes);
-                setCurrentSum(0);
-                setBudget(question.budget);
-                setTargetStructure(question.structure);
+        const ActivityScreen = ({ block, onBack, onComplete }) => {
+            const [qIndex, setQIndex] = useState(0);
+            const [grid, setGrid] = useState([]);
+            const [currentSum, setCurrentSum] = useState(0);
+            const [isComplete, setIsComplete] = useState(false);
+            const [feedback, setFeedback] = useState('');
+            const [score, setScore] = useState(0);
+            const [startTime, setStartTime] = useState(Date.now());
+
+            const question = block.questions[qIndex];
+
+            useEffect(() => {
+                const { rows, cols } = block.gridSize;
+                setGrid(Array(rows).fill().map(() => Array(cols).fill(null)));
                 setIsComplete(false);
                 setFeedback('');
-                setStartTime(Date.now());
-            };
+                setCurrentSum(0);
+            }, [qIndex, block]);
 
             useEffect(() => {
-                startQuestion();
-            }, [currentBlock, currentQuestion]);
-
-            useEffect(() => {
-                if (!currentBlock || !grid.length) return;
-
-                const config = blockConfigs[currentBlock];
-                const question = config.questions[currentQuestion];
-                const sum = calculateSum(grid);
+                const sum = grid.flat().reduce((acc, cell) => acc + (cell ? cell.value : 0), 0);
                 setCurrentSum(sum);
 
-                let success = sum === question.target;
-                let newFeedback = "";
-
-                if (budget && sum > budget) {
-                    success = false;
-                    newFeedback = `Orçamento estourado! Limite: ${budget}, Usado: ${sum}`;
-                } else if (sum !== question.target) {
-                    if (sum > 0) newFeedback = `Soma atual: ${sum} | Necessário: ${question.target}`;
-                    success = false;
-                } else if (question.special) {
-                    const usedTypes = new Set();
-                    grid.forEach(row => row.forEach(cell => { if (cell) usedTypes.add(cell.name); }));
-                    let specialRuleMet = true;
-                    // Simplified special rules check for brevity
-                    if (success && specialRuleMet) {
-                         newFeedback = "Parabéns! Estrutura construída com sucesso!";
-                    } else {
-                        success = false;
+                if (sum > 0 && sum === question.target) {
+                    if (!isComplete) {
+                        SoundSystem.success();
+                        setFeedback('Parabéns! Estrutura construída com sucesso!');
+                        setIsComplete(true);
+                        setScore(s => s + 1);
                     }
+                } else if (question.budget && sum > question.budget) {
+                    SoundSystem.error();
+                    setFeedback(`Orçamento estourado! Limite: ${question.budget}`);
+                    setIsComplete(false);
                 } else {
-                     newFeedback = "Parabéns! Estrutura construída com sucesso!";
+                    setIsComplete(false);
+                    setFeedback(sum > 0 ? `Soma atual: ${sum} | Alvo: ${question.target}`: '');
                 }
+            }, [grid]);
 
-                if (success && !isComplete) {
-                    setIsComplete(true);
-                    setScore(prev => prev + 1);
-                }
-                setFeedback(newFeedback);
-            }, [grid, currentBlock, currentQuestion, budget, isComplete]);
-
-            const handleDrop = (rowIndex, colIndex, blockType) => {
-                const newGrid = [...grid];
-                newGrid[rowIndex][colIndex] = blockType;
+            const handleDrop = (r, c, blockType) => {
+                const newGrid = grid.map(row => [...row]);
+                newGrid[r][c] = blockType;
                 setGrid(newGrid);
+                SoundSystem.click();
             };
 
-            const handleRemove = (rowIndex, colIndex) => {
-                const newGrid = [...grid];
-                newGrid[rowIndex][colIndex] = null;
+            const handleRemove = (r, c) => {
+                const newGrid = grid.map(row => [...row]);
+                newGrid[r][c] = null;
                 setGrid(newGrid);
             };
 
             const nextQuestion = () => {
-                const config = blockConfigs[currentBlock];
-                if (currentQuestion < config.questions.length - 1) {
-                    setCurrentQuestion(currentQuestion + 1);
+                if (qIndex < block.questions.length - 1) {
+                    setQIndex(qIndex + 1);
                 } else {
-                    saveResult();
-                    setCurrentPhase('selecao');
+                    onComplete({ block, acertos: score, erros: block.questions.length - score, tempoTotal: Math.round((Date.now() - startTime) / 1000) });
                 }
             };
-            
-            const saveResult = () => {
-                const timeSpent = Math.round((Date.now() - startTime) / 1000);
-                const config = blockConfigs[currentBlock];
-                const result = {
-                    Nome: studentName,
-                    Materia: 'Matematica',
-                    Atividade: 'Construtor Minecraft',
-                    Bloco: config.name,
-                    Questao: `Bloco_${currentBlock}`,
-                    Tempo_Execucao: `${timeSpent}s`,
-                    Acertos: score,
-                    Erros: config.questions.length - score,
-                    Score: `${Math.round((score / config.questions.length) * 100)}%`
-                };
-                const updatedResults = [...sessionResults, result];
-                setSessionResults(updatedResults);
-                localStorage.setItem('minecraftConstructorResults', JSON.stringify(updatedResults));
+
+            return (
+                <div className={`min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4`}>
+                    <div className="max-w-6xl mx-auto">
+                        <div className="bg-white rounded-lg p-4 mb-6 flex justify-between items-center">
+                            <div>
+                                <h2 className="text-2xl font-bold">{block.title}</h2>
+                                <p className="text-gray-600">Desafio {qIndex + 1}/{block.questions.length}: {question.structure}</p>
+                            </div>
+                            <button onClick={onBack} className="bg-gray-500 text-white p-2 rounded-lg">Voltar</button>
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="bg-white rounded-lg p-6 shadow-lg space-y-4">
+                                <h3 className="text-2xl font-bold text-center">🎯 Missão</h3>
+                                <p>🏗️ Construa: <span className="font-bold text-blue-600">{question.structure}</span></p>
+                                <p>🔢 Soma Alvo: <span className="bg-green-500 text-white px-3 py-1 rounded-full font-bold">{question.target}</span></p>
+                                {question.budget && <p>💰 Orçamento: <span className="bg-yellow-500 text-white px-3 py-1 rounded-full font-bold">{question.budget}</span></p>}
+                                <p>📊 Soma Atual: <span className={`font-bold px-3 py-1 rounded-full ${currentSum > (question.budget || Infinity) ? 'bg-red-500 text-white' : currentSum === question.target ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'}`}>{currentSum}</span></p>
+                                {feedback && <p className={`mt-2 p-3 rounded-lg font-semibold ${isComplete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{feedback}</p>}
+                                {isComplete && <button onClick={nextQuestion} className="w-full bg-green-600 text-white py-3 rounded-lg mt-2 font-bold">🚀 Próximo Desafio</button>}
+                            </div>
+                            <div className="bg-white rounded-lg p-6 shadow-lg">
+                                <h3 className="text-2xl font-bold text-center mb-4">🧱 Blocos</h3>
+                                <div className="flex flex-wrap gap-3 justify-center">
+                                    {block.blockTypes.map((b, i) => (
+                                        <div key={i} draggable onDragStart={(e) => e.dataTransfer.setData('block', JSON.stringify(b))} className="p-3 rounded-lg cursor-move text-white shadow-md text-center" style={{backgroundColor: b.color}}>
+                                            <div className="font-bold">{b.name}</div>
+                                            <div>Valor: {b.value}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-white rounded-lg p-6 shadow-lg mt-6">
+                            <h3 className="text-2xl font-bold text-center mb-4">🏗️ Área de Construção</h3>
+                            <div className="grid gap-1 mx-auto w-fit" style={{gridTemplateColumns: `repeat(${block.gridSize.cols}, 1fr)`}}>
+                                {grid.map((row, r) => row.map((cell, c) => (
+                                    <div key={`${r}-${c}`} onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDrop(r, c, JSON.parse(e.dataTransfer.getData('block')))} onClick={() => handleRemove(r, c)} className="w-20 h-20 border-2 border-gray-400 rounded-md flex items-center justify-center bg-gray-200 hover:bg-gray-300" style={{backgroundColor: cell ? cell.color : null}}>
+                                        {cell && <div className="font-bold text-white text-xl" style={{textShadow: '1px 1px 2px #000'}}>{cell.value}</div>}
+                                    </div>
+                                )))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const AtividadeTemplate = () => {
+            const [studentName, setStudentName] = useState(localStorage.getItem('studentName') || '');
+            const [font, setFont] = useState(localStorage.getItem('selectedFont') === 'dyslexic' ? 'OpenDyslexic' : 'Comic Sans MS');
+            const [currentScreen, setCurrentScreen] = useState('initial');
+            const [selectedBlock, setSelectedBlock] = useState(null);
+            const [sessionResults, setSessionResults] = useState([]);
+            const [lastResult, setLastResult] = useState(null);
+
+            useEffect(() => {
+                document.title = activityConfig.title;
+                document.body.className = font === 'OpenDyslexic' ? 'font-dyslexic' : '';
+            }, [font]);
+
+            const handleStart = (name) => {
+                if (name.trim()) {
+                    setStudentName(name);
+                    localStorage.setItem('studentName', name);
+                    setCurrentScreen('blockSelection');
+                }
             };
 
-            const downloadCSV = () => {
-                const resultsToExport = JSON.parse(localStorage.getItem('minecraftConstructorResults') || '[]');
-                if (resultsToExport.length === 0) {
-                    alert("Nenhum dado para exportar!");
+            const handleSelectBlock = (block) => {
+                setSelectedBlock(block);
+                setCurrentScreen('activity');
+            };
+            
+            const handleCompleteBlock = (result) => {
+                const newResult = {
+                    Nome: studentName,
+                    Materia: activityConfig.subject,
+                    Atividade: activityConfig.activity,
+                    Bloco: result.block.title,
+                    Questao: `${result.block.questions.length}_desafios`,
+                    Tempo_Execucao: `${result.tempoTotal}s`,
+                    Acertos: result.acertos,
+                    Erros: result.erros,
+                    Score: `${Math.round((result.acertos / result.block.questions.length) * 100)}%`
+                };
+                setSessionResults(prev => [...prev, newResult]);
+                setLastResult(newResult);
+                setCurrentScreen('summary');
+            };
+
+            const handleFinishSession = () => {
+                if (sessionResults.length === 0) {
+                    alert("Nenhuma atividade foi completada para gerar o relatório.");
                     return;
                 }
                 const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
-                const csvContent = resultsToExport.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
-                const fullContent = header + csvContent;
-                const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
+                const csvContent = sessionResults.map(r => Object.values(r).join(',')).join('\n');
+                const blob = new Blob([header + csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', `resultados-minecraft_constructor-${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
+                link.href = url;
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') ;
+                const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `${activityConfig.activity}_${studentNameForFile}_${dateStr}.csv`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                localStorage.removeItem('minecraftConstructorResults');
-                setSessionResults([]);
-                setCurrentPhase('inicio');
+                alert("🎉 Dados exportados com sucesso!");
             };
 
-            if (currentPhase === 'inicio') {
-                return (
-                    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4 flex items-center justify-center" style={getFontStyle()}>
-                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center">
-                            <h1 className="text-4xl font-bold text-gray-800 mb-4">🏗️ Construtor Minecraft</h1>
-                            <p className="text-lg text-gray-600 mb-6">Use blocos para construir estruturas e resolver desafios de soma.</p>
-                            <input type="text" placeholder="Digite seu nome" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="w-full p-4 border-2 border-gray-300 rounded-lg text-xl mb-6" />
-                            <button onClick={() => studentName.trim() && setCurrentPhase('selecao')} disabled={!studentName.trim()} className="w-full py-4 bg-green-600 text-white font-bold text-xl rounded-lg hover:bg-green-700 disabled:opacity-50">
-                                Iniciar
-                            </button>
-                            <a href="../index.html" className="block w-full mt-4 px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600">Voltar ao Portal</a>
-                        </div>
-                    </div>
-                );
-            }
+            const restartBlock = () => {
+                setCurrentScreen('activity');
+            };
 
-            if (currentPhase === 'selecao') {
-                return (
-                    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4" style={getFontStyle()}>
-                        <div className="max-w-4xl mx-auto">
-                            <h1 className="text-4xl font-bold text-white text-center mb-8">Olá, {studentName}! Escolha um bloco:</h1>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                {Object.entries(blockConfigs).map(([key, config]) => (
-                                    <div key={key} className="bg-white rounded-lg p-6 shadow-lg cursor-pointer" onClick={() => { setCurrentBlock(parseInt(key)); setCurrentQuestion(0); setScore(0); setCurrentPhase('jogo'); }}>
-                                        <h3 className="text-xl font-bold mb-2">{config.name}</h3>
-                                        <p className="text-gray-600">Grid: {config.gridSize.rows}x{config.gridSize.cols}</p>
-                                    </div>
-                                ))}
-                            </div>
-                             <button onClick={downloadCSV} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold">
-                                Finalizar Sessão e Baixar CSV
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (currentPhase === 'jogo') {
-                const config = blockConfigs[currentBlock];
-                const question = config.questions[currentQuestion];
-                return (
-                    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4" style={getFontStyle()}>
-                        <div className="max-w-6xl mx-auto">
-                            <div className="bg-white rounded-lg p-4 mb-6 flex justify-between items-center">
-                                <div>
-                                    <h2 className="text-2xl font-bold">{config.name}</h2>
-                                    <p className="text-gray-600">Questão {currentQuestion + 1}/{config.questions.length} - {question.structure}</p>
-                                </div>
-                                <button onClick={() => setCurrentPhase('selecao')} className="bg-gray-500 text-white p-2 rounded">Voltar</button>
-                            </div>
-                            <div className="space-y-6">
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <div className="bg-white rounded-lg p-6 shadow-lg">
-                                        <h3 className="text-2xl font-bold mb-4 text-center">🎯 Objetivo da Missão 🎯</h3>
-                                        <div className="space-y-4 text-lg">
-                                            <p>🏗️ Construa: <span className="font-bold text-blue-600 text-xl">{question.structure}</span></p>
-                                            <p>🔢 Soma Alvo: <span className="bg-green-500 text-white px-3 py-1 rounded-full font-bold text-2xl">{question.target}</span></p>
-                                            {budget && <p>💰 Orçamento: <span className="bg-yellow-500 text-white px-3 py-1 rounded-full font-bold text-2xl">{budget}</span></p>}
-                                            <p>📊 Soma Atual: <span className={`font-bold text-2xl px-3 py-1 rounded-full ${currentSum > (budget || Infinity) ? 'bg-red-500 text-white' : currentSum === question.target ? 'bg-green-500 text-white' : 'bg-blue-500 text-white'}`}>{currentSum}</span></p>
-                                        </div>
-                                        {feedback && <p className={`mt-4 p-3 rounded-lg font-semibold ${isComplete ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{feedback}</p>}
-                                        {isComplete && <button onClick={nextQuestion} className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg mt-4 text-xl font-bold">🚀 Próxima Questão</button>}
-                                    </div>
-                                    <div className="bg-white rounded-lg p-6 flex items-center justify-center border-4 border-dashed border-gray-300 min-h-[250px]">
-                                        <div className="text-center text-gray-500">
-                                            <div className="text-6xl mb-2">🖼️</div>
-                                            <div className="font-semibold">Exemplo da Estrutura</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                    <div className="bg-white rounded-lg p-6 shadow-lg">
-                                        <h3 className="text-2xl font-bold mb-4 text-center">🧱 Blocos Disponíveis</h3>
-                                        <div className="space-y-3">
-                                            {availableBlocks.map((block, index) => (
-                                                <div key={index} className="p-4 rounded-lg cursor-move text-white shadow-md" style={{backgroundColor: block.color}} draggable onDragStart={(e) => e.dataTransfer.setData('blockType', JSON.stringify(block))}>
-                                                    <span className="font-bold text-lg">{block.name}</span> (Valor: <span className="font-bold">{block.value}</span>)
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className="bg-white rounded-lg p-6 shadow-lg">
-                                        <h3 className="text-2xl font-bold mb-4 text-center">🏗️ Área de Construção</h3>
-                                        <div className="grid gap-2 mx-auto w-fit" style={{gridTemplateColumns: `repeat(${config.gridSize.cols}, 1fr)`}}>
-                                            {grid.map((row, rowIndex) => row.map((cell, colIndex) => (
-                                                <div key={`${rowIndex}-${colIndex}`} 
-                                                     className="w-24 h-24 border-4 border-gray-300 rounded-lg cursor-pointer flex items-center justify-center bg-gray-100 hover:bg-gray-200"
-                                                     style={{backgroundColor: cell ? cell.color : '#f0f0f0'}}
-                                                     onDragOver={(e) => e.preventDefault()}
-                                                     onDrop={(e) => handleDrop(rowIndex, colIndex, JSON.parse(e.dataTransfer.getData('blockType')))}
-                                                     onClick={() => handleRemove(rowIndex, colIndex)}>
-                                                    {cell && <div className="text-center font-bold text-white text-2xl" style={{textShadow: '2px 2px 4px #000'}}>{cell.value}</div>}
-                                                </div>
-                                            )))}
-                                        </div>
-                                        <p className="text-center text-gray-600 mt-4 text-sm">💡 Clique em um bloco na área para removê-lo.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
+            switch (currentScreen) {
+                case 'initial':
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
+                case 'blockSelection':
+                    return <BlockSelectionScreen studentName={studentName} onSelectBlock={handleSelectBlock} onFinishSession={handleFinishSession} />;
+                case 'activity':
+                    return <ActivityScreen block={selectedBlock} onBack={() => setCurrentScreen('blockSelection')} onComplete={handleCompleteBlock} />;
+                case 'summary':
+                    return <SummaryScreen result={lastResult} onRestart={restartBlock} onBackToSelection={() => setCurrentScreen('blockSelection')} />;
+                default:
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
             }
         };
 
-        ReactDOM.render(<MinecraftConstructor />, document.getElementById('root'));
+        ReactDOM.render(<AtividadeTemplate />, document.getElementById('root'));
     </script>
 </body>
 </html>

@@ -1,0 +1,133 @@
+# PLACEHOLDERS DE ÁUDIO - FAZENDA DE MOBS
+
+## Estrutura de Diretórios
+Todos os arquivos devem ser colocados na pasta: `media/audios/matematica/fazenda_mobs/`
+
+## BLOCO 01 - NOVATO NO ROBLOX - PRIMEIROS PASSOS
+Pasta: `media/audios/matematica/fazenda_mobs/bloco_01/`
+
+### Questão 1 - Camisetas nas Lojas
+- questao_1_contexto.mp3 (Narração: "Você acabou de entrar no Roblox! Seu avatar precisa de roupas novas. Você encontrou 3 lojas, cada uma vendendo 2 camisetas legais.")
+- questao_1_enunciado.mp3 (Narração: "Quantas camisetas diferentes você pode escolher no total?")
+- questao_1_explicacao.mp3 (Narração: "Conte as camisetas de cada loja e some tudo! 2 + 2 + 2 = 6, que é o mesmo que 3 × 2 = 6")
+
+### Questão 2 - Ovos de Pets
+- questao_2_contexto.mp3 (Narração: "No jogo 'Pet Simulator', você ganhou 4 ovos especiais. Cada ovo sempre dá exatamente 3 pets quando quebra.")
+- questao_2_enunciado.mp3 (Narração: "Se você quebrar todos os ovos, quantos pets novos você terá?")
+- questao_2_explicacao.mp3 (Narração: "Cada ovo sempre dá 3 pets. Conte todos! 3 + 3 + 3 + 3 = 12, que é o mesmo que 4 × 3 = 12")
+
+### Questão 3 - Moedas no Obby
+- questao_3_contexto.mp3 (Narração: "Você está jogando 'Obby Escape' e chegou numa sala com 5 plataformas. Em cada plataforma há exatamente 2 moedas brilhantes para coletar.")
+- questao_3_enunciado.mp3 (Narração: "Quantas moedas você conseguirá pegar nesta sala?")
+- questao_3_explicacao.mp3 (Narração: "Cada plataforma tem 2 moedas. Some todas! 2 + 2 + 2 + 2 + 2 = 10, que é o mesmo que 5 × 2 = 10")
+
+### Questão 4 - Dinossauros no Tycoon
+- questao_4_contexto.mp3 (Narração: "No 'Tycoon dos Dinossauros', você construiu 2 cercados gigantes. Cada cercado abriga exatamente 4 dinossauros bebês.")
+- questao_4_enunciado.mp3 (Narração: "Quantos dinossauros bebês você está cuidando no total?")
+- questao_4_explicacao.mp3 (Narração: "Conte os dinossauros de cada cercado! 4 + 4 = 8, que é o mesmo que 2 × 4 = 8")
+
+### Questão 5 - Pizzas Entregues
+- questao_5_contexto.mp3 (Narração: "Você está no 'Pizza Place' trabalhando como entregador. Você fez 3 viagens de entrega hoje. Em cada viagem, você entregou exatamente 5 pizzas quentinhas.")
+- questao_5_enunciado.mp3 (Narração: "Quantas pizzas você entregou no dia todo?")
+- questao_5_explicacao.mp3 (Narração: "Some as pizzas de todas as suas viagens! 5 + 5 + 5 = 15, que é o mesmo que 3 × 5 = 15")
+
+## BLOCO 02 - AVENTUREIRO EXPERIENTE - DESAFIOS MAIORES
+Pasta: `media/audios/matematica/fazenda_mobs/bloco_02/`
+
+### Questão 1 - Cristais Espaciais
+- questao_1_contexto.mp3 (Narração: "No 'Simulator de Mineração Espacial', você descobriu um asteroide raro com 7 pontos de escavação. Cada ponto sempre rende exatamente 6 cristais preciosos quando minerado completamente.")
+- questao_1_enunciado.mp3 (Narração: "Se você minerar todo o asteroide, quantos cristais terá coletado?")
+- questao_1_explicacao.mp3 (Narração: "Cada ponto de escavação rende 6 cristais. Multiplique! 6 + 6 + 6 + 6 + 6 + 6 + 6 = 42, que é o mesmo que 7 × 6 = 42")
+
+### Questão 2 - Carros na Loja
+- questao_2_contexto.mp3 (Narração: "Você é dono de uma loja de carros no 'Vehicle Simulator'. Hoje chegaram 6 caminhões de entrega, cada um trazendo exatamente 8 carros novos para sua loja.")
+- questao_2_enunciado.mp3 (Narração: "Quantos carros novos você recebeu para vender?")
+- questao_2_explicacao.mp3 (Narração: "Cada caminhão trouxe 8 carros. Calcule o total! 8 + 8 + 8 + 8 + 8 + 8 = 48, que é o mesmo que 6 × 8 = 48")
+
+### Questão 3 - Experiência da Guilda
+- questao_3_contexto.mp3 (Narração: "No 'Torre de Batalha', você formou uma guilda com 8 membros (incluindo você). Cada membro da guilda ganhou exatamente 7 pontos de experiência na última missão.")
+- questao_3_enunciado.mp3 (Narração: "Quantos pontos de experiência sua guilda ganhou no total?")
+- questao_3_explicacao.mp3 (Narração: "Cada membro ganhou 7 pontos. Multiplique pelo número de membros! 7 + 7 + 7 + 7 + 7 + 7 + 7 + 7 = 56, que é o mesmo que 8 × 7 = 56")
+
+### Questão 4 - Pratos do Restaurante
+- questao_4_contexto.mp3 (Narração: "Você trabalha no 'Restaurante Cinco Estrelas' como chef. Para o jantar especial de hoje, você precisa preparar 9 mesas VIP. Cada mesa VIP sempre serve exatamente 5 pratos principais.")
+- questao_4_enunciado.mp3 (Narração: "Quantos pratos principais você precisa cozinhar?")
+- questao_4_explicacao.mp3 (Narração: "Cada mesa VIP precisa de 5 pratos. Calcule o total! 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 = 45, que é o mesmo que 9 × 5 = 45")
+
+### Questão 5 - Exercícios de Heróis
+- questao_5_contexto.mp3 (Narração: "No 'Academia de Super Heróis', você está treinando com 6 colegas novatos. O instrutor deu para cada um de vocês exatamente 9 exercícios especiais para praticar esta semana.")
+- questao_5_enunciado.mp3 (Narração: "Quantos exercícios no total o grupo inteiro precisa completar?")
+- questao_5_explicacao.mp3 (Narração: "Cada novato recebeu 9 exercícios. Multiplique! 9 + 9 + 9 + 9 + 9 + 9 = 54, que é o mesmo que 6 × 9 = 54")
+
+## BLOCO 03 - MESTRE DO ROBLOX - GRANDES CONQUISTAS
+Pasta: `media/audios/matematica/fazenda_mobs/bloco_03/`
+
+### Questão 1 - Império Comercial
+- questao_1_contexto.mp3 (Narração: "Você criou um 'Império Comercial' no Roblox e agora possui 12 lojas diferentes espalhadas pelo mapa. Cada loja gera exatamente 15 Robux de lucro por dia.")
+- questao_1_enunciado.mp3 (Narração: "Se todas as lojas funcionarem perfeitamente por um dia inteiro, quanto Robux você ganhará?")
+- questao_1_explicacao.mp3 (Narração: "Cada loja rende 15 Robux por dia. Multiplique pelo número de lojas! 15 × 12 = 180 Robux")
+
+### Questão 2 - Torneio de Esportes
+- questao_2_contexto.mp3 (Narração: "No 'Torneio Mundial de Esportes', você é técnico de 14 equipes diferentes. Cada equipe tem exatamente 11 jogadores prontos para competir.")
+- questao_2_enunciado.mp3 (Narração: "Quantos atletas estão sob sua responsabilidade no total?")
+- questao_2_explicacao.mp3 (Narração: "Cada equipe tem 11 jogadores. Multiplique pelo número de equipes! 14 × 11 = 154 atletas")
+
+### Questão 3 - Materiais de Construção
+- questao_3_contexto.mp3 (Narração: "Você é arquiteto no 'Cidade dos Sonhos' e recebeu uma encomenda gigante: construir 16 edifícios residenciais idênticos. Cada edifício precisa de exatamente 13 tipos diferentes de materiais de construção.")
+- questao_3_enunciado.mp3 (Narração: "Quantos tipos de materiais você precisa calcular no total?")
+- questao_3_explicacao.mp3 (Narração: "Cada edifício usa 13 tipos de materiais. Multiplique! 16 × 13 = 208 tipos de materiais")
+
+### Questão 4 - Festival de Música
+- questao_4_contexto.mp3 (Narração: "No 'Festival de Música Virtual', você é organizador de 13 palcos simultâneos. Cada palco terá exatamente 12 apresentações musicais durante o evento.")
+- questao_4_enunciado.mp3 (Narração: "Quantas apresentações musicais acontecerão no festival inteiro?")
+- questao_4_explicacao.mp3 (Narração: "Cada palco terá 12 apresentações. Multiplique pelo número de palcos! 13 × 12 = 156 apresentações")
+
+### Questão 5 - Estratégia Galáctica
+- questao_5_contexto.mp3 (Narração: "Você é líder da aliança mais poderosa no 'Estratégia Galáctica'. Sua aliança controla 15 planetas habitados. Cada planeta contribui com exatamente 14 naves de guerra para a frota unificada.")
+- questao_5_enunciado.mp3 (Narração: "Quantas naves de guerra sua aliança possui no total?")
+- questao_5_explicacao.mp3 (Narração: "Cada planeta contribui com 14 naves. Multiplique pelo número de planetas! 15 × 14 = 210 naves")
+
+## SONS DE FEEDBACK
+Pasta: `media/sons/feedback/`
+
+### Sons de Acerto
+- acertos/acerto_1.mp3 (Som de sucesso 1 - "Ding!" alegre)
+- acertos/acerto_2.mp3 (Som de sucesso 2 - "Tada!" triunfante)
+- acertos/acerto_3.mp3 (Som de sucesso 3 - "Brilho" mágico)
+
+### Sons de Erro
+- erros/erro_1.mp3 (Som de erro 1 - "Buzzer" suave)
+- erros/erro_2.mp3 (Som de erro 2 - "Ops" amigável)
+- erros/erro_3.mp3 (Som de erro 3 - "Tentativa" encorajador)
+
+### Sons Gerais
+- click.mp3 (Som de clique - feedback de interação)
+- intro_fazenda_mobs.mp3 (Som de introdução da atividade - tema de fazenda/Roblox)
+
+## MÚSICA DE FUNDO
+Pasta: `media/musicas/fundo/`
+- fazenda_mobs_fundo.mp3 (Música de fundo temática de fazenda/aventura no Roblox)
+
+## RESUMO TOTAL DE ARQUIVOS:
+- 45 arquivos de áudio para questões (15 questões x 3 tipos cada)
+- 7 arquivos de sons de feedback
+- 1 arquivo de música de fundo
+- TOTAL: 53 arquivos de áudio
+
+## OBSERVAÇÕES TÉCNICAS:
+1. **Formato**: Todos os arquivos devem estar em formato MP3
+2. **Qualidade**: Recomenda-se 128kbps para otimização web
+3. **Duração sugerida**: 
+   - Sons de feedback: 2-5 segundos
+   - Contextos/enunciados: 15-45 segundos
+   - Explicações: 10-30 segundos
+   - Música de fundo: 2-3 minutos (loop)
+4. **Volume**: Normalizado para evitar diferenças bruscas entre arquivos
+5. **Locutor/a**: Voz clara e amigável, adequada para crianças de 6-11 anos
+6. **Tom**: Educativo mas divertido, mantendo o tema do Roblox
+
+## CONTEÚDO EDUCACIONAL:
+- **Foco**: Multiplicação através de situações lúdicas do Roblox
+- **Progressão**: Do básico (produtos até 20) ao avançado (produtos até 210)
+- **Contexto**: Situações familiares aos jogadores de Roblox (avatares, pets, tycoons, simulators)
+- **Metodologia**: Conecta adição repetitiva com multiplicação para facilitar compreensão

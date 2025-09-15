@@ -1,0 +1,60 @@
+
+# Placeholders de Áudio para a Atividade "Calculadora Digital"
+#
+# Instruções:
+# 1. Grave os áudios para cada enunciado e explicação listados abaixo.
+# 2. Renomeie os arquivos para corresponder exatamente aos nomes dos placeholders.
+# 3. Crie a estrutura de pastas: `/media/matematica/calculadora_digital/`
+# 4. Dentro dela, crie as pastas para cada bloco (ex: `bloco_1/`, `bloco_2/`, etc.) e coloque os áudios correspondentes.
+
+---
+
+### Bloco 1: Estrela Cadente
+(Caminho: /media/matematica/calculadora_digital/bloco_1/)
+
+- `bloco_1_questao_1_enunciado.mp3`
+- `bloco_1_questao_1_explicacao.mp3`
+- `bloco_1_questao_2_enunciado.mp3`
+- `bloco_1_questao_2_explicacao.mp3`
+- `bloco_1_questao_3_enunciado.mp3`
+- `bloco_1_questao_3_explicacao.mp3`
+- `bloco_1_questao_4_enunciado.mp3`
+- `bloco_1_questao_4_explicacao.mp3`
+- `bloco_1_questao_5_enunciado.mp3`
+- `bloco_1_questao_5_explicacao.mp3`
+
+---
+
+### Bloco 2: Foguete Espacial
+(Caminho: /media/matematica/calculadora_digital/bloco_2/)
+
+- `bloco_2_questao_1_enunciado.mp3`
+- `bloco_2_questao_1_explicacao.mp3`
+- `bloco_2_questao_2_enunciado.mp3`
+- `bloco_2_questao_2_explicacao.mp3`
+- `bloco_2_questao_3_enunciado.mp3`
+- `bloco_2_questao_3_explicacao.mp3`
+- `bloco_2_questao_4_enunciado.mp3`
+- `bloco_2_questao_4_explicacao.mp3`
+- `bloco_2_questao_5_enunciado.mp3`
+- `bloco_2_questao_5_explicacao.mp3`
+
+---
+
+### Bloco 3: Constelação Brilhante
+(Caminho: /media/matematica/calculadora_digital/bloco_3/)
+
+- `bloco_3_questao_1_enunciado.mp3`
+- `bloco_3_questao_1_explicacao.mp3`
+- `bloco_3_questao_2_enunciado.mp3`
+- `bloco_3_questao_2_explicacao.mp3`
+- `bloco_3_questao_3_enunciado.mp3`
+- `bloco_3_questao_3_explicacao.mp3`
+- `bloco_3_questao_4_enunciado.mp3`
+- `bloco_3_questao_4_explicacao.mp3`
+- `bloco_3_questao_5_enunciado.mp3`
+- `bloco_3_questao_5_explicacao.mp3`
+
+---
+
+(A lista continua para todos os 12 blocos da atividade...)

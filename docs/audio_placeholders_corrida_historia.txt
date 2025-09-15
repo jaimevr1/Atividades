@@ -1,0 +1,75 @@
+
+# Placeholders de Áudio para a Atividade "Corrida da História do Brasil"
+#
+# Instruções:
+# 1. Grave o áudio para cada evento listado abaixo.
+# 2. Renomeie cada arquivo de áudio para corresponder exatamente ao nome do placeholder (ex: `evento_1.mp3`).
+# 3. Crie as pastas para cada bloco dentro de `/media/audios/historia/corrida_historia/` (ex: `bloco_1/`, `bloco_2/`).
+# 4. Coloque cada arquivo de áudio na sua respectiva pasta de bloco.
+
+---
+
+### Bloco 1: Colonização e Invasões
+(Caminho: /media/audios/historia/corrida_historia/bloco_1/)
+
+- `evento_1.mp3` (Evento: A chegada de Pedro Álvares Cabral ao Brasil.)
+- `evento_2.mp3` (Evento: A criação da primeira capital do Brasil, Salvador.)
+- `evento_3.mp3` (Evento: Os franceses tentam criar uma colônia no Rio de Janeiro.)
+- `evento_4.mp3` (Evento: Os holandeses invadem e ocupam a cidade de Salvador.)
+- `evento_5.mp3` (Evento: A chegada de Maurício de Nassau, que modernizou Recife.)
+
+---
+
+### Bloco 2: Expansão e Mineração
+(Caminho: /media/audios/historia/corrida_historia/bloco_2/)
+
+- `evento_1.mp3` (Evento: A descoberta de grandes jazidas de ouro em Minas Gerais.)
+- `evento_2.mp3` (Evento: O Tratado de Madri definiu novas fronteiras.)
+- `evento_3.mp3` (Evento: Inconfidência Mineira, uma revolta contra os impostos.)
+- `evento_4.mp3` (Evento: A família real portuguesa fugiu de Napoleão e veio para o Brasil.)
+- `evento_5.mp3` (Evento: O Brasil deixou de ser colônia e se tornou Reino Unido.)
+
+---
+
+### Bloco 3: Independência e Império
+(Caminho: /media/audios/historia/corrida_historia/bloco_3/)
+
+- `evento_1.mp3` (Evento: O Grito do Ipiranga! O Brasil se torna independente.)
+- `evento_2.mp3` (Evento: O Brasil tem sua primeira Constituição.)
+- `evento_3.mp3` (Evento: Dom Pedro I abdicou do trono.)
+- `evento_4.mp3` (Evento: O jovem Dom Pedro II é coroado imperador.)
+- `evento_5.mp3` (Evento: A Lei Eusébio de Queirós proibiu o tráfico de escravos.)
+
+---
+
+### Bloco 4: Abolição e República
+(Caminho: /media/audios/historia/corrida_historia/bloco_4/)
+
+- `evento_1.mp3` (Evento: A Princesa Isabel assinou a Lei Áurea.)
+- `evento_2.mp3` (Evento: A Proclamação da República.)
+- `evento_3.mp3` (Evento: A Revolução de 1930 leva Getúlio Vargas ao poder.)
+- `evento_4.mp3` (Evento: A Revolução Constitucionalista em São Paulo.)
+- `evento_5.mp3` (Evento: Getúlio Vargas cria o Estado Novo.)
+
+---
+
+### Bloco 5: Brasil Contemporâneo
+(Caminho: /media/audios/historia/corrida_historia/bloco_5/)
+
+- `evento_1.mp3` (Evento: O Brasil sedia a Copa do Mundo pela primeira vez.)
+- `evento_2.mp3` (Evento: A inauguração de Brasília.)
+- `evento_3.mp3` (Evento: O início da Ditadura Militar no Brasil.)
+- `evento_4.mp3` (Evento: O fim da Ditadura e a volta das eleições diretas.)
+- `evento_5.mp3` (Evento: A promulgação da Constituição Cidadã.)
+
+---
+
+### Bloco 6: Personalidades do Brasil
+(Caminho: /media/audios/historia/corrida_historia/bloco_6/)
+
+- `evento_1.mp3` (Evento: Dom Pedro I proclamou a independência.)
+- `evento_2.mp3` (Evento: Princesa Isabel assinou a Lei Áurea.)
+- `evento_3.mp3` (Evento: Getúlio Vargas assumiu a presidência.)
+- `evento_4.mp3` (Evento: Juscelino Kubitschek iniciou seu governo.)
+- `evento_5.mp3` (Evento: Tancredo Neves foi eleito o primeiro presidente civil após a Ditadura.)
+

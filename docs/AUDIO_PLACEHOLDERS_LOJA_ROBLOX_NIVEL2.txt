@@ -1,0 +1,122 @@
+# PLACEHOLDERS DE ÁUDIO - LOJA DO ROBLOX NÍVEL 2
+
+## Estrutura de Diretórios
+Todos os arquivos devem ser colocados na pasta: `media/audios/matematica/loja_roblox_nivel2/`
+
+## BLOCO 01 - PRIMEIRAS COMPRAS
+Pasta: `media/audios/matematica/loja_roblox_nivel2/bloco_01/`
+
+### Questão 1 - Camisa e Chapéu
+- questao_1_contexto.mp3 (Narração: "Você acabou de criar sua conta no Roblox e ganhou 50 Robux de bônus! Hora de personalizar seu avatar.")
+- questao_1_enunciado.mp3 (Narração: "Compre uma camisa (10 Robux) e um chapéu (15 Robux). Quanto você gastará no total?")
+- questao_1_explicacao.mp3 (Narração: "Some os preços dos itens no carrinho: 10 + 15 = 25 Robux")
+
+### Questão 2 - Óculos
+- questao_2_contexto.mp3 (Narração: "Seu avatar está ficando massa! Agora você quer adicionar óculos para ficar ainda mais estiloso.")
+- questao_2_enunciado.mp3 (Narração: "Compre os óculos (8 Robux). Somando com suas compras anteriores, quanto gastou no total?")
+- questao_2_explicacao.mp3 (Narração: "Você já gastou 25 Robux. Agora adicione mais 8 Robux dos óculos: 25 + 8 = 33 Robux")
+
+### Questão 3 - Cálculo de Sobra
+- questao_3_contexto.mp3 (Narração: "Você quer saber se ainda tem dinheiro para comprar outras coisas legais.")
+- questao_3_enunciado.mp3 (Narração: "Você tinha 50 Robux e já gastou 33. Quantos Robux sobraram?")
+- questao_3_explicacao.mp3 (Narração: "Calcule quanto sobrou: 50 - 33 = 17 Robux")
+
+### Questão 4 - Tênis
+- questao_4_contexto.mp3 (Narração: "Legal! Você descobriu que ainda pode comprar mais coisas! Vamos ver se dá para comprar os tênis.")
+- questao_4_enunciado.mp3 (Narração: "Adicione os tênis (12 Robux) ao seu carrinho. Quanto você gastará no total até agora?")
+- questao_4_explicacao.mp3 (Narração: "Some tudo que você comprou: 33 + 12 = 45 Robux")
+
+### Questão 5 - Sobra Final
+- questao_5_contexto.mp3 (Narração: "Parabéns! Você montou seu primeiro look completo no Roblox! Agora vamos ver quanto dinheiro sobrou.")
+- questao_5_enunciado.mp3 (Narração: "Depois de gastar 45 Robux dos seus 50 Robux iniciais, quantos sobraram?")
+- questao_5_explicacao.mp3 (Narração: "Quanto sobrou da sua carteira: 50 - 45 = 5 Robux")
+
+## BLOCO 02 - LOJA DE PETS
+Pasta: `media/audios/matematica/loja_roblox_nivel2/bloco_02/`
+
+### Questão 1 - Cachorro e Gato
+- questao_1_contexto.mp3 (Narração: "Você entrou na loja de pets do Roblox! Tem 150 Robux para adotar bichinhos fofinhos.")
+- questao_1_enunciado.mp3 (Narração: "Compre um cachorro (45 Robux) e um gato (38 Robux). Quanto você gastará?")
+- questao_1_explicacao.mp3 (Narração: "Some os preços dos pets: 45 + 38 = 83 Robux")
+
+### Questão 2 - Coelho
+- questao_2_contexto.mp3 (Narração: "Seus pets estão adorando brincar juntos! Agora você quer adicionar um coelho para completar a família.")
+- questao_2_enunciado.mp3 (Narração: "Adicione o coelho (32 Robux) aos seus pets. Quanto você terá gasto no total?")
+- questao_2_explicacao.mp3 (Narração: "Você já gastou 83 Robux. Adicione mais 32 Robux: 83 + 32 = 115 Robux")
+
+### Questão 3 - Sobra Pets
+- questao_3_contexto.mp3 (Narração: "Você quer saber se ainda tem dinheiro para comprar comida e brinquedos para seus pets.")
+- questao_3_enunciado.mp3 (Narração: "Dos seus 150 Robux iniciais, quantos sobraram após gastar 115?")
+- questao_3_explicacao.mp3 (Narração: "Calcule: 150 - 115 = 35 Robux")
+
+### Questão 4 - Comida Premium
+- questao_4_contexto.mp3 (Narração: "Seus pets estão com fome! Você decidiu comprar comida premium para eles.")
+- questao_4_enunciado.mp3 (Narração: "Adicione a comida premium (35 Robux). Quanto você terá gasto no total?")
+- questao_4_explicacao.mp3 (Narração: "Some todas as suas compras: 115 + 35 = 150 Robux")
+
+### Questão 5 - Tudo Gasto
+- questao_5_contexto.mp3 (Narração: "Incrível! Você gastou exatamente todos os seus Robux cuidando bem dos seus pets!")
+- questao_5_enunciado.mp3 (Narração: "Depois de gastar 150 Robux dos seus 150 Robux iniciais, quantos sobraram?")
+- questao_5_explicacao.mp3 (Narração: "Você gastou tudo: 150 - 150 = 0 Robux")
+
+## BLOCO 03 - PARQUE DE DIVERSÕES
+Pasta: `media/audios/matematica/loja_roblox_nivel2/bloco_03/`
+
+### Questão 1 - Ingresso e Lanche
+- questao_1_contexto.mp3 (Narração: "Você chegou no parque de diversões do Roblox! Tem 200 Robux para se divertir o dia todo.")
+- questao_1_enunciado.mp3 (Narração: "Compre o ingresso do parque (85 Robux) e um lanche (67 Robux). Quanto você gastará?")
+- questao_1_explicacao.mp3 (Narração: "Some o ingresso e o lanche: 85 + 67 = 152 Robux")
+
+### Questão 2 - Refrigerante
+- questao_2_contexto.mp3 (Narração: "Depois do lanche, você quer andar na montanha-russa! Mas primeiro precisa de um refrigerante para se refrescar.")
+- questao_2_enunciado.mp3 (Narração: "Adicione um refrigerante (25 Robux). Quanto você terá gasto no total?")
+- questao_2_explicacao.mp3 (Narração: "Você já gastou 152 Robux. Adicione mais 25: 152 + 25 = 177 Robux")
+
+### Questão 3 - Sobra Parque
+- questao_3_contexto.mp3 (Narração: "Agora você quer saber se ainda tem dinheiro suficiente para comprar souvenirs na saída.")
+- questao_3_enunciado.mp3 (Narração: "Dos seus 200 Robux iniciais, quantos sobraram depois de gastar 177?")
+- questao_3_explicacao.mp3 (Narração: "Calcule: 200 - 177 = 23 Robux")
+
+### Questão 4 - Imã
+- questao_4_contexto.mp3 (Narração: "Legal! Você ainda tem dinheiro para comprar um imã de lembrança do parque.")
+- questao_4_enunciado.mp3 (Narração: "Adicione o imã (23 Robux) às suas compras. Quanto você terá gasto no total?")
+- questao_4_explicacao.mp3 (Narração: "Some todas as suas compras: 177 + 23 = 200 Robux")
+
+### Questão 5 - Tudo Gasto Parque
+- questao_5_contexto.mp3 (Narração: "Perfeito! Você aproveitou o parque ao máximo e gastou exatamente todo o seu dinheiro!")
+- questao_5_enunciado.mp3 (Narração: "Depois de gastar 200 Robux dos seus 200 Robux iniciais, quantos sobraram?")
+- questao_5_explicacao.mp3 (Narração: "Você gastou exatamente tudo: 200 - 200 = 0 Robux")
+
+## SONS DE FEEDBACK
+Pasta: `media/sons/feedback/`
+
+### Sons de Acerto
+- acertos/acerto_1.mp3 (Som de sucesso 1)
+- acertos/acerto_2.mp3 (Som de sucesso 2)
+- acertos/acerto_3.mp3 (Som de sucesso 3)
+
+### Sons de Erro
+- erros/erro_1.mp3 (Som de erro 1)
+- erros/erro_2.mp3 (Som de erro 2)
+- erros/erro_3.mp3 (Som de erro 3)
+
+### Sons Gerais
+- click.mp3 (Som de clique)
+- intro_loja_roblox.mp3 (Som de introdução da atividade)
+
+## MÚSICA DE FUNDO
+Pasta: `media/musicas/fundo/`
+- loja_roblox_fundo.mp3 (Música de fundo temática do Roblox)
+
+## RESUMO TOTAL DE ARQUIVOS:
+- 45 arquivos de áudio para questões (15 questões x 3 tipos cada)
+- 7 arquivos de sons de feedback
+- 1 arquivo de música de fundo
+- TOTAL: 53 arquivos de áudio
+
+## OBSERVAÇÕES:
+1. Todos os arquivos devem estar em formato MP3
+2. Recomenda-se qualidade de 128kbps para web
+3. Duração sugerida: 5-15 segundos para sons de feedback, 30-60 segundos para contextos/enunciados
+4. Volume normalizado para evitar diferenças bruscas entre arquivos
+5. Locutor/a com voz clara e amigável para crianças

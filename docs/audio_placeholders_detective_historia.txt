@@ -1,0 +1,39 @@
+
+# Placeholders de Áudio para a Atividade "Detective da História"
+#
+# Instruções:
+# 1. Grave o áudio para cada pista de cada mistério listado abaixo.
+# 2. Renomeie cada arquivo de áudio para corresponder exatamente ao nome do placeholder.
+# 3. Crie a estrutura de pastas: `/media/audios/historia/detective_historia/bloco_1/`.
+# 4. Coloque todos os 15 arquivos de áudio nesta pasta.
+
+---
+
+### Bloco 1: O Caso da Independência
+(Caminho: /media/audios/historia/detective_historia/bloco_1/)
+
+**Mistério 1 (1808 - Abertura dos Portos)**
+- `misterio_1_pista_1.mp3` (Pista: A família de um rei precisou fugir de Napoleão Bonaparte.)
+- `misterio_1_pista_2.mp3` (Pista: Eles atravessaram o oceano e trouxeram a corte para o Brasil.)
+- `misterio_1_pista_3.mp3` (Pista: O Brasil deixou de ser apenas uma colônia e o porto do Rio de Janeiro foi aberto.)
+
+**Mistério 2 (1821 - O Dia do Fico)**
+- `misterio_2_pista_1.mp3` (Pista: A família real precisou voltar para Portugal.)
+- `misterio_2_pista_2.mp3` (Pista: A corte portuguesa queria que o Brasil voltasse a ser apenas uma colônia.)
+- `misterio_2_pista_3.mp3` (Pista: O príncipe herdeiro, Dom Pedro, foi aconselhado a ficar no Brasil.)
+
+**Mistério 3 (1822 - O Grito do Ipiranga)**
+- `misterio_3_pista_1.mp3` (Pista: Um príncipe estava viajando por São Paulo.)
+- `misterio_3_pista_2.mp3` (Pista: Ele recebeu uma carta de Portugal exigindo que voltasse imediatamente.)
+- `misterio_3_pista_3.mp3` (Pista: Às margens de um rio, ele levantou sua espada e gritou 'Independência ou Morte!')
+
+**Mistério 4 (1889 - Proclamação da República)**
+- `misterio_4_pista_1.mp3` (Pista: A monarquia do Brasil já não era popular.)
+- `misterio_4_pista_2.mp3` (Pista: Um grupo de militares se juntou a líderes civis para mudar a forma de governo.)
+- `misterio_4_pista_3.mp3` (Pista: O imperador Dom Pedro II foi deposto e o Brasil se tornou uma República.)
+
+**Mistério 5 (1988 - Constituição Federal)**
+- `misterio_5_pista_1.mp3` (Pista: Depois de um longo período sem liberdade, o Brasil precisava de novas leis.)
+- `misterio_5_pista_2.mp3` (Pista: Essa Constituição garantiu muitos direitos importantes, como o voto para todos.)
+- `misterio_5_pista_3.mp3` (Pista: Por isso, ela é chamada de 'Constituição Cidadã.')
+

@@ -1,0 +1,75 @@
+
+# Placeholders de Áudio para a Atividade "Construtor de História do Brasil"
+#
+# Instruções:
+# 1. Grave o áudio para cada evento listado abaixo.
+# 2. Renomeie cada arquivo de áudio para corresponder exatamente ao nome do placeholder.
+# 3. Crie as pastas para cada bloco dentro de `/media/audios/historia/construtor_historia/`.
+# 4. Coloque cada arquivo de áudio na sua respectiva pasta de bloco.
+
+---
+
+### Bloco 1: Brasil Independente
+(Caminho: /media/audios/historia/construtor_historia/bloco_1/)
+
+- `bloco_1_evento_1.mp3` (Evento: Descobrimento do Brasil)
+- `bloco_1_evento_2.mp3` (Evento: Chegada da Família Real)
+- `bloco_1_evento_3.mp3` (Evento: Volta de Dom João VI)
+- `bloco_1_evento_4.mp3` (Evento: Grito do Ipiranga)
+- `bloco_1_evento_5.mp3` (Evento: Coroação de Dom Pedro I)
+
+---
+
+### Bloco 2: República Brasileira
+(Caminho: /media/audios/historia/construtor_historia/bloco_2/)
+
+- `bloco_2_evento_1.mp3` (Evento: Abolição da Escravatura)
+- `bloco_2_evento_2.mp3` (Evento: Proclamação da República)
+- `bloco_2_evento_3.mp3` (Evento: Primeira Constituição Republicana)
+- `bloco_2_evento_4.mp3` (Evento: Era Vargas Começa)
+- `bloco_2_evento_5.mp3` (Evento: Nova Constituição)
+
+---
+
+### Bloco 3: Brasil Moderno
+(Caminho: /media/audios/historia/construtor_historia/bloco_3/)
+
+- `bloco_3_evento_1.mp3` (Evento: Fundação de Brasília)
+- `bloco_3_evento_2.mp3` (Evento: Início da Ditadura Militar)
+- `bloco_3_evento_3.mp3` (Evento: Fim da Ditadura)
+- `bloco_3_evento_4.mp3` (Evento: Criação do Real)
+- `bloco_3_evento_5.mp3` (Evento: Olimpíadas no Rio)
+
+---
+
+### Bloco 4: Grandes Navegações
+(Caminho: /media/audios/historia/construtor_historia/bloco_4/)
+
+- `bloco_4_evento_1.mp3` (Evento: Conquista de Ceuta)
+- `bloco_4_evento_2.mp3` (Evento: Cabo da Boa Esperança)
+- `bloco_4_evento_3.mp3` (Evento: Colombo chega à América)
+- `bloco_4_evento_4.mp3` (Evento: Vasco da Gama na Índia)
+- `bloco_4_evento_5.mp3` (Evento: Pedro Álvares no Brasil)
+
+---
+
+### Bloco 5: Período Colonial
+(Caminho: /media/audios/historia/construtor_historia/bloco_5/)
+
+- `bloco_5_evento_1.mp3` (Evento: Expedições Colonizadoras)
+- `bloco_5_evento_2.mp3` (Evento: Primeiro Governo-Geral)
+- `bloco_5_evento_3.mp3` (Evento: Destruição de Palmares)
+- `bloco_5_evento_4.mp3` (Evento: Inconfidência Mineira)
+- `bloco_5_evento_5.mp3` (Evento: Conjuração Baiana)
+
+---
+
+### Bloco 6: Era Vargas
+(Caminho: /media/audios/historia/construtor_historia/bloco_6/)
+
+- `bloco_6_evento_1.mp3` (Evento: Revolução de 1930)
+- `bloco_6_evento_2.mp3` (Evento: Nova Constituição)
+- `bloco_6_evento_3.mp3` (Evento: Estado Novo)
+- `bloco_6_evento_4.mp3` (Evento: CLT - Leis Trabalhistas)
+- `bloco_6_evento_5.mp3` (Evento: Fim do Estado Novo)
+

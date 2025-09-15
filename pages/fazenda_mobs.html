@@ -50,340 +50,618 @@
     </div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
-        const FazendaMobs = () => {
-            const [studentName, setStudentName] = useState('');
-            const [selectedFont, setSelectedFont] = useState(localStorage.getItem('selectedFont') || 'comic');
-            const [currentPhase, setCurrentPhase] = useState('inicio');
-            const [currentBlock, setCurrentBlock] = useState(null);
-            const [currentQuestion, setCurrentQuestion] = useState(0);
-            const [sessionResults, setSessionResults] = useState([]);
-            const [startTime, setStartTime] = useState(null);
-            const [userAnswer, setUserAnswer] = useState('');
-            const [showFeedback, setShowFeedback] = useState(false);
-            const [isCorrect, setIsCorrect] = useState(false);
-            const [score, setScore] = useState(0);
+        // ===================================================================================
+        // --- CONFIGURAÇÃO DA ATIVIDADE ---
+        // ===================================================================================
+        const activityConfig = {
+            title: "Fazenda de Mobs",
+            subject: "matematica",
+            activity: "fazenda_mobs",
+            emoji: "🐄",
+            primaryColor: "green",
+        };
 
-            const questionsBlocks = {
-                1: { // 6-7 anos - Multiplicação básica até 4x, produtos até 20
-                  title: "🎮 Novato no Roblox - Primeiros Passos",
-                  ageRange: "6-7 anos",
-                  questions: [
+        const blocos = [
+                {
+                  id: 1,
+                  titulo: "🎮 Novato no Roblox - Primeiros Passos",
+                  subtitulo: "6-7 anos - Multiplicação básica",
+                  cor: "from-green-400 to-blue-500",
+                  dificuldade: "Iniciante",
+                  objetivo: "Aprender multiplicação através de situações do Roblox",
+                  situacoes: [
                     {
-                      scenario: "Você acabou de entrar no Roblox! Seu avatar precisa de roupas novas. Você encontrou 3 lojas, cada uma vendendo 2 camisetas legais. Quantas camisetas diferentes você pode escolher no total?",
+                      contexto: "Você acabou de entrar no Roblox! Seu avatar precisa de roupas novas. Você encontrou 3 lojas, cada uma vendendo 2 camisetas legais.",
+                      pergunta: "Quantas camisetas diferentes você pode escolher no total?",
                       visual: "🏪[👕👕] 🏪[👕👕] 🏪[👕👕]",
-                      calculation: "2 + 2 + 2",
-                      answer: 6,
-                      multiplication: "3 × 2",
-                      hint: "Conte as camisetas de cada loja e some tudo!",
-                      context: "Customização de avatar - conceito fundamental do Roblox"
+                      calculo: "2 + 2 + 2",
+                      resposta: 6,
+                      multiplicacao: "3 × 2",
+                      dica: "Conte as camisetas de cada loja e some tudo!"
                     },
                     {
-                      scenario: "No jogo 'Pet Simulator', você ganhou 4 ovos especiais. Cada ovo sempre dá exatamente 3 pets quando quebra. Se você quebrar todos os ovos, quantos pets novos você terá?",
+                      contexto: "No jogo 'Pet Simulator', você ganhou 4 ovos especiais. Cada ovo sempre dá exatamente 3 pets quando quebra.",
+                      pergunta: "Se você quebrar todos os ovos, quantos pets novos você terá?",
                       visual: "🥚[🐱🐶🐰] 🥚[🐱🐶🐰] 🥚[🐱🐶🐰] 🥚[🐱🐶🐰]",
-                      calculation: "3 + 3 + 3 + 3",
-                      answer: 12,
-                      multiplication: "4 × 3",
-                      hint: "Cada ovo sempre dá 3 pets. Conte todos!",
-                      context: "Pet games são muito populares entre crianças pequenas"
+                      calculo: "3 + 3 + 3 + 3",
+                      resposta: 12,
+                      multiplicacao: "4 × 3",
+                      dica: "Cada ovo sempre dá 3 pets. Conte todos!"
                     },
                     {
-                      scenario: "Você está jogando 'Obby Escape' e chegou numa sala com 5 plataformas. Em cada plataforma há exatamente 2 moedas brilhantes para coletar. Quantas moedas você conseguirá pegar nesta sala?",
+                      contexto: "Você está jogando 'Obby Escape' e chegou numa sala com 5 plataformas. Em cada plataforma há exatamente 2 moedas brilhantes para coletar.",
+                      pergunta: "Quantas moedas você conseguirá pegar nesta sala?",
                       visual: "⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙] ⬜[🪙🪙]",
-                      calculation: "2 + 2 + 2 + 2 + 2",
-                      answer: 10,
-                      multiplication: "5 × 2",
-                      hint: "Cada plataforma tem 2 moedas. Some todas!",
-                      context: "Obbys são obstacle courses muito jogados por crianças"
+                      calculo: "2 + 2 + 2 + 2 + 2",
+                      resposta: 10,
+                      multiplicacao: "5 × 2",
+                      dica: "Cada plataforma tem 2 moedas. Some todas!"
                     },
                     {
-                      scenario: "No 'Tycoon dos Dinossauros', você construiu 2 cercados gigantes. Cada cercado abriga exatamente 4 dinossauros bebês. Quantos dinossauros bebês você está cuidando no total?",
+                      contexto: "No 'Tycoon dos Dinossauros', você construiu 2 cercados gigantes. Cada cercado abriga exatamente 4 dinossauros bebês.",
+                      pergunta: "Quantos dinossauros bebês você está cuidando no total?",
                       visual: "🦕🦕🦕🦕 | 🦕🦕🦕🦕",
-                      calculation: "4 + 4",
-                      answer: 8,
-                      multiplication: "2 × 4",
-                      hint: "Conte os dinossauros de cada cercado!",
-                      context: "Tycoons ensinam gestão de recursos de forma lúdica"
+                      calculo: "4 + 4",
+                      resposta: 8,
+                      multiplicacao: "2 × 4",
+                      dica: "Conte os dinossauros de cada cercado!"
                     },
                     {
-                      scenario: "Você está no 'Pizza Place' trabalhando como entregador. Você fez 3 viagens de entrega hoje. Em cada viagem, você entregou exatamente 5 pizzas quentinhas. Quantas pizzas você entregou no dia todo?",
+                      contexto: "Você está no 'Pizza Place' trabalhando como entregador. Você fez 3 viagens de entrega hoje. Em cada viagem, você entregou exatamente 5 pizzas quentinhas.",
+                      pergunta: "Quantas pizzas você entregou no dia todo?",
                       visual: "🚗[🍕🍕🍕🍕🍕] 🚗[🍕🍕🍕🍕🍕] 🚗[🍕🍕🍕🍕🍕]",
-                      calculation: "5 + 5 + 5",
-                      answer: 15,
-                      multiplication: "3 × 5",
-                      hint: "Some as pizzas de todas as suas viagens!",
-                      context: "Roleplay games ajudam a entender profissões"
+                      calculo: "5 + 5 + 5",
+                      resposta: 15,
+                      multiplicacao: "3 × 5",
+                      dica: "Some as pizzas de todas as suas viagens!"
                     }
                   ]
                 },
-                2: { // 8-9 anos - Multiplicação até 8x, produtos até 60
-                  title: "⚔️ Aventureiro Experiente - Desafios Maiores",
-                  ageRange: "8-9 anos", 
-                  questions: [
+                {
+                  id: 2,
+                  titulo: "⚔️ Aventureiro Experiente - Desafios Maiores",
+                  subtitulo: "8-9 anos - Multiplicação intermediária",
+                  cor: "from-purple-500 to-pink-500",
+                  dificuldade: "Intermediário",
+                  objetivo: "Resolver problemas com valores maiores",
+                  situacoes: [
                     {
-                      scenario: "No 'Simulator de Mineração Espacial', você descobriu um asteroide raro com 7 pontos de escavação. Cada ponto sempre rende exatamente 6 cristais preciosos quando minerado completamente. Se você minerar todo o asteroide, quantos cristais terá coletado?",
+                      contexto: "No 'Simulator de Mineração Espacial', você descobriu um asteroide raro com 7 pontos de escavação. Cada ponto sempre rende exatamente 6 cristais preciosos quando minerado completamente.",
+                      pergunta: "Se você minerar todo o asteroide, quantos cristais terá coletado?",
                       visual: "☄️ → ⛏️[💎💎💎💎💎💎] × 7 pontos",
-                      calculation: "6 + 6 + 6 + 6 + 6 + 6 + 6",
-                      answer: 42,
-                      multiplication: "7 × 6",
-                      hint: "Cada ponto de escavação rende 6 cristais. Multiplique!",
-                      context: "Simulators espaciais estimulam interesse por ciências"
+                      calculo: "6 + 6 + 6 + 6 + 6 + 6 + 6",
+                      resposta: 42,
+                      multiplicacao: "7 × 6",
+                      dica: "Cada ponto de escavação rende 6 cristais. Multiplique!"
                     },
                     {
-                      scenario: "Você é dono de uma loja de carros no 'Vehicle Simulator'. Hoje chegaram 6 caminhões de entrega, cada um trazendo exatamente 8 carros novos para sua loja. Quantos carros novos você recebeu para vender?",
+                      contexto: "Você é dono de uma loja de carros no 'Vehicle Simulator'. Hoje chegaram 6 caminhões de entrega, cada um trazendo exatamente 8 carros novos para sua loja.",
+                      pergunta: "Quantos carros novos você recebeu para vender?",
                       visual: "🚛[🚗🚗🚗🚗🚗🚗🚗🚗] × 6 caminhões",
-                      calculation: "8 + 8 + 8 + 8 + 8 + 8",
-                      answer: 48,
-                      multiplication: "6 × 8",
-                      hint: "Cada caminhão trouxe 8 carros. Calcule o total!",
-                      context: "Vehicle simulators trabalham conceitos de negócios"
+                      calculo: "8 + 8 + 8 + 8 + 8 + 8",
+                      resposta: 48,
+                      multiplicacao: "6 × 8",
+                      dica: "Cada caminhão trouxe 8 carros. Calcule o total!"
                     },
                     {
-                      scenario: "No 'Torre de Batalha', você formou uma guilda com 8 membros (incluindo você). Cada membro da guilda ganhou exatamente 7 pontos de experiência na última missão. Quantos pontos de experiência sua guilda ganhou no total?",
+                      contexto: "No 'Torre de Batalha', você formou uma guilda com 8 membros (incluindo você). Cada membro da guilda ganhou exatamente 7 pontos de experiência na última missão.",
+                      pergunta: "Quantos pontos de experiência sua guilda ganhou no total?",
                       visual: "👥[⭐⭐⭐⭐⭐⭐⭐] × 8 membros",
-                      calculation: "7 + 7 + 7 + 7 + 7 + 7 + 7 + 7",
-                      answer: 56,
-                      multiplication: "8 × 7",
-                      hint: "Cada membro ganhou 7 pontos. Multiplique pelo número de membros!",
-                      context: "Guilds ensinam trabalho em equipe e colaboração"
+                      calculo: "7 + 7 + 7 + 7 + 7 + 7 + 7 + 7",
+                      resposta: 56,
+                      multiplicacao: "8 × 7",
+                      dica: "Cada membro ganhou 7 pontos. Multiplique pelo número de membros!"
                     },
                     {
-                      scenario: "Você trabalha no 'Restaurante Cinco Estrelas' como chef. Para o jantar especial de hoje, você precisa preparar 9 mesas VIP. Cada mesa VIP sempre serve exatamente 5 pratos principais. Quantos pratos principais você precisa cozinhar?",
+                      contexto: "Você trabalha no 'Restaurante Cinco Estrelas' como chef. Para o jantar especial de hoje, você precisa preparar 9 mesas VIP. Cada mesa VIP sempre serve exatamente 5 pratos principais.",
+                      pergunta: "Quantos pratos principais você precisa cozinhar?",
                       visual: "🍽️[🥘🥘🥘🥘🥘] × 9 mesas VIP",
-                      calculation: "5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5",
-                      answer: 45,
-                      multiplication: "9 × 5",
-                      hint: "Cada mesa VIP precisa de 5 pratos. Calcule o total!",
-                      context: "Gestão de restaurante ensina planejamento e organização"
+                      calculo: "5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5",
+                      resposta: 45,
+                      multiplicacao: "9 × 5",
+                      dica: "Cada mesa VIP precisa de 5 pratos. Calcule o total!"
                     },
                     {
-                      scenario: "No 'Academia de Super Heróis', você está treinando com 6 colegas novatos. O instrutor deu para cada um de vocês exatamente 9 exercícios especiais para praticar esta semana. Quantos exercícios no total o grupo inteiro precisa completar?",
+                      contexto: "No 'Academia de Super Heróis', você está treinando com 6 colegas novatos. O instrutor deu para cada um de vocês exatamente 9 exercícios especiais para praticar esta semana.",
+                      pergunta: "Quantos exercícios no total o grupo inteiro precisa completar?",
                       visual: "🦸‍♂️[📋📋📋📋📋📋📋📋📋] × 6 novatos",
-                      calculation: "9 + 9 + 9 + 9 + 9 + 9",
-                      answer: 54,
-                      multiplication: "6 × 9",
-                      hint: "Cada novato recebeu 9 exercícios. Multiplique!",
-                      context: "Temas de super-heróis motivam persistência e esforço"
+                      calculo: "9 + 9 + 9 + 9 + 9 + 9",
+                      resposta: 54,
+                      multiplicacao: "6 × 9",
+                      dica: "Cada novato recebeu 9 exercícios. Multiplique!"
                     }
                   ]
                 },
-                3: { // 10-11 anos - Multiplicação com dezenas, produtos até 200
-                  title: "👑 Mestre do Roblox - Grandes Conquistas",
-                  ageRange: "10-11 anos",
-                  questions: [
+                {
+                  id: 3,
+                  titulo: "👑 Mestre do Roblox - Grandes Conquistas",
+                  subtitulo: "10-11 anos - Multiplicação avançada",
+                  cor: "from-red-500 to-orange-600",
+                  dificuldade: "Avançado",
+                  objetivo: "Gerenciar cálculos com valores maiores",
+                  situacoes: [
                     {
-                      scenario: "Você criou um 'Império Comercial' no Roblox e agora possui 12 lojas diferentes espalhadas pelo mapa. Cada loja gera exatamente 15 Robux de lucro por dia. Se todas as lojas funcionarem perfeitamente por um dia inteiro, quanto Robux você ganhará?",
+                      contexto: "Você criou um 'Império Comercial' no Roblox e agora possui 12 lojas diferentes espalhadas pelo mapa. Cada loja gera exatamente 15 Robux de lucro por dia.",
+                      pergunta: "Se todas as lojas funcionarem perfeitamente por um dia inteiro, quanto Robux você ganhará?",
                       visual: "🏪[💰15] × 12 lojas = ? Robux por dia",
-                      calculation: "15 + 15 + 15... (12 vezes)",
-                      answer: 180,
-                      multiplication: "12 × 15",
-                      hint: "Cada loja rende 15 Robux por dia. Multiplique pelo número de lojas!",
-                      context: "Empreendedorismo digital e gestão financeira"
+                      calculo: "15 + 15 + 15... (12 vezes)",
+                      resposta: 180,
+                      multiplicacao: "12 × 15",
+                      dica: "Cada loja rende 15 Robux por dia. Multiplique pelo número de lojas!"
                     },
                     {
-                      scenario: "No 'Torneio Mundial de Esportes', você é técnico de 14 equipes diferentes. Cada equipe tem exatamente 11 jogadores prontos para competir. Quantos atletas estão sob sua responsabilidade no total?",
+                      contexto: "No 'Torneio Mundial de Esportes', você é técnico de 14 equipes diferentes. Cada equipe tem exatamente 11 jogadores prontos para competir.",
+                      pergunta: "Quantos atletas estão sob sua responsabilidade no total?",
                       visual: "⚽[👤👤👤👤👤👤👤👤👤👤👤] × 14 equipes",
-                      calculation: "11 + 11 + 11... (14 vezes)",
-                      answer: 154,
-                      multiplication: "14 × 11",
-                      hint: "Cada equipe tem 11 jogadores. Multiplique pelo número de equipes!",
-                      context: "Esportes ensinam liderança e responsabilidade"
+                      calculo: "11 + 11 + 11... (14 vezes)",
+                      resposta: 154,
+                      multiplicacao: "14 × 11",
+                      dica: "Cada equipe tem 11 jogadores. Multiplique pelo número de equipes!"
                     },
                     {
-                      scenario: "Você é arquiteto no 'Cidade dos Sonhos' e recebeu uma encomenda gigante: construir 16 edifícios residenciais idênticos. Cada edifício precisa de exatamente 13 tipos diferentes de materiais de construção. Quantos tipos de materiais você precisa calcular no total?",
+                      contexto: "Você é arquiteto no 'Cidade dos Sonhos' e recebeu uma encomenda gigante: construir 16 edifícios residenciais idênticos. Cada edifício precisa de exatamente 13 tipos diferentes de materiais de construção.",
+                      pergunta: "Quantos tipos de materiais você precisa calcular no total?",
                       visual: "🏢[🧱📦⚙️🪟🚪...13 tipos] × 16 edifícios",
-                      calculation: "13 + 13 + 13... (16 vezes)",
-                      answer: 208,
-                      multiplication: "16 × 13",
-                      hint: "Cada edifício usa 13 tipos de materiais. Multiplique!",
-                      context: "Arquitetura estimula pensamento espacial e planejamento"
+                      calculo: "13 + 13 + 13... (16 vezes)",
+                      resposta: 208,
+                      multiplicacao: "16 × 13",
+                      dica: "Cada edifício usa 13 tipos de materiais. Multiplique!"
                     },
                     {
-                      scenario: "No 'Festival de Música Virtual', você é organizador de 13 palcos simultâneos. Cada palco terá exatamente 12 apresentações musicais durante o evento. Quantas apresentações musicais acontecerão no festival inteiro?",
+                      contexto: "No 'Festival de Música Virtual', você é organizador de 13 palcos simultâneos. Cada palco terá exatamente 12 apresentações musicais durante o evento.",
+                      pergunta: "Quantas apresentações musicais acontecerão no festival inteiro?",
                       visual: "🎵[🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤🎤] × 13 palcos",
-                      calculation: "12 + 12 + 12... (13 vezes)",
-                      answer: 156,
-                      multiplication: "13 × 12",
-                      hint: "Cada palco terá 12 apresentações. Multiplique pelo número de palcos!",
-                      context: "Organização de eventos desenvolve habilidades de coordenação"
+                      calculo: "12 + 12 + 12... (13 vezes)",
+                      resposta: 156,
+                      multiplicacao: "13 × 12",
+                      dica: "Cada palco terá 12 apresentações. Multiplique pelo número de palcos!"
                     },
                     {
-                      scenario: "Você é líder da aliança mais poderosa no 'Estratégia Galáctica'. Sua aliança controla 15 planetas habitados. Cada planeta contribui com exatamente 14 naves de guerra para a frota unificada. Quantas naves de guerra sua aliança possui no total?",
+                      contexto: "Você é líder da aliança mais poderosa no 'Estratégia Galáctica'. Sua aliança controla 15 planetas habitados. Cada planeta contribui com exatamente 14 naves de guerra para a frota unificada.",
+                      pergunta: "Quantas naves de guerra sua aliança possui no total?",
                       visual: "🪐[🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀] × 15 planetas",
-                      calculation: "14 + 14 + 14... (15 vezes)",
-                      answer: 210,
-                      multiplication: "15 × 14",
-                      hint: "Cada planeta contribui com 14 naves. Multiplique pelo número de planetas!",
-                      context: "Estratégia espacial desenvolve pensamento tático"
+                      calculo: "14 + 14 + 14... (15 vezes)",
+                      resposta: 210,
+                      multiplicacao: "15 × 14",
+                      dica: "Cada planeta contribui com 14 naves. Multiplique pelo número de planetas!"
                     }
                   ]
                 }
-              };
+            ];
 
-            const getFontStyle = () => ({
-                fontFamily: selectedFont === 'dyslexic' ? "'OpenDyslexic', sans-serif" : "'Comic Sans MS', cursive"
+        // ===================================================================================
+        // --- FIM DA CONFIGURAÇÃO ---
+        // ===================================================================================
+
+        // --- SISTEMA DE GERENCIAMENTO DE MÍDIA ---
+        const MediaManager = {
+            basePath: '../media',
+            subject: 'matematica',
+            activity: 'fazenda_mobs',
+
+            getQuestionMedia: function(blockNum, questionNum) {
+                const blockPath = `${this.basePath}/audios/${this.subject}/${this.activity}/bloco_${String(blockNum).padStart(2, '0')}`;
+                return {
+                    audio: {
+                        contexto: `${blockPath}/questao_${questionNum}_contexto.mp3`,
+                        enunciado: `${blockPath}/questao_${questionNum}_enunciado.mp3`,
+                        explicacao: `${blockPath}/questao_${questionNum}_explicacao.mp3`
+                    }
+                };
+            },
+            
+            getFeedbackSound: function(type) {
+                return `${this.basePath}/sons/feedback/${type}.mp3`;
+            },
+            
+            getBackgroundMusic: function() {
+                return `${this.basePath}/musicas/fundo/fazenda_mobs_fundo.mp3`;
+            }
+        };
+
+        // --- SISTEMA DE FEEDBACK SONORO ---
+        const SoundSystem = {
+            play: (src) => {
+                try {
+                    const audio = new Audio(src);
+                    audio.play().catch(e => console.warn("Reprodução de áudio bloqueada pelo navegador."));
+                } catch (e) {
+                    console.error("Erro ao tentar tocar o som:", src, e);
+                }
+            },
+            success: () => {
+                const soundId = Math.floor(Math.random() * 3) + 1;
+                SoundSystem.play(`../media/sons/feedback/acertos/acerto_${soundId}.mp3`);
+            },
+            error: () => {
+                const soundId = Math.floor(Math.random() * 3) + 1;
+                SoundSystem.play(`../media/sons/feedback/erros/erro_${soundId}.mp3`);
+            },
+            click: () => {
+                SoundSystem.play('../media/sons/feedback/click.mp3');
+            }
+        };
+
+        // --- COMPONENTES REACT ---
+
+        // Componente para a Tela Inicial
+        const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
+            <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
+                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full transform transition-all duration-500 hover:scale-105">
+                    <div className="text-center mb-8">
+                        <div className="text-6xl mb-4">{activityConfig.emoji}</div>
+                        <h1 className="text-3xl font-bold text-gray-800 mb-2">{activityConfig.title}</h1>
+                        <p className="text-gray-600">🚀 Aprenda multiplicação gerenciando mobs do Roblox! 🎯</p>
+                    </div>
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-lg font-bold text-gray-700 mb-2">👤 Qual é o seu nome?</label>
+                            <input
+                                type="text"
+                                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl text-lg text-center focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                                placeholder="Digite seu nome aqui"
+                                value={studentName}
+                                onChange={(e) => setStudentName(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && onStart(studentName)}
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-700">🔤 Fonte para dislexia:</span>
+                            <button
+                                onClick={() => {
+                                    const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS';
+                                    setFont(newFont);
+                                    localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal');
+                                }}
+                                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${font === 'OpenDyslexic' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                            >
+                                {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                            </button>
+                        </div>
+                        <button
+                            onClick={() => onStart(studentName)}
+                            className={`w-full bg-gradient-to-r from-${activityConfig.primaryColor}-500 to-pink-500 text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:from-${activityConfig.primaryColor}-600 hover:to-pink-600 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed`}
+                            disabled={!studentName.trim()}
+                        >
+                            🎯 COMEÇAR AVENTURA! 🚀
+                        </button>
+                        <button
+                            onClick={() => window.location.href = '../index.html'}
+                            className="w-full bg-gray-300 text-gray-700 font-bold py-3 rounded-xl transition-all duration-300 hover:bg-gray-400 hover:shadow-lg"
+                        >
+                            🏠 Voltar ao Portal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // Componente para a Tela de Seleção de Blocos
+        const BlockSelectionScreen = ({ studentName, onSelectBlock, onFinishSession }) => {
+            const groupedLevels = {};
+            blocos.forEach(block => {
+                if (!groupedLevels[block.dificuldade]) {
+                    groupedLevels[block.dificuldade] = [];
+                }
+                groupedLevels[block.dificuldade].push(block);
             });
 
-            const handleStartName = () => {
-                if (studentName.trim()) {
-                    setCurrentPhase('selecao');
-                }
+            return (
+                <div className={`min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4`}>
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-8">
+                            <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}! 🚀</h1>
+                            <p className="text-2xl text-white opacity-90">Escolha um bloco para começar sua aventura matemática!</p>
+                        </div>
+                        
+                        {/* Tutorial */}
+                        <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6 mb-8 text-white">
+                            <h2 className="text-2xl font-bold mb-4">📚 Como Jogar:</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-lg">
+                                <div className="text-center">
+                                    <div className="text-3xl mb-2">📖</div>
+                                    <p>Leia os cenários do Roblox</p>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl mb-2">🧮</div>
+                                    <p>Calcule as multiplicações</p>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl mb-2">🏆</div>
+                                    <p>Complete os desafios!</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="border-t border-gray-200 my-6"></div>
+                        
+                        {Object.entries(groupedLevels).map(([levelName, blocksInLevel]) => (
+                            <div key={levelName} className="mb-12">
+                                <h2 className="text-4xl font-bold text-center text-white mb-8">
+                                    {levelName === 'Iniciante' && '🌱'} 
+                                    {levelName === 'Intermediário' && '⚡'} 
+                                    {levelName === 'Avançado' && '🔥'} 
+                                    {' ' + levelName}
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                    {blocksInLevel.map((block) => (
+                                        <div 
+                                            key={block.id}
+                                            className="bg-white rounded-3xl shadow-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer group"
+                                            onClick={() => onSelectBlock(block)}
+                                        >
+                                            <div className="text-center">
+                                                <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                                                    {block.titulo.includes('Novato') && '🎮'}
+                                                    {block.titulo.includes('Aventureiro') && '⚔️'}
+                                                    {block.titulo.includes('Mestre') && '👑'}
+                                                </div>
+                                                <h3 className={`text-2xl font-bold mb-2 bg-gradient-to-r ${block.cor} bg-clip-text text-transparent`}>
+                                                    {block.titulo}
+                                                </h3>
+                                                <p className="text-gray-600 mb-4 text-lg">{block.subtitulo}</p>
+                                                <p className="text-gray-600 mb-4">{block.objetivo}</p>
+                                                <div className="bg-gray-100 rounded-xl p-4 mb-4">
+                                                    <p className="text-sm text-gray-600">⏱️ {block.situacoes.length} questões</p>
+                                                </div>
+                                                <button className={`w-full bg-gradient-to-r ${block.cor} text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:shadow-lg group-hover:scale-105`}>
+                                                    🚀 COMEÇAR
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+
+                        <div className="text-center bg-white/10 backdrop-blur-sm rounded-3xl p-6">
+                            <button
+                                onClick={onFinishSession}
+                                className="bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-green-600 hover:shadow-lg mr-4"
+                            >
+                                💾 Finalizar Sessão & Baixar Resultados
+                            </button>
+                            <button
+                                onClick={() => window.location.href = '../index.html'}
+                                className="bg-gray-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-gray-600 hover:shadow-lg"
+                            >
+                                🏠 Voltar ao Portal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // Componente para a Tela da Atividade
+        const ActivityScreen = ({ block, onBack, onComplete }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [userAnswer, setUserAnswer] = useState('');
+            const [isCorrect, setIsCorrect] = useState(null);
+            const [showFeedback, setShowFeedback] = useState(false);
+            const [startTime, setStartTime] = useState(Date.now());
+            const [audioError, setAudioError] = useState({});
+
+            const question = block.situacoes[currentQuestionIndex];
+            const questionMedia = MediaManager.getQuestionMedia(block.id, currentQuestionIndex + 1);
+
+            const handleAudioError = (audioType) => {
+                setAudioError(prev => ({ ...prev, [audioType]: true }));
             };
 
-            const selecionarBloco = (bloco) => {
-                setCurrentBlock(bloco);
-                setCurrentQuestion(0);
-                setScore(0);
-                setCurrentPhase('jogo');
-                setStartTime(Date.now());
-            };
+            const handleAnswer = () => {
+                if (showFeedback) return;
 
-            const submitAnswer = () => {
-                const questionData = questionsBlocks[currentBlock].questions[currentQuestion];
-                const correct = parseInt(userAnswer) === questionData.answer;
-                
-                if(correct) {
-                    setScore(prev => prev + 1);
-                }
-
+                SoundSystem.click();
+                const correct = parseInt(userAnswer) === question.resposta;
                 setIsCorrect(correct);
                 setShowFeedback(true);
 
-                setTimeout(() => {
-                    nextQuestion();
-                }, 3000);
-            };
-
-            const nextQuestion = () => {
-                setShowFeedback(false);
-                setUserAnswer('');
-                if (currentQuestion < questionsBlocks[currentBlock].questions.length - 1) {
-                    setCurrentQuestion(prev => prev + 1);
+                if (correct) {
+                    SoundSystem.success();
                 } else {
-                    saveResult();
-                    setCurrentPhase('selecao');
+                    SoundSystem.error();
                 }
-            };
-            
-            const saveResult = () => {
-                const timeSpent = Math.round((Date.now() - startTime) / 1000);
-                const config = questionsBlocks[currentBlock];
-                const result = {
-                    Nome: studentName,
-                    Materia: 'Matematica',
-                    Atividade: 'Fazenda de Mobs',
-                    Bloco: config.title,
-                    Questao: `Bloco_${currentBlock}`,
-                    Tempo_Execucao: `${timeSpent}s`,
-                    Acertos: score,
-                    Erros: config.questions.length - score,
-                    Score: `${Math.round((score / config.questions.length) * 100)}%`
-                };
-                const updatedResults = [...sessionResults, result];
-                setSessionResults(updatedResults);
-                localStorage.setItem('fazendaMobsResults', JSON.stringify(updatedResults));
-            };
 
-            const downloadCSV = () => {
-                const resultsToExport = JSON.parse(localStorage.getItem('fazendaMobsResults') || '[]');
-                if (resultsToExport.length === 0) {
-                    alert("Nenhum dado para exportar!");
-                    return;
-                }
-                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
-                const csvContent = resultsToExport.map(r => `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`).join('\n');
-                const fullContent = header + csvContent;
-                const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', `resultados-fazenda_mobs-${new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                localStorage.removeItem('fazendaMobsResults');
-                setSessionResults([]);
-                setCurrentPhase('inicio');
+                onComplete({
+                    block,
+                    question,
+                    isCorrect: correct,
+                    timeSpent: Math.round((Date.now() - startTime) / 1000)
+                });
+
+                setTimeout(() => {
+                    if (currentQuestionIndex < block.situacoes.length - 1) {
+                        setCurrentQuestionIndex(currentQuestionIndex + 1);
+                        setUserAnswer('');
+                        setIsCorrect(null);
+                        setShowFeedback(false);
+                        setStartTime(Date.now());
+                        setAudioError({});
+                    } else {
+                        alert("Bloco concluído!");
+                        onBack();
+                    }
+                }, correct ? 2000 : 3000);
             };
 
-            if (currentPhase === 'inicio') {
-                return (
-                    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4 flex items-center justify-center" style={getFontStyle()}>
-                        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center">
-                            <h1 className="text-4xl font-bold text-gray-800 mb-4">🐄 Fazenda de Mobs</h1>
-                            <p className="text-lg text-gray-600 mb-6">Aprenda multiplicação gerenciando sua fazenda de mobs do Roblox!</p>
-                            <input type="text" placeholder="Digite seu nome" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="w-full p-4 border-2 border-gray-300 rounded-lg text-xl mb-6" />
-                            <button onClick={handleStartName} disabled={!studentName.trim()} className="w-full py-4 bg-green-600 text-white font-bold text-xl rounded-lg hover:bg-green-700 disabled:opacity-50">
-                                Começar
-                            </button>
-                            <a href="../index.html" className="block w-full mt-4 px-6 py-3 text-center bg-gray-500 text-white rounded-lg hover:bg-gray-600">Voltar ao Portal</a>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (currentPhase === 'selecao') {
-                return (
-                    <div className="min-h-screen bg-gradient-to-b from-green-400 to-blue-500 p-4" style={getFontStyle()}>
-                        <div className="max-w-4xl mx-auto">
-                            <h1 className="text-4xl font-bold text-white text-center mb-8">Olá, {studentName}! Escolha um bloco de desafios:</h1>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                {Object.entries(questionsBlocks).map(([key, config]) => (
-                                    <div key={key} className="bg-white rounded-lg p-6 shadow-lg cursor-pointer" onClick={() => selecionarBloco(parseInt(key))}>
-                                        <h3 className="text-xl font-bold mb-2">{config.title}</h3>
-                                        <p className="text-gray-600">{config.ageRange}</p>
-                                    </div>
-                                ))}
+            return (
+                <div className={`min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4`}>
+                    <div className="max-w-4xl mx-auto">
+                        {/* Header */}
+                        <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <h1 className="text-2xl font-bold text-gray-800">
+                                    {block.titulo.includes('Novato') && '🎮'}
+                                    {block.titulo.includes('Aventureiro') && '⚔️'}
+                                    {block.titulo.includes('Mestre') && '👑'}
+                                    {' ' + block.titulo}
+                                </h1>
+                                <button onClick={onBack} className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">⬅️ Voltar</button>
                             </div>
-                             <button onClick={downloadCSV} className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 font-bold">
-                                Finalizar Sessão e Baixar CSV
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (currentPhase === 'jogo') {
-                const questionData = questionsBlocks[currentBlock].questions[currentQuestion];
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 p-4 flex items-center justify-center" style={getFontStyle()}>
-                        <div className="max-w-2xl w-full bg-white rounded-2xl shadow-2xl p-8">
-                            <div className="mb-6">
-                                <p className="text-lg text-gray-600 text-center">Questão {currentQuestion + 1} de {questionsBlocks[currentBlock].questions.length}</p>
-                                <div className="w-full bg-gray-200 rounded-full h-4 mt-2">
-                                    <div className="bg-green-500 h-4 rounded-full" style={{width: `${((currentQuestion + 1) / questionsBlocks[currentBlock].questions.length) * 100}%`}}></div>
-                                </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div className={`bg-gradient-to-r ${block.cor} h-4 rounded-full`} style={{ width: `${((currentQuestionIndex + 1) / block.situacoes.length) * 100}%` }}></div>
                             </div>
+                            <div className="text-center font-bold text-gray-700 mt-2">📊 Questão {currentQuestionIndex + 1} de {block.situacoes.length}</div>
+                        </div>
+
+                        {/* Corpo da Questão */}
+                        <div className="bg-white rounded-2xl p-8 shadow-lg">
+                            {/* Contexto */}
                             <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r-lg">
-                                <h3 className="text-xl font-semibold text-gray-800">{questionData.scenario}</h3>
+                                <p className="text-lg font-semibold text-gray-800">{question.contexto}</p>
                             </div>
-                            <div className="text-center my-6 text-3xl font-mono text-gray-700">{questionData.visual}</div>
+
+                            {/* Visual */}
+                            <div className="text-center my-6 text-3xl font-mono text-gray-700 bg-gray-50 p-4 rounded-lg">
+                                {question.visual}
+                            </div>
+
+                            {/* Controles de Áudio Padronizados */}
+                            <div className="media-controls mb-6 bg-gray-50 p-4 rounded-lg border">
+                                <label className="block text-sm font-semibold text-blue-700 mb-2">🔊 Ouvir Contexto:</label>
+                                {!audioError.contexto ? (
+                                    <audio controls className="w-full mb-4" onError={() => handleAudioError('contexto')} src={questionMedia.audio.contexto}>Your browser does not support the audio element.</audio>
+                                ) : (
+                                    <div className="text-gray-500 italic text-sm mb-4">Áudio do contexto indisponível.</div>
+                                )}
+                                
+                                <label className="block text-sm font-semibold text-blue-700 mb-2">❓ Ouvir Enunciado:</label>
+                                {!audioError.enunciado ? (
+                                    <audio controls className="w-full mb-4" onError={() => handleAudioError('enunciado')} src={questionMedia.audio.enunciado}>Your browser does not support the audio element.</audio>
+                                ) : (
+                                    <div className="text-gray-500 italic text-sm mb-4">Áudio do enunciado indisponível.</div>
+                                )}
+                                
+                                <label className="block text-sm font-semibold text-green-700 mb-2">💡 Ouvir Explicação (após responder):</label>
+                                {!audioError.explicacao && showFeedback ? (
+                                    <audio controls className="w-full" onError={() => handleAudioError('explicacao')} src={questionMedia.audio.explicacao}>Your browser does not support the audio element.</audio>
+                                ) : (
+                                    <div className="text-gray-500 italic text-sm">{showFeedback ? "Áudio da explicação indisponível." : "Responda para liberar a explicação."}</div>
+                                )}
+                            </div>
+
+                            {/* Pergunta */}
+                            <p className="text-2xl font-bold text-gray-800 mb-6">{question.pergunta}</p>
+
+                            {/* Área de Resposta */}
                             {!showFeedback ? (
                                 <div className="space-y-4">
                                     <input
                                         type="number"
                                         value={userAnswer}
                                         onChange={(e) => setUserAnswer(e.target.value)}
-                                        className="w-full p-4 border-2 border-gray-300 rounded-lg text-xl text-center"
-                                        placeholder="Sua resposta..."
+                                        className="w-full p-4 border-2 border-gray-300 rounded-lg text-xl text-center focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                                        placeholder="Digite sua resposta..."
+                                        onKeyPress={(e) => e.key === 'Enter' && userAnswer && handleAnswer()}
                                     />
-                                    <button onClick={submitAnswer} disabled={!userAnswer} className="w-full py-4 bg-blue-600 text-white font-bold text-xl rounded-lg disabled:opacity-50">
-                                        Confirmar
+                                    <button 
+                                        onClick={handleAnswer} 
+                                        disabled={!userAnswer} 
+                                        className="w-full py-4 bg-blue-600 text-white font-bold text-xl rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                                    >
+                                        🎯 Confirmar Resposta
                                     </button>
                                 </div>
                             ) : (
-                                <div className={`text-center p-6 rounded-lg ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}>
-                                    <h4 className={`text-2xl font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>{isCorrect ? 'Correto!' : 'Quase lá!'}</h4>
-                                    <p className="text-lg mt-2">A resposta é {questionData.answer}. ({questionData.multiplication})</p>
+                                <div className={`text-center p-6 rounded-lg transition-all duration-300 ${isCorrect ? 'bg-green-100 border-2 border-green-400 correct-answer-animation' : 'bg-red-100 border-2 border-red-400 wrong-answer-animation'}`}>
+                                    <h4 className={`text-3xl font-bold mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                                        {isCorrect ? '🎉 Correto! Muito bem!' : '💪 Quase lá!'}
+                                    </h4>
+                                    <p className="text-lg mb-2">A resposta é <strong>{question.resposta}</strong></p>
+                                    <p className="text-md text-gray-600 mb-2">Cálculo: {question.calculo} = {question.multiplicacao}</p>
+                                    <p className="text-sm text-gray-500 italic">{question.dica}</p>
                                 </div>
                             )}
                         </div>
                     </div>
-                );
+                </div>
+            );
+        };
+        // Componente Principal da Aplicação
+        const FazendaMobs = () => {
+            const [studentName, setStudentName] = useState(localStorage.getItem('studentName') || '');
+            const [font, setFont] = useState(localStorage.getItem('selectedFont') === 'dyslexic' ? 'OpenDyslexic' : 'Comic Sans MS');
+            const [currentScreen, setCurrentScreen] = useState('initial');
+            const [selectedBlock, setSelectedBlock] = useState(null);
+            const [sessionResults, setSessionResults] = useState([]);
+
+            useEffect(() => {
+                document.title = activityConfig.title;
+                document.body.className = font === 'OpenDyslexic' ? 'font-dyslexic' : '';
+            }, [font]);
+
+            const handleStart = (name) => {
+                if (name.trim()) {
+                    setStudentName(name);
+                    localStorage.setItem('studentName', name);
+                    setCurrentScreen('blockSelection');
+                }
+            };
+
+            const handleSelectBlock = (block) => {
+                setSelectedBlock(block);
+                setCurrentScreen('activity');
+            };
+            
+            const handleCompleteQuestion = (result) => {
+                const newResult = {
+                    Nome: studentName,
+                    Materia: activityConfig.subject,
+                    Atividade: activityConfig.activity,
+                    Bloco: `${result.block.dificuldade}_${result.block.titulo}`,
+                    Questao: `Questao_${result.block.situacoes.indexOf(result.question) + 1}`,
+                    Tempo_Execucao: result.timeSpent + 's',
+                    Acertos: result.isCorrect ? 1 : 0,
+                    Erros: result.isCorrect ? 0 : 1,
+                    Score: result.isCorrect ? '100%' : '0%'
+                };
+                setSessionResults(prev => [...prev, newResult]);
+            };
+
+            const handleFinishSession = () => {
+                if (sessionResults.length === 0) {
+                    alert("Nenhuma atividade foi completada para gerar o relatório.");
+                    return;
+                }
+                
+                // UTF-8 BOM + header
+                const BOM = '\uFEFF';
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = sessionResults.map(r => Object.values(r).join(',')).join('\n');
+                const fullContent = BOM + header + csvContent;
+                
+                const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+                const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
+                link.download = `${activityConfig.activity}_${studentNameForFile}_${dateStr}.csv`;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                alert(`🎉 Dados exportados com sucesso!`);
+                setSessionResults([]);
+            };
+
+            switch (currentScreen) {
+                case 'initial':
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
+                case 'blockSelection':
+                    return <BlockSelectionScreen studentName={studentName} onSelectBlock={handleSelectBlock} onFinishSession={handleFinishSession} />;
+                case 'activity':
+                    return <ActivityScreen block={selectedBlock} onBack={() => setCurrentScreen('blockSelection')} onComplete={handleCompleteQuestion} />;
+                default:
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />;
             }
         };
-
         ReactDOM.render(<FazendaMobs />, document.getElementById('root'));
     </script>
 </body>
