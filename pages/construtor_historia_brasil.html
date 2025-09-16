@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/playlist.js"></script>
 
     <style>
         @font-face {
@@ -36,6 +37,62 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
+
+        
+
+        const MusicPlayer = () => {
+            const audioRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+
+            useEffect(() => {
+                localStorage.setItem('musicIsPlaying', isPlaying);
+                if (isPlaying) {
+                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                } else {
+                    audioRef.current.pause();
+                }
+            }, [isPlaying]);
+
+            useEffect(() => {
+                localStorage.setItem('musicTrackIndex', currentTrackIndex);
+                if (audioRef.current) {
+                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
+                    if (isPlaying) {
+                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                    }
+                }
+            }, [currentTrackIndex]);
+
+            const handleNextTrack = () => {
+                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+            };
+
+            const handleAudioEnded = () => {
+                handleNextTrack();
+            };
+
+            useEffect(() => {
+                const audio = audioRef.current;
+                audio.volume = 0.5;
+                audio.addEventListener('ended', handleAudioEnded);
+                return () => {
+                    audio.removeEventListener('ended', handleAudioEnded);
+                };
+            }, []);
+
+            return (
+                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
+                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {isPlaying ? '❚❚' : '▶'}
+                    </button>
+                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {'⏭'}
+                    </button>
+                </div>
+            );
+        };
 
         const activityConfig = {
             title: "Construtor de História do Brasil",
@@ -151,50 +208,29 @@
             });
         });
 
-        const SoundSystem = {
-            audioContext: new (window.AudioContext || window.webkitAudioContext)(),
-            masterVolume: 0.7,
-            backgroundMusic: null,
-            currentSound: null,
-
-            play: function(src, volume = 1.0) {
-                if (!src) return;
+        const SimpleSound = {
+            play: (src) => {
                 try {
-                    if (this.currentSound) this.currentSound.pause();
+                    if (window.musicPlayerSetVolume) {
+                        window.musicPlayerSetVolume(0.2); // Reduce background music volume
+                    }
                     const audio = new Audio(src);
-                    audio.volume = volume * this.masterVolume;
                     audio.play().catch(e => {});
-                    this.currentSound = audio;
+                    audio.onended = () => {
+                        if (window.musicPlayerSetVolume) {
+                            window.musicPlayerSetVolume(0.5); // Restore background music volume
+                        }
+                    };
                 } catch (e) {}
             },
-            playEventAudio: function(src) {
-                if (this.backgroundMusic) this.backgroundMusic.volume = 0.05;
-                this.play(src, 1.2);
-                if(this.currentSound) {
-                    this.currentSound.onended = () => {
-                        if (this.backgroundMusic) this.backgroundMusic.volume = 0.15;
-                    };
-                }
-            },
-            success: () => SoundSystem.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`, 0.8),
-            error: () => SoundSystem.play(`../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`, 0.8),
-            click: () => SoundSystem.play('../media/sons/feedback/click.mp3', 0.5),
-            initBackgroundMusic: function() {
-                if (this.backgroundMusic) return;
-                try {
-                    const musicFiles = ['musica_fundo_1.mp3', 'musica_fundo_2.mp3', 'musica_fundo_3.mp3', 'musica_fundo_4.mp3', 'musica_fundo_5.mp3'];
-                    const musicPath = `../media/musicas/fundo/${musicFiles[Math.floor(Math.random() * musicFiles.length)]}`;
-                    const music = new Audio(musicPath);
-                    music.volume = 0.15;
-                    music.loop = true;
-                    this.backgroundMusic = music;
-                    music.play().catch(e => {});
-                } catch(e) { console.error("Erro na música de fundo:", e); }
-            }
+            success: () => SimpleSound.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`),
+            error: () => SimpleSound.play(`../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`),
+            click: () => SimpleSound.play('../media/sons/feedback/click.mp3'),
         };
 
         const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
             <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
+                <MusicPlayer />
                 <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full transform transition-all hover:scale-105">
                     <div className="text-center mb-8">
                         <div className="text-6xl mb-4">{activityConfig.emoji}</div>
@@ -230,6 +266,7 @@
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4">
+                    <MusicPlayer />
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-8">
                             <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}!</h1>
@@ -270,6 +307,7 @@
         
         const SummaryScreen = ({ result, onRestart, onBackToSelection }) => (
             <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4">
+                <MusicPlayer />
                 <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
                     <h2 className="text-4xl font-bold mb-4 text-gray-800">🎊 Linha do Tempo Concluída! 🎊</h2>
                     <p className="text-2xl mb-8 text-gray-700">Você organizou os eventos do bloco <strong>{result.Bloco}</strong>!</p>
@@ -331,12 +369,12 @@
                 e.currentTarget.classList.remove('drag-over');
                 if (!draggedEvent || placedEvents[position]) return;
 
-                SoundSystem.click();
+                SimpleSound.click();
                 setTotalAttempts(totalAttempts + 1);
                 const isCorrect = draggedEvent.id === position;
 
                 if (isCorrect) {
-                    SoundSystem.success();
+                    SimpleSound.success();
                     const newPlaced = [...placedEvents];
                     newPlaced[position] = draggedEvent;
                     setPlacedEvents(newPlaced);
@@ -348,7 +386,7 @@
                         onComplete({ block, timeSpent: Math.round((Date.now() - startTime) / 1000), acertos: block.events.length, erros: errorCount, tentativas: totalAttempts + 1 });
                     }
                 } else {
-                    SoundSystem.error();
+                    SimpleSound.error();
                     setErrorCount(errorCount + 1);
                     setFeedback({ show: true, message: 'Ops! Ordem errada.', correct: false });
                 }
@@ -359,6 +397,7 @@
 
             return (
                 <div className={`min-h-screen bg-gradient-to-br from-amber-100 via-orange-100 to-red-100 p-4`}>
+                    <MusicPlayer />
                     <div className="max-w-6xl mx-auto">
                         <div className="bg-white rounded-2xl shadow-xl p-4 mb-6">
                             <div className="flex justify-between items-center mb-2">
@@ -377,7 +416,7 @@
                                 <div className="space-y-3">
                                     {availableEvents.map((event) => (
                                         <div key={event.id} className="flex items-center gap-3">
-                                            <button onClick={() => SoundSystem.playEventAudio(event.audioPath)} className="flex-shrink-0 w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center text-xl transition-transform hover:scale-110">🔊</button>
+                                            <button onClick={() => SimpleSound.play(event.audioPath)} className="flex-shrink-0 w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center text-xl transition-transform hover:scale-110">🔊</button>
                                             <div draggable onDragStart={(e) => handleDragStart(e, event)} className={`drag-element flex-1 p-3 rounded-lg text-white font-bold flex items-center gap-3 ${event.color}`}>
                                                 <span className="text-3xl">{event.icon}</span>
                                                 <span>{event.title}</span>
@@ -422,7 +461,6 @@
             useEffect(() => {
                 document.title = activityConfig.title;
                 document.body.className = font === 'OpenDyslexic' ? 'font-dyslexic' : '';
-                SoundSystem.initBackgroundMusic();
             }, [font]);
 
             const handleStart = (name) => {

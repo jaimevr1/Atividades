@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/playlist.js"></script>
     <style>
         body {
             margin: 0;
@@ -50,7 +51,63 @@
     </div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
+
+        
+
+        const MusicPlayer = () => {
+            const audioRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+
+            useEffect(() => {
+                localStorage.setItem('musicIsPlaying', isPlaying);
+                if (isPlaying) {
+                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                } else {
+                    audioRef.current.pause();
+                }
+            }, [isPlaying]);
+
+            useEffect(() => {
+                localStorage.setItem('musicTrackIndex', currentTrackIndex);
+                if (audioRef.current) {
+                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
+                    if (isPlaying) {
+                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                    }
+                }
+            }, [currentTrackIndex]);
+
+            const handleNextTrack = () => {
+                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+            };
+
+            const handleAudioEnded = () => {
+                handleNextTrack();
+            };
+
+            useEffect(() => {
+                const audio = audioRef.current;
+                audio.volume = 0.5;
+                audio.addEventListener('ended', handleAudioEnded);
+                return () => {
+                    audio.removeEventListener('ended', handleAudioEnded);
+                };
+            }, []);
+
+            return (
+                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
+                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {isPlaying ? '❚❚' : '▶'}
+                    </button>
+                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {'⏭'}
+                    </button>
+                </div>
+            );
+        };
         
         const QuizOperacoes = () => {
           const [studentName, setStudentName] = useState('');
@@ -71,17 +128,6 @@
           const [celebrationMessage, setCelebrationMessage] = useState('');
           const [selectedOperationIndex, setSelectedOperationIndex] = useState(0);
           const [currentAudio, setCurrentAudio] = useState(null);
-          const [backgroundMusic, setBackgroundMusic] = useState(null);
-          const [musicPlaying, setMusicPlaying] = useState(true);
-
-          // Lista de músicas de fundo disponíveis
-          const backgroundMusicFiles = [
-            'musica_fundo_1.mp3',
-            'musica_fundo_2.mp3',
-            'musica_fundo_3.mp3',
-            'musica_fundo_4.mp3',
-            'musica_fundo_5.mp3'
-          ];
 
           // Listas de sons de feedback
           const feedbackSounds = {
@@ -97,78 +143,6 @@
               'erro_3.mp3', 
               'erro_4.mp3'
             ]
-          };
-
-          // Inicializar música de fundo
-          useEffect(() => {
-            const initBackgroundMusic = () => {
-              try {
-                // Escolher música aleatoriamente
-                const randomIndex = Math.floor(Math.random() * backgroundMusicFiles.length);
-                const musicPath = `../media/musicas/fundo/${backgroundMusicFiles[randomIndex]}`;
-                
-                const music = new Audio(musicPath);
-                music.volume = 0.15; // Volume baixo (15%)
-                music.loop = true; // Repetir infinitamente
-                
-                setBackgroundMusic(music);
-                
-                // Tentar tocar automaticamente
-                music.play().catch(error => {
-                  console.log('Música de fundo não pôde ser iniciada automaticamente:', error);
-                  // A música será iniciada na primeira interação do usuário
-                });
-
-                // Quando a música terminar (improvável com loop), escolher outra
-                music.addEventListener('ended', () => {
-                  initBackgroundMusic();
-                });
-
-              } catch (error) {
-                console.log('Erro ao inicializar música de fundo:', error);
-              }
-            };
-
-            initBackgroundMusic();
-            
-            // Cleanup ao desmontar o componente
-            return () => {
-              if (backgroundMusic) {
-                backgroundMusic.pause();
-                backgroundMusic.currentTime = 0;
-              }
-            };
-          }, []);
-
-          // Função para controlar música de fundo
-          const toggleBackgroundMusic = () => {
-            if (backgroundMusic) {
-              if (musicPlaying) {
-                backgroundMusic.pause();
-                setMusicPlaying(false);
-              } else {
-                backgroundMusic.play().catch(error => {
-                  console.log('Não foi possível tocar música de fundo:', error);
-                });
-                setMusicPlaying(true);
-              }
-            }
-          };
-
-          // Função para reduzir temporariamente o volume da música de fundo
-          const reduceBackgroundVolume = () => {
-            if (backgroundMusic && musicPlaying) {
-              backgroundMusic.volume = 0.05; // Reduz para 5% durante áudio educacional
-            }
-          };
-
-          // Função para restaurar o volume normal da música de fundo
-          const restoreBackgroundVolume = () => {
-            if (backgroundMusic && musicPlaying) {
-              setTimeout(() => {
-                backgroundMusic.volume = 0.15; // Volta para 15% após áudio
-              }, 500); // Pequeno delay para suavizar a transição
-            }
           };
 
           // Função para tocar som de feedback (acerto/erro)
@@ -189,24 +163,14 @@
             }
           };
 
-          // Função para garantir que a música de fundo toque após primeira interação
-          const ensureBackgroundMusicPlaying = () => {
-            if (backgroundMusic && backgroundMusic.paused && musicPlaying) {
-              backgroundMusic.play().catch(error => {
-                console.log('Não foi possível iniciar música de fundo:', error);
-              });
-            }
-          };
-
           // Função para reproduzir áudio dos problemas com prevenção de sobreposição
           const playAudio = (blockIndex, questionIndex, audioType = 'enunciado') => {
             try {
-              // Garantir que a música de fundo está tocando
-              ensureBackgroundMusicPlaying();
-              
               // Reduzir volume da música de fundo durante áudio educacional
-              reduceBackgroundVolume();
-
+              if (window.musicPlayerSetVolume) {
+                window.musicPlayerSetVolume(0.2); // 20%
+              }
+              
               // Parar áudio anterior se estiver tocando
               if (currentAudio) {
                 currentAudio.pause();
@@ -225,18 +189,24 @@
               // Limpar referência e restaurar volume quando áudio terminar
               audio.addEventListener('ended', () => {
                 setCurrentAudio(null);
-                restoreBackgroundVolume();
+                if (window.musicPlayerSetVolume) {
+                  window.musicPlayerSetVolume(0.5); // 50%
+                }
               });
 
               audio.play().catch(error => {
                 console.log('Áudio não encontrado ou erro na reprodução:', audioPath);
                 setCurrentAudio(null);
-                restoreBackgroundVolume();
+                if (window.musicPlayerSetVolume) {
+                  window.musicPlayerSetVolume(0.5); // 50%
+                }
               });
             } catch (error) {
               console.log('Erro ao tentar reproduzir áudio:', error);
               setCurrentAudio(null);
-              restoreBackgroundVolume();
+              if (window.musicPlayerSetVolume) {
+                window.musicPlayerSetVolume(0.5); // 50%
+              }
             }
           };
 
@@ -1196,15 +1166,6 @@
                        fontSize === 'cursive' ? "'Fuzzy Bubbles', cursive" :
                        "'Comic Neue', 'Comic Sans MS', cursive"
           });
-
-          // Componente do botão flutuante de controle de música
-          const MusicToggleButton = () => (
-            React.createElement('button', {
-              onClick: toggleBackgroundMusic,
-              className: "fixed top-4 right-4 w-14 h-14 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl transition-all duration-200 hover:scale-110 shadow-lg z-50 border-2 border-white",
-              title: musicPlaying ? "Pausar música de fundo" : "Tocar música de fundo"
-            }, musicPlaying ? "🎵" : "🔇")
-          );
           
           const exportToCSV = () => {
             const results = loadSessionResults();
@@ -1217,7 +1178,7 @@
             const fullContent = header + csvContent;
             
             const now = new Date();
-            const dateStr = now.toLocaleDateString('pt-BR').replace(/\//g, '-');
+            const dateStr = now.toLocaleDateString('pt-BR').replace(/\//g, '-') ;
             const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
             const filename = `resultados-quiz_de_operacoes-${dateStr}-${studentNameForFile}.csv`;
             
@@ -1369,6 +1330,7 @@
               className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
               style: getFontStyle()
             },
+              React.createElement(MusicPlayer, null),
               React.createElement('div', {
                 className: "max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8"
               },
@@ -1479,7 +1441,7 @@
               className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
               style: getFontStyle()
             }, 
-              MusicToggleButton(),
+              React.createElement(MusicPlayer, null),
               React.createElement('div', {
                 className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8"
               },
@@ -1505,11 +1467,7 @@
                   React.createElement('button', {
                     onClick: handleStartName,
                     disabled: !studentName.trim(),
-                    className: `w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${
-                      studentName.trim()
-                        ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`
+                    className: `w-full px-6 py-4 rounded-lg text-xl font-bold transition-all ${studentName.trim() ? 'bg-blue-500 text-white hover:bg-blue-600 transform hover:scale-105' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`
                   }, "🚀 Próximo!"),
                   React.createElement('a', {
                     href: '../index.html',
@@ -1528,6 +1486,7 @@
               className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
               style: getFontStyle()
             },
+              React.createElement(MusicPlayer, null),
               React.createElement('div', {
                 className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 text-center"
               },
@@ -1580,6 +1539,7 @@
             className: "min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4",
             style: getFontStyle()
           },
+            React.createElement(MusicPlayer, null),
             React.createElement('div', {
               className: "max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6"
             },
@@ -1645,11 +1605,7 @@
                         React.createElement('button', {
                           key: operation.value,
                           onClick: () => handleAnswerClick(operation.value),
-                          className: `p-4 border-2 rounded-lg transition-all duration-200 text-left transform hover:scale-105 ${
-                            selectedOperationIndex === index 
-                              ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-200' 
-                              : 'bg-white border-gray-300 hover:border-blue-500 hover:bg-blue-50'
-                          }`
+                          className: `p-4 border-2 rounded-lg transition-all duration-200 text-left transform hover:scale-105 ${selectedOperationIndex === index ? 'bg-blue-100 border-blue-500 ring-2 ring-blue-200' : 'bg-white border-gray-300 hover:border-blue-500 hover:bg-blue-50'}`
                         },
                           React.createElement('div', { className: "flex items-center" },
                             React.createElement('span', { className: "text-2xl mr-3" }, operation.emoji),
@@ -1667,19 +1623,15 @@
                       className: "w-full px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold transform hover:scale-105"
                     }, '← Voltar')
                   )
-                ) :
+                ) : 
                 React.createElement('div', { className: "mb-6" },
                   React.createElement('div', {
-                    className: `p-4 rounded-lg border-2 ${
-                      isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
-                    }`
+                    className: `p-4 rounded-lg border-2 ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`
                   },
                     React.createElement('div', { className: "flex items-center mb-3" },
                       React.createElement('span', { className: "text-3xl mr-3" }, isCorrect ? '✅' : '❌'),
                       React.createElement('span', {
-                        className: `font-bold text-xl ${
-                          isCorrect ? 'text-green-700' : 'text-red-700'
-                        }`
+                        className: `font-bold text-xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`
                       }, isCorrect ? 'Correto!' : 'Não é essa operação...')
                     ),
                     

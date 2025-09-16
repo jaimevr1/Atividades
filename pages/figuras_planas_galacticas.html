@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figuras Geométricas com Roblox</title>
+    
+    <!-- Dependências Padrão (React, TailwindCSS, Fontes) -->
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @font-face {
+          font-family: 'OpenDyslexic';
+          src: url('../media/fonts/OpenDyslexic-Regular.otf') format('opentype');
+          font-weight: normal;
+          font-style: normal;
+        }
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        .font-dyslexic {
+            font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif;
+        }
+        .correct-answer-animation {
+            animation: pulse-green 0.8s ease-in-out;
+        }
+        @keyframes pulse-green {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            50% { transform: scale(1.05); box-shadow: 0 0 10px 10px rgba(34, 197, 94, 0); }
+        }
+        .wrong-answer-animation {
+            animation: shake-red 0.5s ease-in-out;
+        }
+        @keyframes shake-red {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .celebration-popup {
+            animation: fade-in 0.5s ease-out;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const backgroundMusicPlaylist = [
+            '../media/musicas/theme_1.mp3',
+            '../media/musicas/theme_2.mp3',
+            '../media/musicas/theme_3.mp3'
+        ];
+
+        const MusicPlayer = () => {
+            const audioRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+
+            useEffect(() => {
+                localStorage.setItem('musicIsPlaying', isPlaying);
+                if (isPlaying) {
+                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                } else {
+                    audioRef.current.pause();
+                }
+            }, [isPlaying]);
+
+            useEffect(() => {
+                localStorage.setItem('musicTrackIndex', currentTrackIndex);
+                if (audioRef.current) {
+                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
+                    if (isPlaying) {
+                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                    }
+                }
+            }, [currentTrackIndex]);
+
+            const handleNextTrack = () => {
+                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+            };
+
+            const handleAudioEnded = () => {
+                handleNextTrack();
+            };
+
+            useEffect(() => {
+                const audio = audioRef.current;
+                audio.volume = 0.5;
+                audio.addEventListener('ended', handleAudioEnded);
+                return () => {
+                    audio.removeEventListener('ended', handleAudioEnded);
+                };
+            }, []);
+
+            return (
+                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
+                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {isPlaying ? '❚❚' : '▶'}
+                    </button>
+                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {'⏭'}
+                    </button>
+                </div>
+            );
+        };
+
+        // ===================================================================================
+        // --- CONFIGURAÇÃO DA ATIVIDADE ---
+        // ===================================================================================
+        const activityConfig = {
+            title: "Figuras Geométricas com Roblox",
+            subject: "matematica",
+            activity: "figuras_geometricas_roblox",
+            emoji: "🔷",
+            primaryColor: "blue",
+        };
+
+        const activityBlocks = [
+            {
+                id: 1,
+                title: "Aventura do Construtor Novato",
+                difficulty: "Iniciante",
+                emoji: "⭐",
+                color: "from-yellow-400 to-amber-500",
+                description: "Combine as formas mais simples para começar sua jornada.",
+                challenge: {
+                    id: "bloco_1_desafio_1",
+                    figures: ['círculo', 'quadrado', 'triângulo', 'retângulo'],
+                    targets: [
+                        { id: 1, name: 'Cabeça do Personagem', shape: 'círculo', emoji: '😀' },
+                        { id: 2, name: 'Bloco de Terra', shape: 'quadrado', emoji: '🟫' },
+                        { id: 3, name: 'Telhado Pontudo', shape: 'triângulo', emoji: '🔼' },
+                        { id: 4, name: 'Porta Mágica', shape: 'retângulo', emoji: '🚪' }
+                    ]
+                }
+            },
+            {
+                id: 2,
+                title: "Missão: Lar Doce Lar Geométrico",
+                difficulty: "Iniciante",
+                emoji: "🏠",
+                color: "from-green-400 to-teal-500",
+                description: "Use as formas para construir uma casa incrível.",
+                challenge: {
+                    id: "bloco_2_desafio_1",
+                    figures: ['quadrado', 'retângulo', 'triângulo', 'círculo', 'losango'],
+                    targets: [
+                        { id: 1, name: 'Janela Panorâmica', shape: 'quadrado', emoji: '🖼️' },
+                        { id: 2, name: 'Parede de Tijolos', shape: 'retângulo', emoji: '🧱' },
+                        { id: 3, name: 'Telhado Principal', shape: 'triângulo', emoji: '🏡' },
+                        { id: 4, name: 'Rodas do Carrinho', shape: 'círculo', emoji: '⚫' },
+                        { id: 5, name: 'Piso de Diamante', shape: 'losango', emoji: '💠' }
+                    ]
+                }
+            },
+            {
+                id: 3,
+                title: "A Forja do Herói Poligonal",
+                difficulty: "Intermediário",
+                emoji: "🛡️",
+                color: "from-blue-400 to-cyan-500",
+                description: "Equipe seu herói com itens feitos de polígonos.",
+                challenge: {
+                    id: "bloco_3_desafio_1",
+                    figures: ['pentágono', 'hexágono', 'octógono', 'triângulo', 'círculo'],
+                    targets: [
+                        { id: 1, name: 'Escudo do Guardião', shape: 'pentágono', emoji: '🛡️' },
+                        { id: 2, name: 'Núcleo de Energia', shape: 'hexágono', emoji: '⚙️' },
+                        { id: 3, name: 'Sinal de Pare', shape: 'octógono', emoji: '🛑' },
+                        { id: 4, name: 'Chapéu do Mago', shape: 'triângulo', emoji: '🧙' },
+                        { id: 5, name: 'Lente dos Óculos', shape: 'círculo', emoji: '🕶️' }
+                    ]
+                }
+            },
+            {
+                id: 4,
+                title: "O Desafio da Pista Radical",
+                difficulty: "Intermediário",
+                emoji: "🛹",
+                color: "from-purple-400 to-fuchsia-500",
+                description: "Construa uma pista de obstáculos com quadriláteros.",
+                challenge: {
+                    id: "bloco_4_desafio_1",
+                    figures: ['retângulo', 'círculo', 'triângulo', 'trapézio', 'paralelogramo'],
+                    targets: [
+                        { id: 1, name: 'Túnel Escuro', shape: 'retângulo', emoji: '🚇' },
+                        { id: 2, name: 'Roda Gigante', shape: 'círculo', emoji: '🎡' },
+                        { id: 3, name: 'Rampa de Salto', shape: 'triângulo', emoji: '📐' },
+                        { id: 4, name: 'Plataforma Inclinada', shape: 'trapézio', emoji: '🎢' },
+                        { id: 5, name: 'Ponte Deslizante', shape: 'paralelogramo', emoji: '🌉' }
+                    ]
+                }
+            },
+            {
+                id: 5,
+                title: "Modo Criativo: Arquiteto de Games",
+                difficulty: "Avançado",
+                emoji: "🎮",
+                color: "from-red-500 to-orange-500",
+                description: "Crie os elementos de um jogo usando formas complexas.",
+                challenge: {
+                    id: "bloco_5_desafio_1",
+                    figures: ['círculo', 'quadrado', 'triângulo', 'hexágono', 'octógono'],
+                    targets: [
+                        { id: 1, name: 'Botão de Start', shape: 'círculo', emoji: '▶️' },
+                        { id: 2, name: 'Plataforma Flutuante', shape: 'quadrado', emoji: '🟩' },
+                        { id: 3, name: 'Seta de Direção', shape: 'triângulo', emoji: '➡️' },
+                        { id: 4, name: 'Favo de Mel Premiado', shape: 'hexágono', emoji: '🍯' },
+                        { id: 5, name: 'Portal de Teletransporte', shape: 'octógono', emoji: '🌀' }
+                    ]
+                }
+            }
+        ];
+        // ===================================================================================
+        // --- FIM DA CONFIGURAÇÃO ---
+        // ===================================================================================
+
+        // --- SISTEMA DE FEEDBACK SONORO ---
+        const SoundSystem = {
+            play: (src) => {
+                try {
+                    const audio = new Audio(src);
+                    audio.play().catch(e => console.warn("Reprodução de áudio bloqueada pelo navegador."));
+                } catch (e) {
+                    console.error("Erro ao tentar tocar o som:", src, e);
+                }
+            },
+            success: () => {
+                const soundId = Math.floor(Math.random() * 3) + 1;
+                SoundSystem.play(`../media/sons/feedback/acertos/acerto_${soundId}.mp3`);
+            },
+            error: () => {
+                const soundId = Math.floor(Math.random() * 3) + 1;
+                SoundSystem.play(`../media/sons/feedback/erros/erro_${soundId}.mp3`);
+            },
+            click: () => SoundSystem.play('../media/sons/feedback/click.mp3')
+        };
+
+        // --- COMPONENTES REACT ---
+
+        const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
+            <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
+                <MusicPlayer />
+                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full transform transition-all duration-500 hover:scale-105">
+                    <div className="text-center mb-8">
+                        <div className="text-6xl mb-4">{activityConfig.emoji}</div>
+                        <h1 className="text-3xl font-bold text-gray-800 mb-2">{activityConfig.title}</h1>
+                        <p className="text-gray-600">🚀 Uma nova aventura de aprendizado! 🎯</p>
+                    </div>
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-lg font-bold text-gray-700 mb-2">👤 Qual é o seu nome?</label>
+                            <input
+                                type="text"
+                                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl text-lg text-center focus:outline-none focus:border-purple-500 transition-colors duration-300"
+                                placeholder="Digite seu nome aqui"
+                                value={studentName}
+                                onChange={(e) => setStudentName(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && onStart(studentName)}
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-gray-700">🔤 Fonte para dislexia:</span>
+                            <button
+                                onClick={() => {
+                                    const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS';
+                                    setFont(newFont);
+                                    localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal');
+                                }}
+                                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${font === 'OpenDyslexic' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                            >
+                                {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                            </button>
+                        </div>
+                        <button
+                            onClick={() => onStart(studentName)}
+                            className={`w-full bg-gradient-to-r from-${activityConfig.primaryColor}-500 to-pink-500 text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:from-${activityConfig.primaryColor}-600 hover:to-pink-600 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed`}
+                            disabled={!studentName.trim()}
+                        >
+                            🎯 COMEÇAR AVENTURA! 🚀
+                        </button>
+                        <button
+                            onClick={() => window.location.href = '../index.html'}
+                            className="w-full bg-gray-300 text-gray-700 font-bold py-3 rounded-xl transition-all duration-300 hover:bg-gray-400 hover:shadow-lg"
+                        >
+                            🏠 Voltar ao Portal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const BlockSelectionScreen = ({ studentName, onSelectBlock, onFinishSession }) => {
+            const groupedLevels = {};
+            activityBlocks.forEach(block => {
+                if (!groupedLevels[block.difficulty]) groupedLevels[block.difficulty] = [];
+                groupedLevels[block.difficulty].push(block);
+            });
+
+            return (
+                <div className={`min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4`}>
+                    <MusicPlayer />
+                    <div className="max-w-7xl mx-auto">
+                        <div className="text-center mb-8">
+                            <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}! 🚀</h1>
+                            <p className="text-2xl text-white opacity-90">Escolha sua próxima aventura!</p>
+                        </div>
+                        
+                        {Object.entries(groupedLevels).map(([levelName, blocksInLevel]) => (
+                            <div key={levelName} className="mb-12">
+                                <h2 className="text-4xl font-bold text-center text-white mb-8">
+                                    {levelName === 'Iniciante' && '🌱'} 
+                                    {levelName === 'Intermediário' && '⚡'} 
+                                    {levelName === 'Avançado' && '🔥'} 
+                                    {' ' + levelName}
+                                </h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                    {blocksInLevel.map((block) => (
+                                        <div 
+                                            key={block.id}
+                                            className="bg-white rounded-3xl shadow-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer group"
+                                            onClick={() => onSelectBlock(block)}
+                                        >
+                                            <div className="text-center">
+                                                <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">{block.emoji}</div>
+                                                <h3 className={`text-2xl font-bold mb-2 bg-gradient-to-r ${block.color} bg-clip-text text-transparent`}>
+                                                    {block.title}
+                                                </h3>
+                                                <p className="text-gray-600 mb-4 text-lg">{block.description}</p>
+                                                <div className="bg-gray-100 rounded-xl p-4 mb-4">
+                                                    <p className="text-sm text-gray-600">🎯 {block.challenge.targets.length} figuras para combinar</p>
+                                                </div>
+                                                <button className={`w-full bg-gradient-to-r ${block.color} text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:shadow-lg group-hover:scale-105`}>
+                                                    🚀 COMEÇAR
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+
+                        <div className="text-center bg-white/10 backdrop-blur-sm rounded-3xl p-6">
+                            <button
+                                onClick={onFinishSession}
+                                className="bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-green-600 hover:shadow-lg mr-4"
+                            >
+                                💾 Finalizar Sessão & Baixar Resultados
+                            </button>
+                            <button
+                                onClick={() => window.location.href = '../index.html'}
+                                className="bg-gray-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-gray-600 hover:shadow-lg"
+                            >
+                                🏠 Voltar ao Portal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const BlockCompletePopup = ({ stats, onContinue }) => (
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 celebration-popup">
+                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full text-center transform transition-all duration-500 scale-100">
+                    <div className="text-8xl mb-4">🎉</div>
+                    <h2 className="text-4xl font-bold text-gray-800 mb-3">Aventura Concluída!</h2>
+                    <p className="text-gray-600 text-lg mb-6">Você é um mestre construtor! Veja seu desempenho:</p>
+                    <div className="grid grid-cols-3 gap-4 bg-gray-100 rounded-xl p-6 mb-8 text-center">
+                        <div>
+                            <div className="text-4xl font-bold text-blue-500">{stats.timeSpent}s</div>
+                            <div className="text-sm text-gray-600">Tempo</div>
+                        </div>
+                        <div>
+                            <div className="text-4xl font-bold text-green-500">{stats.acertos}</div>
+                            <div className="text-sm text-gray-600">Acertos</div>
+                        </div>
+                        <div>
+                            <div className="text-4xl font-bold text-red-500">{stats.erros}</div>
+                            <div className="text-sm text-gray-600">Erros</div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={onContinue}
+                        className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-4 rounded-xl text-xl transition-all duration-300 hover:shadow-lg transform hover:scale-105"
+                    >
+                        Continuar Jornada 🚀
+                    </button>
+                </div>
+            </div>
+        );
+
+        const ActivityScreen = ({ block, onBack, onComplete }) => {
+            const [targets, setTargets] = useState(block.challenge.targets.map(t => ({ ...t, isCorrect: false, droppedShape: null })))
+            const [figures, setFigures] = useState([...block.challenge.figures].sort(() => Math.random() - 0.5))
+            const [draggedItem, setDraggedItem] = useState(null)
+            const [startTime, setStartTime] = useState(Date.now())
+            const [errors, setErrors] = useState(0)
+            const [showCelebration, setShowCelebration] = useState(false)
+            const [isCompleted, setIsCompleted] = useState(false)
+            const [showBlockCompletePopup, setShowBlockCompletePopup] = useState(false)
+            const [blockStats, setBlockStats] = useState(null)
+
+            const correctCount = targets.filter(t => t.isCorrect).length
+            const totalCount = targets.length
+
+            const handleDragStart = (e, figure) => {
+                setDraggedItem(figure)
+                e.dataTransfer.effectAllowed = 'move'
+            }
+
+            const handleDragOver = (e) => {
+                e.preventDefault()
+                e.dataTransfer.dropEffect = 'move'
+            }
+
+            const handleDrop = (e, targetId) => {
+                e.preventDefault()
+                if (!draggedItem) return
+
+                const target = targets.find(t => t.id === targetId)
+                if (target.isCorrect) return
+
+                const isCorrect = target.shape === draggedItem
+                SoundSystem.click()
+
+                if (isCorrect) {
+                    SoundSystem.success()
+                    setShowCelebration(true)
+                    setTimeout(() => setShowCelebration(false), 1500)
+                    setTargets(prev => prev.map(t => 
+                        t.id === targetId ? { ...t, isCorrect: true, droppedShape: draggedItem } : t
+                    ))
+                    setFigures(prev => prev.filter(f => f !== draggedItem))
+                } else {
+                    SoundSystem.error()
+                    setErrors(prev => prev + 1)
+                }
+                setDraggedItem(null)
+            }
+
+            useEffect(() => {
+                if (!isCompleted && correctCount === totalCount && totalCount > 0) {
+                    setIsCompleted(true)
+                    const timeSpent = Math.round((Date.now() - startTime) / 1000)
+                    const stats = {
+                        block,
+                        questionId: block.challenge.id,
+                        timeSpent,
+                        acertos: totalCount,
+                        erros: errors,
+                        score: Math.round((totalCount / (totalCount + errors)) * 100)
+                    }
+                    onComplete(stats)
+                    setBlockStats(stats)
+                    setShowBlockCompletePopup(true)
+                }
+            }, [correctCount, totalCount, isCompleted, startTime, onComplete, block, errors])
+
+            return (
+                <div className={`min-h-screen bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 p-4`}>
+                    <MusicPlayer />
+                    {showCelebration && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 celebration-popup">
+                            <div className="bg-white rounded-lg p-8 text-center max-w-md mx-4">
+                                <div className="text-4xl mb-4">🎉</div>
+                                <p className="text-2xl font-bold text-green-600 mb-4">Correto!</p>
+                            </div>
+                        </div>
+                    )}
+                    {showBlockCompletePopup && <BlockCompletePopup stats={blockStats} onContinue={onBack} />}
+                    
+                    <div className="max-w-6xl mx-auto">
+                        <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <h1 className="text-2xl font-bold text-gray-800">{block.emoji} {block.title}</h1>
+                                <button onClick={onBack} className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">⬅️ Voltar</button>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-4">
+                                <div className={`bg-gradient-to-r ${block.color} h-4 rounded-full transition-all duration-500`} style={{ width: `${(correctCount / totalCount) * 100}%` }}></div>
+                            </div>
+                            <div className="text-center font-bold text-gray-700 mt-2">
+                                📊 Progresso: {correctCount} de {totalCount} | Erros: {errors}
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 border-2 border-blue-200">
+                                <h3 className="text-2xl font-bold mb-4 text-center">Figuras para Arrastar</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {figures.map((figure, index) => (
+                                        <div
+                                            key={index}
+                                            draggable
+                                            onDragStart={(e) => handleDragStart(e, figure)}
+                                            className="bg-yellow-200 border-2 border-yellow-400 rounded-lg p-4 text-center cursor-move hover:bg-yellow-300 transition duration-300 text-xl font-bold"
+                                        >
+                                            {figure}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                          
+                            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 border-2 border-green-200">
+                                <h3 className="text-2xl font-bold mb-4 text-center">Onde Colocar</h3>
+                                <div className="space-y-4">
+                                    {targets.map((target) => (
+                                        <div
+                                            key={target.id}
+                                            onDragOver={handleDragOver}
+                                            onDrop={(e) => handleDrop(e, target.id)}
+                                            className={`min-h-[4rem] p-4 border-2 rounded-lg text-center transition duration-300 flex items-center justify-center ${ 
+                                                target.isCorrect 
+                                                    ? 'bg-green-200 border-green-500 correct-answer-animation' 
+                                                    : 'bg-gray-100 border-dashed border-gray-400 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            {target.isCorrect ? (
+                                                <div className="text-green-800 font-bold text-xl">
+                                                    ✓ {target.emoji} {target.name} - {target.droppedShape}
+                                                </div>
+                                            ) : (
+                                                <div className="text-gray-700 text-xl">
+                                                   {target.emoji} {target.name}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        const AtividadeTemplate = () => {
+            const [studentName, setStudentName] = useState(localStorage.getItem('studentName') || '')
+            const [font, setFont] = useState(localStorage.getItem('selectedFont') === 'dyslexic' ? 'OpenDyslexic' : 'Comic Sans MS')
+            const [currentScreen, setCurrentScreen] = useState('initial')
+            const [selectedBlock, setSelectedBlock] = useState(null)
+            const [sessionResults, setSessionResults] = useState([])
+
+            useEffect(() => {
+                document.title = activityConfig.title
+                document.body.className = font === 'OpenDyslexic' ? 'font-dyslexic' : ''
+            }, [font])
+
+            const handleStart = (name) => {
+                if (name.trim()) {
+                    setStudentName(name)
+                    localStorage.setItem('studentName', name)
+                    setCurrentScreen('blockSelection')
+                }
+            }
+
+            const handleSelectBlock = (block) => {
+                setSelectedBlock(block)
+                setCurrentScreen('activity')
+            }
+            
+            const handleCompleteBlock = (result) => {
+                const newResult = {
+                    Nome: studentName,
+                    Materia: activityConfig.subject,
+                    Atividade: activityConfig.activity,
+                    Bloco: result.block.title,
+                    Questao: `${result.acertos}_de_${result.block.challenge.targets.length}`,
+                    Tempo_Execucao: result.timeSpent + 's',
+                    Acertos: result.acertos,
+                    Erros: result.erros,
+                    Score: result.score + '%'
+                }
+                setSessionResults(prev => [...prev, newResult])
+            }
+
+            const handleFinishSession = () => {
+                if (sessionResults.length === 0) {
+                    alert("Nenhuma atividade foi completada para gerar o relatório.")
+                    return
+                }
+                
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n'
+                const csvContent = sessionResults.map(r => Object.values(r).join(',')).join('\n')
+                const fullContent = header + csvContent
+                
+                const blob = new Blob([fullContent], { type: 'text/csv;charset=utf-8;' })
+                const link = document.createElement('a')
+                const url = URL.createObjectURL(blob)
+                link.href = url
+                
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-')
+                const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_')
+                link.download = `${activityConfig.activity}_${studentNameForFile}_${dateStr}.csv`
+                
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+                URL.revokeObjectURL(url)
+
+                alert(`🎉 Dados exportados com sucesso!`);
+            }
+
+            switch (currentScreen) {
+                case 'initial':
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />
+                case 'blockSelection':
+                    return <BlockSelectionScreen studentName={studentName} onSelectBlock={handleSelectBlock} onFinishSession={handleFinishSession} />
+                case 'activity':
+                    return <ActivityScreen block={selectedBlock} onBack={() => setCurrentScreen('blockSelection')} onComplete={handleCompleteBlock} />
+                default:
+                    return <InitialScreen onStart={handleStart} studentName={studentName} setStudentName={setStudentName} font={font} setFont={setFont} />
+            }
+        };
+
+        ReactDOM.render(<AtividadeTemplate />, document.getElementById('root'));
+    </script>
+</body>
+</html>

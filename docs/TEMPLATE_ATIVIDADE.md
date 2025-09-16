@@ -1,4 +1,3 @@
-
 # Template Padrão para Atividades Educacionais
 
 Este documento serve como o template oficial para a criação de novas atividades interativas. Ele combina as melhores práticas de UI/UX, gamificação, gerenciamento de mídia e coleta de dados, garantindo uma experiência consistente para os alunos e um desenvolvimento padronizado.
@@ -84,6 +83,66 @@ Este documento serve como o template oficial para a criação de novas atividade
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
+
+        const backgroundMusicPlaylist = [
+            '../media/musicas/theme_1.mp3',
+            '../media/musicas/theme_2.mp3',
+            '../media/musicas/theme_3.mp3'
+        ];
+
+        const MusicPlayer = () => {
+            const audioRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+
+            useEffect(() => {
+                localStorage.setItem('musicIsPlaying', isPlaying);
+                if (isPlaying) {
+                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                } else {
+                    audioRef.current.pause();
+                }
+            }, [isPlaying]);
+
+            useEffect(() => {
+                localStorage.setItem('musicTrackIndex', currentTrackIndex);
+                if (audioRef.current) {
+                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
+                    if (isPlaying) {
+                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                    }
+                }
+            }, [currentTrackIndex]);
+
+            const handleNextTrack = () => {
+                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+            };
+
+            const handleAudioEnded = () => {
+                handleNextTrack();
+            };
+
+            useEffect(() => {
+                const audio = audioRef.current;
+                audio.volume = 0.5;
+                audio.addEventListener('ended', handleAudioEnded);
+                return () => {
+                    audio.removeEventListener('ended', handleAudioEnded);
+                };
+            }, []);
+
+            return (
+                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
+                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {isPlaying ? '❚❚' : '▶'}
+                    </button>
+                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {'⏭'}
+                    </button>
+                </div>
+            );
+        };
 
         // ===================================================================================
         // --- CONFIGURAÇÃO DA ATIVIDADE ---
@@ -209,6 +268,7 @@ Este documento serve como o template oficial para a criação de novas atividade
         // Componente para a Tela Inicial
         const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
             <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
+                <MusicPlayer />
                 <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full transform transition-all duration-500 hover:scale-105">
                     <div className="text-center mb-8">
                         <div className="text-6xl mb-4">{activityConfig.emoji}</div>
@@ -270,6 +330,7 @@ Este documento serve como o template oficial para a criação de novas atividade
 
             return (
                 <div className={`min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4`}>
+                    <MusicPlayer />
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-8">
                             <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}! 🚀</h1>
@@ -381,6 +442,7 @@ Este documento serve como o template oficial para a criação de novas atividade
 
             return (
                 <div className={`min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4`}>
+                    <MusicPlayer />
                     <div className="max-w-4xl mx-auto">
                         {/* Header */}
                         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">

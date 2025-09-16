@@ -10,6 +10,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/playlist.js"></script>
 
     <style>
         @font-face {
@@ -33,6 +34,62 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
+
+        
+
+        const MusicPlayer = () => {
+            const audioRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+
+            useEffect(() => {
+                localStorage.setItem('musicIsPlaying', isPlaying);
+                if (isPlaying) {
+                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                } else {
+                    audioRef.current.pause();
+                }
+            }, [isPlaying]);
+
+            useEffect(() => {
+                localStorage.setItem('musicTrackIndex', currentTrackIndex);
+                if (audioRef.current) {
+                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
+                    if (isPlaying) {
+                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                    }
+                }
+            }, [currentTrackIndex]);
+
+            const handleNextTrack = () => {
+                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+            };
+
+            const handleAudioEnded = () => {
+                handleNextTrack();
+            };
+
+            useEffect(() => {
+                const audio = audioRef.current;
+                audio.volume = 0.5;
+                audio.addEventListener('ended', handleAudioEnded);
+                return () => {
+                    audio.removeEventListener('ended', handleAudioEnded);
+                };
+            }, []);
+
+            return (
+                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
+                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {isPlaying ? '❚❚' : '▶'}
+                    </button>
+                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {'⏭'}
+                    </button>
+                </div>
+            );
+        };
 
         const activityConfig = {
             title: "Corrida da História do Brasil",
@@ -103,7 +160,20 @@
         });
 
         const SoundSystem = {
-            play: (src) => { try { new Audio(src).play().catch(e => {}); } catch (e) {} },
+            play: (src) => {
+                try {
+                    if (window.musicPlayerSetVolume) {
+                        window.musicPlayerSetVolume(0.2); // Reduce background music volume
+                    }
+                    const audio = new Audio(src);
+                    audio.play().catch(e => {});
+                    audio.onended = () => {
+                        if (window.musicPlayerSetVolume) {
+                            window.musicPlayerSetVolume(0.5); // Restore background music volume
+                        }
+                    };
+                } catch (e) {}
+            },
             success: () => SoundSystem.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`),
             error: () => SoundSystem.play(`../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`),
             click: () => SoundSystem.play('../media/sons/feedback/click.mp3')
@@ -111,6 +181,7 @@
 
         const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
             <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
+                <MusicPlayer />
                 <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
                     <div className="text-center mb-8">
                         <div className="text-6xl mb-4">{activityConfig.emoji}</div>
@@ -144,6 +215,7 @@
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4">
+                    <MusicPlayer />
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-8">
                             <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}!</h1>
@@ -182,6 +254,7 @@
         
         const SummaryScreen = ({ result, onRestart, onBackToSelection }) => (
             <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4">
+                <MusicPlayer />
                 <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
                     <h2 className="text-4xl font-bold mb-4 text-gray-800">🏁 Corrida Finalizada! 🏁</h2>
                     <p className="text-2xl mb-8 text-gray-700">Você completou o bloco <strong>{result.Bloco}</strong>!</p>
@@ -274,6 +347,7 @@
 
             return (
                 <div className={`min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4`}>
+                    <MusicPlayer />
                     <div className="max-w-4xl mx-auto">
                         <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 mb-6">
                             <div className="flex justify-between items-center">
@@ -368,7 +442,7 @@
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.href = url;
-                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
+                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') ;
                 const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
                 link.download = `${activityConfig.activity}_${studentNameForFile}_${dateStr}.csv`;
                 document.body.appendChild(link);

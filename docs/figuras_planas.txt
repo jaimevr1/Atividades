@@ -1,0 +1,162 @@
+const activityBlocks = [
+  {
+    id: 1,
+    title: "Triângulo Titã 🛸",
+    difficulty: "Iniciante",
+    emoji: "🔺",
+    color: "from-yellow-400 to-orange-500",
+    description: "Descubra onde o triângulo se esconde na galáxia!",
+    questions: [
+      {
+        id: "q1",
+        statement: "Qual dessas formas tem 3 lados e 3 vértices?",
+        options: [
+          { id: "a", text: "🔺 Triângulo" },
+          { id: "b", text: "🔲 Quadrado" },
+          { id: "c", text: "🔴 Círculo" },
+          { id: "d", text: "▭ Retângulo" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "🎉 Isso mesmo! O triângulo tem 3 lados. Veja a constelação se formando... 🌟",
+          incorrect: "💡 Quase! O triângulo é a forma com 3 lados. Olhe bem nos cantos!"
+        }
+      },
+      {
+        id: "q2",
+        statement: "Qual objeto do espaço parece um triângulo?",
+        options: [
+          { id: "a", text: "🛸 OVNI" },
+          { id: "b", text: "🪐 Planeta" },
+          { id: "c", text: "☄️ Cometa" },
+          { id: "d", text: "🛰️ Satélite" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "🚀 UAU! Muitos OVNIs são desenhados como triângulos! Constelação atualizada! 🔺",
+          incorrect: "🛸 Dica: pense em naves famosas... Elas costumam ter formato de triângulo!"
+        }
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Quadrado Quantum 💥",
+    difficulty: "Intermediário",
+    emoji: "🔷",
+    color: "from-purple-400 to-pink-500",
+    description: "Desvende os segredos dos 4 lados iguais!",
+    questions: [
+      {
+        id: "q3",
+        statement: "Quantos lados tem um quadrado?",
+        options: [
+          { id: "a", text: "2" },
+          { id: "b", text: "3" },
+          { id: "c", text: "4" },
+          { id: "d", text: "5" }
+        ],
+        correct: "c",
+        feedback: {
+          correct: "🔢 Perfeito! 4 lados iguais = quadrado! A constelação brilha mais! ✨",
+          incorrect: "📏 Dica: 'Quadra' vem de quatro! Sempre 4 lados!"
+        }
+      },
+      {
+        id: "q4",
+        statement: "Qual janela de foguete é um quadrado?",
+        options: [
+          { id: "a", text: "🪟 Redonda" },
+          { id: "b", text: "🔷 Com 4 lados iguais" },
+          { id: "c", text: "▭ Longa e fina" },
+          { id: "d", text: "🔺 Pontuda" }
+        ],
+        correct: "b",
+        feedback: {
+          correct: "👀 Excelente! O quadrado é perfeito para janelas fortes! Nova estrela conectada! ⭐",
+          incorrect: "🪞 Pense: qual tem todos os lados do mesmo tamanho?"
+        }
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Círculo Cósmico 🌕",
+    difficulty: "Iniciante",
+    emoji: "⭕",
+    color: "from-blue-400 to-cyan-500",
+    description: "Rode pelo universo redondo e encontre os círculos!",
+    questions: [
+      {
+        id: "q5",
+        statement: "Qual figura NÃO tem lados nem vértices?",
+        options: [
+          { id: "a", text: "🔺 Triângulo" },
+          { id: "b", text: "🔷 Quadrado" },
+          { id: "c", text: "⭕ Círculo" },
+          { id: "d", text: "▭ Retângulo" }
+        ],
+        correct: "c",
+        feedback: {
+          correct: "🌀 Isso! O círculo é redondinho e sem pontas! A lua sorri para você! 🌕",
+          incorrect: "🖐️ Dica: procure a figura que rola sem esbarrar!"
+        }
+      },
+      {
+        id: "q6",
+        statement: "Qual planeta é redondo como um círculo?",
+        options: [
+          { id: "a", text: "🪐 Saturno" },
+          { id: "b", text: "☄️ Cometa" },
+          { id: "c", text: "🛰️ Antena" },
+          { id: "d", text: "🚀 Foguete" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "🪐 Parabéns! Todos os planetas são redondos! Você iluminou a galáxia! 🌌",
+          incorrect: "🌍 Dica: gira, gira… e é redondo como uma bola!"
+        }
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: "Hexágono Hiperdrive ⚡",
+    difficulty: "Avançado",
+    emoji: "⬡",
+    color: "from-green-400 to-teal-500",
+    description: "Domine a figura com 6 lados e libere o hiperdrive!",
+    questions: [
+      {
+        id: "q7",
+        statement: "Quantos lados tem um hexágono?",
+        options: [
+          { id: "a", text: "4" },
+          { id: "b", text: "5" },
+          { id: "c", text: "6" },
+          { id: "d", text: "7" }
+        ],
+        correct: "c",
+        feedback: {
+          correct: "⚡ Hiperdrive ativado! Hexágono = 6 lados! Sua nave acelera! 🚀💫",
+          incorrect: "🔢 'Hexa' significa seis! Conte os lados com calma!"
+        }
+      },
+      {
+        id: "q8",
+        statement: "Onde você vê um hexágono na natureza?",
+        options: [
+          { id: "a", text: "🐝 Colmeia de abelhas" },
+          { id: "b", text: "🌳 Tronco de árvore" },
+          { id: "c", text: "🌊 Onda do mar" },
+          { id: "d", text: "☁️ Nuvem" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "🍯 GENIAL! As abelhas são arquitetas geométricas! Constelação final completa! 🌟🌟🌟",
+          incorrect: "🐝 Dica: quem faz favos perfeitos em forma de seis lados?"
+        }
+      }
+    ]
+  }
+];

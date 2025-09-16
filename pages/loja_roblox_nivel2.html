@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/playlist.js"></script>
 
     <style>
         /* Definição da fonte local OpenDyslexic */
@@ -69,6 +70,66 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
+
+        const backgroundMusicPlaylist = [
+            '../media/musicas/theme_1.mp3',
+            '../media/musicas/theme_2.mp3',
+            '../media/musicas/theme_3.mp3'
+        ];
+
+        const MusicPlayer = () => {
+            const audioRef = useRef(null);
+            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
+            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+
+            useEffect(() => {
+                localStorage.setItem('musicIsPlaying', isPlaying);
+                if (isPlaying) {
+                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                } else {
+                    audioRef.current.pause();
+                }
+            }, [isPlaying]);
+
+            useEffect(() => {
+                localStorage.setItem('musicTrackIndex', currentTrackIndex);
+                if (audioRef.current) {
+                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
+                    if (isPlaying) {
+                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                    }
+                }
+            }, [currentTrackIndex]);
+
+            const handleNextTrack = () => {
+                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+            };
+
+            const handleAudioEnded = () => {
+                handleNextTrack();
+            };
+
+            useEffect(() => {
+                const audio = audioRef.current;
+                audio.volume = 0.5;
+                audio.addEventListener('ended', handleAudioEnded);
+                return () => {
+                    audio.removeEventListener('ended', handleAudioEnded);
+                };
+            }, []);
+
+            return (
+                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
+                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
+                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {isPlaying ? '❚❚' : '▶'}
+                    </button>
+                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                        {'⏭'}
+                    </button>
+                </div>
+            );
+        };
 
         // ===================================================================================
         // --- CONFIGURAÇÃO DA ATIVIDADE ---
@@ -392,15 +453,6 @@
                         ilustracao: `${blockPath}/imagens/questao_${questionNum}_ilustracao.png`
                     }
                 };
-            },
-            getFeedbackSound: function(type) {
-                return `${this.basePath}/sons/feedback/${type}.mp3`;
-            },
-            getBackgroundMusic: function() {
-                return `${this.basePath}/musicas/fundo/loja_roblox_fundo.mp3`;
-            },
-            getIntroSound: function() {
-                return `${this.basePath}/sons/feedback/intro_loja_roblox.mp3`;
             }
         };
         
@@ -413,12 +465,18 @@
 
         // --- SISTEMA DE FEEDBACK SONORO ---
         const SoundSystem = {
-            backgroundMusic: null,
-            
             play: (src) => {
                 try {
+                    if (window.musicPlayerSetVolume) {
+                        window.musicPlayerSetVolume(0.2); // Reduce background music volume
+                    }
                     const audio = new Audio(src);
                     audio.play().catch(e => console.warn("Reprodução de áudio bloqueada pelo navegador."));
+                    audio.onended = () => {
+                        if (window.musicPlayerSetVolume) {
+                            window.musicPlayerSetVolume(0.5); // Restore background music volume
+                        }
+                    };
                 } catch (e) {
                     console.error("Erro ao tentar tocar o som:", src, e);
                 }
@@ -433,28 +491,6 @@
             },
             click: () => {
                 SoundSystem.play('../media/sons/feedback/click.mp3');
-            },
-            startBackgroundMusic: () => {
-                try {
-                    if (SoundSystem.backgroundMusic) {
-                        SoundSystem.backgroundMusic.pause();
-                    }
-                    SoundSystem.backgroundMusic = new Audio(MediaManager.getBackgroundMusic());
-                    SoundSystem.backgroundMusic.loop = true;
-                    SoundSystem.backgroundMusic.volume = 0.3;
-                    SoundSystem.backgroundMusic.play().catch(e => console.warn("Música de fundo bloqueada pelo navegador."));
-                } catch (e) {
-                    console.error("Erro ao iniciar música de fundo:", e);
-                }
-            },
-            stopBackgroundMusic: () => {
-                if (SoundSystem.backgroundMusic) {
-                    SoundSystem.backgroundMusic.pause();
-                    SoundSystem.backgroundMusic = null;
-                }
-            },
-            playIntro: () => {
-                SoundSystem.play(MediaManager.getIntroSound());
             },
             playContextAudio: (situacao) => {
                 if (situacao.media && situacao.media.audio && situacao.media.audio.contexto) {
@@ -503,7 +539,6 @@
             const handleStartName = () => {
                 if (studentName.trim()) {
                     SoundSystem.click();
-                    SoundSystem.startBackgroundMusic();
                     setCurrentPhase('selecao');
                 }
             };
@@ -598,6 +633,7 @@
             if (currentPhase === 'inicio') {
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 flex items-center justify-center p-4" style={getFontStyle()}>
+                        <MusicPlayer />
                         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-lg w-full text-center">
                             <div className="text-6xl mb-4">🎮</div>
                             <h1 className="text-4xl font-bold text-purple-600 mb-2">Loja do Roblox - Nível 2</h1>
@@ -607,7 +643,6 @@
                                 placeholder="Digite seu nome"
                                 value={studentName}
                                 onChange={(e) => setStudentName(e.target.value)}
-                                onFocus={() => SoundSystem.playIntro()}
                                 className="w-full p-4 border-2 border-purple-300 rounded-lg text-xl mb-6 text-center font-bold"
                             />
                             <button onClick={handleStartName} disabled={!studentName.trim()} className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-xl rounded-lg hover:scale-105 transition-all duration-300 shadow-lg disabled:opacity-50">
@@ -624,6 +659,7 @@
             if (currentPhase === 'selecao') {
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-pink-600 p-4" style={getFontStyle()}>
+                        <MusicPlayer />
                         <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 mb-6 shadow-lg">
                             <div className="flex justify-between items-center">
                                 <div>
@@ -631,12 +667,6 @@
                                     <p className="text-gray-600">Escolha seu próximo desafio!</p>
                                 </div>
                                 <div className="flex space-x-3">
-                                    <button 
-                                        onClick={() => SoundSystem.backgroundMusic ? SoundSystem.stopBackgroundMusic() : SoundSystem.startBackgroundMusic()}
-                                        className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-all"
-                                    >
-                                        {SoundSystem.backgroundMusic ? '🔇 Pausar Música' : '🎵 Tocar Música'}
-                                    </button>
                                     <button onClick={() => { SoundSystem.click(); setCurrentPhase('inicio'); }} className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all">
                                         🏠 Início
                                     </button>
@@ -671,6 +701,7 @@
                 const percentage = Math.round((score / currentBlock.situacoes.length) * 100);
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-4 flex items-center justify-center" style={getFontStyle()}>
+                        <MusicPlayer />
                         <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-8 text-center">
                             <h1 className="text-4xl font-bold mb-4 text-gray-800">🎊 Parabéns, {studentName}! 🎊</h1>
                             <div className="text-8xl mb-6">{percentage >= 80 ? '🏆' : percentage >= 60 ? '🌟' : '💪'}</div>
@@ -691,6 +722,7 @@
 
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 p-4 flex items-center justify-center" style={getFontStyle()}>
+                        <MusicPlayer />
                         <div className="w-full max-w-4xl mx-auto">
                             <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-6 mb-6">
                                 <div className="flex justify-between items-center">
