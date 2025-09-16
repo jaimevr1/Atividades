@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/playlist.js"></script>
 
     <style>
         @font-face {
@@ -55,57 +56,37 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        const backgroundMusicPlaylist = [
-            '../media/musicas/theme_1.mp3',
-            '../media/musicas/theme_2.mp3',
-            '../media/musicas/theme_3.mp3'
-        ];
-
         const MusicPlayer = () => {
-            const audioRef = useRef(null);
-            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
-            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+            const [isPlaying, setIsPlaying] = useState(false);
 
             useEffect(() => {
-                localStorage.setItem('musicIsPlaying', isPlaying);
-                if (isPlaying) {
-                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
-                } else {
-                    audioRef.current.pause();
-                }
-            }, [isPlaying]);
-
-            useEffect(() => {
-                localStorage.setItem('musicTrackIndex', currentTrackIndex);
-                if (audioRef.current) {
-                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
-                    if (isPlaying) {
-                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
+                const updateState = () => {
+                    if (window.PersistentMusicSystem) {
+                        setIsPlaying(window.PersistentMusicSystem.isPlaying);
                     }
+                };
+
+                updateState();
+                const interval = setInterval(updateState, 1000);
+                return () => clearInterval(interval);
+            }, []);
+
+            const handleTogglePlay = () => {
+                if (window.PersistentMusicSystem) {
+                    window.PersistentMusicSystem.toggle();
+                    setIsPlaying(window.PersistentMusicSystem.isPlaying);
                 }
-            }, [currentTrackIndex]);
+            };
 
             const handleNextTrack = () => {
-                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+                if (window.PersistentMusicSystem) {
+                    window.PersistentMusicSystem.nextTrack();
+                }
             };
-
-            const handleAudioEnded = () => {
-                handleNextTrack();
-            };
-
-            useEffect(() => {
-                const audio = audioRef.current;
-                audio.volume = 0.5;
-                audio.addEventListener('ended', handleAudioEnded);
-                return () => {
-                    audio.removeEventListener('ended', handleAudioEnded);
-                };
-            }, []);
 
             return (
                 <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
-                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
-                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                    <button onClick={handleTogglePlay} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
                         {isPlaying ? '❚❚' : '▶'}
                     </button>
                     <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
@@ -141,7 +122,8 @@
                         { id: 1, name: 'Cabeça do Personagem', shape: 'círculo', emoji: '😀' },
                         { id: 2, name: 'Bloco de Terra', shape: 'quadrado', emoji: '🟫' },
                         { id: 3, name: 'Telhado Pontudo', shape: 'triângulo', emoji: '🔼' },
-                        { id: 4, name: 'Porta Mágica', shape: 'retângulo', emoji: '🚪' }
+                        { id: 4, name: 'Porta Mágica', shape: 'retângulo', emoji: '🚪' },
+                        { id: 5, name: 'Janela da Casa', shape: 'quadrado', emoji: '🪟' }
                     ]
                 }
             },
@@ -220,6 +202,696 @@
                         { id: 5, name: 'Portal de Teletransporte', shape: 'octógono', emoji: '🌀' }
                     ]
                 }
+            },
+            // Aventuras Galácticas de Figuras Planas
+            {
+                id: 6,
+                title: "Triângulo Titã 🛸",
+                difficulty: "Iniciante",
+                emoji: "🔺",
+                color: "from-yellow-400 to-orange-500",
+                description: "Descubra onde o triângulo se esconde na galáxia!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q1",
+                        statement: "Qual dessas formas tem 3 lados e 3 vértices?",
+                        options: [
+                            { id: "a", text: "🔺 Triângulo" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "⭕ Círculo" },
+                            { id: "d", text: "▭ Retângulo" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🎉 Isso mesmo! O triângulo tem 3 lados. Veja a constelação se formando... 🌟",
+                            incorrect: "💡 Quase! O triângulo é a forma com 3 lados. Olhe bem nos cantos!"
+                        }
+                    },
+                    {
+                        id: "q2",
+                        statement: "Qual objeto do espaço parece um triângulo?",
+                        options: [
+                            { id: "a", text: "🛸 OVNI" },
+                            { id: "b", text: "🪐 Planeta" },
+                            { id: "c", text: "☄️ Cometa" },
+                            { id: "d", text: "🛰️ Satélite" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🚀 UAU! Muitos OVNIs são desenhados como triângulos! Constelação atualizada! 🔺",
+                            incorrect: "🛸 Dica: pense em naves famosas... Elas costumam ter formato de triângulo!"
+                        }
+                    },
+                    {
+                        id: "q3",
+                        statement: "Em uma pizza triangular, quantos pedaços você obtém se cortar do centro até cada ponta?",
+                        options: [
+                            { id: "a", text: "2 pedaços" },
+                            { id: "b", text: "3 pedaços" },
+                            { id: "c", text: "4 pedaços" },
+                            { id: "d", text: "6 pedaços" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "🍕 DELICIOSO! 3 cortes do centro = 3 pedaços triangulares! Que fome cósmica! 🌟",
+                            incorrect: "🔺 Dica: cada lado do triângulo gera um pedaço!"
+                        }
+                    },
+                    {
+                        id: "q4",
+                        statement: "Qual instrumento musical tem formato triangular?",
+                        options: [
+                            { id: "a", text: "🎸 Violão" },
+                            { id: "b", text: "🥁 Bateria" },
+                            { id: "c", text: "🔺 Triângulo" },
+                            { id: "d", text: "🎹 Piano" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🎵 MÚSICA PERFEITA! O triângulo musical faz aquele som mágico! 🔺✨",
+                            incorrect: "🎶 Dica: tem o mesmo nome da figura geométrica!"
+                        }
+                    },
+                    {
+                        id: "q5",
+                        statement: "Se você juntar dois triângulos iguais pela base, que figura forma?",
+                        options: [
+                            { id: "a", text: "🔷 Quadrado" },
+                            { id: "b", text: "🔸 Losango" },
+                            { id: "c", text: "▭ Retângulo" },
+                            { id: "d", text: "⭕ Círculo" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "💎 DIAMANTE ESTELAR! Dois triângulos = um losango brilhante! 🌟🔸",
+                            incorrect: "🔺➕🔺 Dica: fica com formato de diamante!"
+                        }
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "Quadrado Quantum 💥",
+                difficulty: "Intermediário",
+                emoji: "🔷",
+                color: "from-purple-400 to-pink-500",
+                description: "Desvende os segredos dos 4 lados iguais!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q3",
+                        statement: "Quantos lados tem um quadrado?",
+                        options: [
+                            { id: "a", text: "2" },
+                            { id: "b", text: "3" },
+                            { id: "c", text: "4" },
+                            { id: "d", text: "5" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🔢 Perfeito! 4 lados iguais = quadrado! A constelação brilha mais! ✨",
+                            incorrect: "📏 Dica: 'Quadra' vem de quatro! Sempre 4 lados!"
+                        }
+                    },
+                    {
+                        id: "q4",
+                        statement: "Qual janela de foguete é um quadrado?",
+                        options: [
+                            { id: "a", text: "🪟 Redonda" },
+                            { id: "b", text: "🔷 Com 4 lados iguais" },
+                            { id: "c", text: "▭ Longa e fina" },
+                            { id: "d", text: "🔺 Pontuda" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "👀 Excelente! O quadrado é perfeito para janelas fortes! Nova estrela conectada! ⭐",
+                            incorrect: "🪞 Pense: qual tem todos os lados do mesmo tamanho?"
+                        }
+                    },
+                    {
+                        id: "q6",
+                        statement: "Um dado de jogo tem quantas faces quadradas?",
+                        options: [
+                            { id: "a", text: "4 faces" },
+                            { id: "b", text: "5 faces" },
+                            { id: "c", text: "6 faces" },
+                            { id: "d", text: "8 faces" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🎲 SORTE MÁXIMA! 6 faces quadradas fazem o cubo perfeito! Quantum ativado! ⚡",
+                            incorrect: "🔢 Dica: conte as faces de um cubo mágico!"
+                        }
+                    },
+                    {
+                        id: "q7",
+                        statement: "Qual destas telas tem formato mais próximo de um quadrado?",
+                        options: [
+                            { id: "a", text: "📱 Celular vertical" },
+                            { id: "b", text: "📺 TV widescreen" },
+                            { id: "c", text: "💻 Monitor quadrado" },
+                            { id: "d", text: "📏 Régua digital" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "💻 TELA QUÂNTICA! Monitor quadrado = perfeição geométrica! 🔷✨",
+                            incorrect: "🖥️ Dica: procure pela tela mais 'quadradinha'!"
+                        }
+                    },
+                    {
+                        id: "q8",
+                        statement: "Em um tabuleiro de xadrez, cada casa é um:",
+                        options: [
+                            { id: "a", text: "🔺 Triângulo" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "⭕ Círculo" },
+                            { id: "d", text: "🔸 Losango" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "♟️ XEQUE-MATE GEOMÉTRICO! 64 quadrados perfeitos no tabuleiro! 🏆",
+                            incorrect: "♛ Dica: cada casa do xadrez tem 4 lados iguais!"
+                        }
+                    }
+                ]
+            },
+            {
+                id: 8,
+                title: "Círculo Cósmico 🌕",
+                difficulty: "Iniciante",
+                emoji: "⭕",
+                color: "from-blue-400 to-cyan-500",
+                description: "Rode pelo universo redondo e encontre os círculos!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q5",
+                        statement: "Qual figura NÃO tem lados nem vértices?",
+                        options: [
+                            { id: "a", text: "🔺 Triângulo" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "⭕ Círculo" },
+                            { id: "d", text: "▭ Retângulo" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🌀 Isso! O círculo é redondinho e sem pontas! A lua sorri para você! 🌕",
+                            incorrect: "🖐️ Dica: procure a figura que rola sem esbarrar!"
+                        }
+                    },
+                    {
+                        id: "q6",
+                        statement: "Qual planeta é redondo como um círculo?",
+                        options: [
+                            { id: "a", text: "🪐 Saturno" },
+                            { id: "b", text: "☄️ Cometa" },
+                            { id: "c", text: "🛰️ Antena" },
+                            { id: "d", text: "🚀 Foguete" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🪐 Parabéns! Todos os planetas são redondos! Você iluminou a galáxia! 🌌",
+                            incorrect: "🌍 Dica: gira, gira… e é redondo como uma bola!"
+                        }
+                    },
+                    {
+                        id: "q9",
+                        statement: "Qual dessas rodas é a mais redonda?",
+                        options: [
+                            { id: "a", text: "🛞 Roda de carro" },
+                            { id: "b", text: "⬜ Roda quadrada" },
+                            { id: "c", text: "🔺 Roda triangular" },
+                            { id: "d", text: "▭ Roda retangular" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🚗 PERFEITO! Rodas de carro são círculos perfeitos para rolar suave! 🌀",
+                            incorrect: "🛞 Dica: qual roda rolaria sem saltitar?"
+                        }
+                    },
+                    {
+                        id: "q10",
+                        statement: "Se você desenhar do centro de um círculo até a borda, como se chama essa linha?",
+                        options: [
+                            { id: "a", text: "📏 Diâmetro" },
+                            { id: "b", text: "📐 Raio" },
+                            { id: "c", text: "📊 Lado" },
+                            { id: "d", text: "📈 Vértice" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "📐 RAIO DE GENIALIDADE! Do centro até a borda = raio cósmico! ⭕✨",
+                            incorrect: "🎯 Dica: como um raio de sol do centro!"
+                        }
+                    },
+                    {
+                        id: "q11",
+                        statement: "Quantos círculos você consegue ver em uma roda de bicicleta?",
+                        options: [
+                            { id: "a", text: "1 círculo" },
+                            { id: "b", text: "2 círculos" },
+                            { id: "c", text: "3 círculos" },
+                            { id: "d", text: "Muitos círculos" }
+                        ],
+                        correct: "d",
+                        feedback: {
+                            correct: "🚲 CICLISTA CÓSMICO! Roda, pneu, raios… círculos por toda parte! 🌀🌟",
+                            incorrect: "🔄 Dica: olhe bem… tem círculos dentro de círculos!"
+                        }
+                    }
+                ]
+            },
+            {
+                id: 9,
+                title: "Hexágono Hiperdrive ⚡",
+                difficulty: "Avançado",
+                emoji: "⬡",
+                color: "from-green-400 to-teal-500",
+                description: "Domine a figura com 6 lados e libere o hiperdrive!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q7",
+                        statement: "Quantos lados tem um hexágono?",
+                        options: [
+                            { id: "a", text: "4" },
+                            { id: "b", text: "5" },
+                            { id: "c", text: "6" },
+                            { id: "d", text: "7" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "⚡ Hiperdrive ativado! Hexágono = 6 lados! Sua nave acelera! 🚀💫",
+                            incorrect: "🔢 'Hexa' significa seis! Conte os lados com calma!"
+                        }
+                    },
+                    {
+                        id: "q8",
+                        statement: "Onde você vê um hexágono na natureza?",
+                        options: [
+                            { id: "a", text: "🐝 Colmeia de abelhas" },
+                            { id: "b", text: "🌳 Tronco de árvore" },
+                            { id: "c", text: "🌊 Onda do mar" },
+                            { id: "d", text: "☁️ Nuvem" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🍯 GENIAL! As abelhas são arquitetas geométricas! Constelação final completa! 🌟🌟🌟",
+                            incorrect: "🐝 Dica: quem faz favos perfeitos em forma de seis lados?"
+                        }
+                    },
+                    {
+                        id: "q12",
+                        statement: "Uma moeda de 1 real tem quantos lados?",
+                        options: [
+                            { id: "a", text: "0 lados" },
+                            { id: "b", text: "6 lados" },
+                            { id: "c", text: "8 lados" },
+                            { id: "d", text: "10 lados" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "💰 RIQUEZA GEOMÉTRICA! Moedas são redondas, sem lados! Hiperdrive financeiro! ⚡",
+                            incorrect: "🪙 Dica: moedas rolam porque são redondas!"
+                        }
+                    },
+                    {
+                        id: "q13",
+                        statement: "Se você unir 6 triângulos iguais pelas pontas, que figura forma?",
+                        options: [
+                            { id: "a", text: "⬡ Hexágono" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "⭕ Círculo" },
+                            { id: "d", text: "🔸 Losango" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "⚡ HEXÁGONO TURBINADO! 6 triângulos = hiperdrive ativado! 🚀⬡",
+                            incorrect: "🔺×6 Dica: seis lados unidos formam uma super figura!"
+                        }
+                    },
+                    {
+                        id: "q14",
+                        statement: "Qual jogo usa um tabuleiro com células hexagonais?",
+                        options: [
+                            { id: "a", text: "♟️ Xadrez" },
+                            { id: "b", text: "🎯 Damas" },
+                            { id: "c", text: "⬡ Settlers of Catan" },
+                            { id: "d", text: "🎲 Ludo" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🏝️ COLONO HEXAGONAL! Catan usa hexágonos para as ilhas! Hiperdrive final! ⚡⬡",
+                            incorrect: "🎲 Dica: jogo de estratégia com ilhas de 6 lados!"
+                        }
+                    }
+                ]
+            },
+            // Aventuras Esportivas
+            {
+                id: 10,
+                title: "Futebol: O Campo de Batalha ⚽",
+                difficulty: "Intermediário",
+                emoji: "⚽",
+                color: "from-green-400 to-emerald-500",
+                description: "Descubra as formas escondidas no gramado!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q1",
+                        statement: "Qual figura tem 4 lados iguais e 4 ângulos retos, como o centro do campo?",
+                        options: [
+                            { id: "a", text: "🔺 Triângulo" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "▭ Retângulo" },
+                            { id: "d", text: "⭕ Círculo" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "✅ PERFEITO! O centro do campo é um quadrado! Torcida vibra! 🎉👏",
+                            incorrect: "🟢 Dica: pense em algo com todos os lados iguais e cantos em 90°!"
+                        }
+                    },
+                    {
+                        id: "q2",
+                        statement: "O gol tem formato parecido com qual figura?",
+                        options: [
+                            { id: "a", text: "▭ Retângulo" },
+                            { id: "b", text: "⬡ Hexágono" },
+                            { id: "c", text: "🔺 Triângulo" },
+                            { id: "d", text: "⭕ Círculo" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🥅 GOLAÇO GEOMÉTRICO! O gol é um retângulo! Vibração total! 🔊",
+                            incorrect: "🥅 Dica: tem dois lados longos e dois curtos… igual à trave!"
+                        }
+                    },
+                    {
+                        id: "q15",
+                        statement: "A bola de futebol tem formato de qual figura geométrica?",
+                        options: [
+                            { id: "a", text: "🔷 Quadrado" },
+                            { id: "b", text: "🔺 Triângulo" },
+                            { id: "c", text: "⚽ Esfera (3D do círculo)" },
+                            { id: "d", text: "🔸 Losango" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "⚽ CHUTE PERFEITO! A bola é uma esfera, versão 3D do círculo! GOOOOL! 🎯",
+                            incorrect: "🥅 Dica: é redonda como um círculo, mas em 3 dimensões!"
+                        }
+                    },
+                    {
+                        id: "q16",
+                        statement: "Quantos lados tem o campo de futebol visto de cima?",
+                        options: [
+                            { id: "a", text: "3 lados" },
+                            { id: "b", text: "4 lados" },
+                            { id: "c", text: "5 lados" },
+                            { id: "d", text: "6 lados" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "🏟️ ESTÁDIO GEOMÉTRICO! 4 lados fazem o retângulo do campo! Torcida delira! 🎉",
+                            incorrect: "⚽ Dica: como um retângulo verde gigante!"
+                        }
+                    },
+                    {
+                        id: "q17",
+                        statement: "A área do goleiro (pequena área) tem formato de:",
+                        options: [
+                            { id: "a", text: "⭕ Círculo" },
+                            { id: "b", text: "▭ Retângulo" },
+                            { id: "c", text: "🔺 Triângulo" },
+                            { id: "d", text: "⬡ Hexágono" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "🧤 DEFESA GEOMÉTRICA! Área pequena = retângulo protetor! Goleiro herói! 🏆",
+                            incorrect: "🥅 Dica: é uma caixa retangular na frente do gol!"
+                        }
+                    }
+                ]
+            },
+            {
+                id: 11,
+                title: "Vôlei: No Ar com Estilo 🏐",
+                difficulty: "Intermediário",
+                emoji: "🏐",
+                color: "from-orange-400 to-red-500",
+                description: "Ataque, bloqueio… e muita geometria no saque!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q3",
+                        statement: "A rede de vôlei é feita de pequenos losangos ou…?",
+                        options: [
+                            { id: "a", text: "🔷 Quadrados" },
+                            { id: "b", text: "🔺 Triângulos" },
+                            { id: "c", text: "🔸 Losangos" },
+                            { id: "d", text: "⭕ Círculos" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🏐 ACE! Isso mesmo, são losangos! Rede perfeita! 🌟",
+                            incorrect: "🕸️ Dica: forma de 'diamante' nas malhas da rede!"
+                        }
+                    },
+                    {
+                        id: "q4",
+                        statement: "Quando o jogador levanta a bola, ela descreve um arco. Qual figura representa esse movimento?",
+                        options: [
+                            { id: "a", text: "🔺 Triângulo" },
+                            { id: "b", text: "▭ Retângulo" },
+                            { id: "c", text: "⭕ Círculo" },
+                            { id: "d", text: "◡ Semicírculo" }
+                        ],
+                        correct: "d",
+                        feedback: {
+                            correct: "🌀 LINDO LEVANTAMENTO! O arco é um semicírculo! 🤩",
+                            incorrect: "👆 Dica: metade de um círculo… como um sorriso no céu!"
+                        }
+                    },
+                    {
+                        id: "q18",
+                        statement: "A quadra de vôlei vista de cima é um:",
+                        options: [
+                            { id: "a", text: "🔷 Quadrado" },
+                            { id: "b", text: "▭ Retângulo" },
+                            { id: "c", text: "🔺 Triângulo" },
+                            { id: "d", text: "⭕ Círculo" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "🏐 SAQUE ACE! A quadra é um retângulo dividido pela rede! Ponto! 🌟",
+                            incorrect: "🏐 Dica: é maior na largura que na altura!"
+                        }
+                    },
+                    {
+                        id: "q19",
+                        statement: "Se a bola de vôlei fosse achatada, viraria um:",
+                        options: [
+                            { id: "a", text: "⭕ Círculo" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "🔺 Triângulo" },
+                            { id: "d", text: "🔸 Losango" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🏐 CORTADA PERFEITA! Bola achatada = círculo plano! Que jogada! ⭕",
+                            incorrect: "🏐 Dica: imagine amassar uma bola redonda!"
+                        }
+                    },
+                    {
+                        id: "q20",
+                        statement: "Quantas linhas retas delimitam uma quadra de vôlei?",
+                        options: [
+                            { id: "a", text: "2 linhas" },
+                            { id: "b", text: "4 linhas" },
+                            { id: "c", text: "6 linhas" },
+                            { id: "d", text: "8 linhas" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "🏐 BLOQUEIO GEOMÉTRICO! 4 linhas formam o retângulo da quadra! Defense! 🛡️",
+                            incorrect: "📏 Dica: conte as bordas de um retângulo!"
+                        }
+                    }
+                ]
+            },
+            {
+                id: 12,
+                title: "Capoeira: Dança com Simetria 🥋",
+                difficulty: "Avançado",
+                emoji: "🦵",
+                color: "from-yellow-400 to-orange-500",
+                description: "Ginga, martelo… e figuras no corpo em movimento!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q5",
+                        statement: "Na posição de 'bananeira', o corpo forma qual figura?",
+                        options: [
+                            { id: "a", text: "🔺 Triângulo" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "▭ Retângulo" },
+                            { id: "d", text: "⭕ Círculo" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🕺 INCREDÍVEL! O corpo em V forma um triângulo! Capoeira geométrica! 🎶",
+                            incorrect: "🧘 Dica: três pontos: duas mãos e os pés no ar!"
+                        }
+                    },
+                    {
+                        id: "q6",
+                        statement: "O roda de capoeira é montada em formato circular. Quantos lados tem um círculo?",
+                        options: [
+                            { id: "a", text: "0" },
+                            { id: "b", text: "1" },
+                            { id: "c", text: "2" },
+                            { id: "d", text: "Infinitos" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🌀 MESTRE DO CÍRCULO! Círculo não tem lados nem vértices! Berimbau toca! 🪘",
+                            incorrect: "🎶 Dica: rola, rola… mas nunca tem pontas!"
+                        }
+                    },
+                    {
+                        id: "q21",
+                        statement: "O movimento 'meia-lua' da capoeira desenha no ar um:",
+                        options: [
+                            { id: "a", text: "🔷 Quadrado" },
+                            { id: "b", text: "◡ Semicírculo" },
+                            { id: "c", text: "🔺 Triângulo" },
+                            { id: "d", text: "▭ Retângulo" }
+                        ],
+                        correct: "b",
+                        feedback: {
+                            correct: "🌙 MEIA-LUA PERFEITA! O pé desenha um semicírculo no ar! Axé! 🎶",
+                            incorrect: "🦵 Dica: 'meia-lua' = metade de um círculo!"
+                        }
+                    },
+                    {
+                        id: "q22",
+                        statement: "Quando dois capoeiristas fazem a 'ginga' um de frente para o outro, formam:",
+                        options: [
+                            { id: "a", text: "📏 Linhas paralelas" },
+                            { id: "b", text: "🔺 Triângulo" },
+                            { id: "c", text: "⭕ Círculo imaginário" },
+                            { id: "d", text: "🔷 Quadrado" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🕺 RODA SAGRADA! A ginga cria um círculo de energia invisível! Mandinga! ⭕",
+                            incorrect: "🎶 Dica: a roda de capoeira é sempre redonda!"
+                        }
+                    },
+                    {
+                        id: "q23",
+                        statement: "O berimbau tem formato parecido com qual figura?",
+                        options: [
+                            { id: "a", text: "🏹 Arco (parte de círculo)" },
+                            { id: "b", text: "📏 Linha reta" },
+                            { id: "c", text: "🔷 Quadrado" },
+                            { id: "d", text: "🔺 Triângulo" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🪘 SOM GEOMÉTRICO! O berimbau é curvado como um arco! Que toque! 🎵",
+                            incorrect: "🎶 Dica: é curvado como um pedaço de círculo!"
+                        }
+                    }
+                ]
+            },
+            {
+                id: 13,
+                title: "Pipa: No Céu com Estilo 🪁",
+                difficulty: "Avançado",
+                emoji: "🪁",
+                color: "from-purple-400 to-pink-500",
+                description: "Altura, vento… e figuras voando!",
+                isQuizMode: true,
+                questions: [
+                    {
+                        id: "q7",
+                        statement: "A pipa tradicional tem formato de qual figura?",
+                        options: [
+                            { id: "a", text: "🔺 Triângulo" },
+                            { id: "b", text: "🔷 Quadrado" },
+                            { id: "c", text: "🔸 Losango" },
+                            { id: "d", text: "⭕ Círculo" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🪁 VOANDO ALTO! A pipa é um losango! Brilha no céu! ✨",
+                            incorrect: "🧵 Dica: quatro lados iguais, mas não é um quadrado… é mais 'pontudo'!"
+                        }
+                    },
+                    {
+                        id: "q8",
+                        statement: "Se cortarmos uma pipa ao meio pela diagonal, obtemos duas figuras. Quais?",
+                        options: [
+                            { id: "a", text: "2 triângulos" },
+                            { id: "b", text: "2 quadrados" },
+                            { id: "c", text: "2 retângulos" },
+                            { id: "d", text: "2 círculos" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "✂️ GENIAL! Um losango cortado vira dois triângulos! 🎯",
+                            incorrect: "📐 Dica: toda divisão de losango por diagonal gera triângulos!"
+                        }
+                    },
+                    {
+                        id: "q24",
+                        statement: "A linha da pipa (rabiola) quando estica no vento forma uma:",
+                        options: [
+                            { id: "a", text: "📏 Linha reta" },
+                            { id: "b", text: "🌊 Linha curva" },
+                            { id: "c", text: "🔺 Triângulo" },
+                            { id: "d", text: "⭕ Círculo" }
+                        ],
+                        correct: "a",
+                        feedback: {
+                            correct: "🪁 VENTO PERFEITO! Linha esticada = reta geométrica no céu! Que altura! 📏",
+                            incorrect: "🧵 Dica: quando estica bem, fica retinha!"
+                        }
+                    },
+                    {
+                        id: "q25",
+                        statement: "Se você olhar uma pipa de frente, ela parece ter quantos 'cantos' (vértices)?",
+                        options: [
+                            { id: "a", text: "2 cantos" },
+                            { id: "b", text: "3 cantos" },
+                            { id: "c", text: "4 cantos" },
+                            { id: "d", text: "6 cantos" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "🪁 PIPA PERFEITA! 4 cantos fazem o losango voador! Que espetáculo! 🔸",
+                            incorrect: "🔸 Dica: conte as pontas do losango!"
+                        }
+                    },
+                    {
+                        id: "q26",
+                        statement: "A sombra de uma pipa no chão tem a mesma forma da pipa?",
+                        options: [
+                            { id: "a", text: "✅ Sim, sempre" },
+                            { id: "b", text: "❌ Não, nunca" },
+                            { id: "c", text: "🤔 Depende da posição do sol" },
+                            { id: "d", text: "🔄 Só quando gira" }
+                        ],
+                        correct: "c",
+                        feedback: {
+                            correct: "☀️ SOMBRA GEOMÉTRICA! Depende do ângulo do sol! Geometria e física juntas! 🪁",
+                            incorrect: "🌅 Dica: pense em como a sombra muda durante o dia!"
+                        }
+                    }
+                ]
             }
         ];
         // ===================================================================================
@@ -230,8 +902,16 @@
         const SoundSystem = {
             play: (src) => {
                 try {
+                    if (window.PersistentMusicSystem) {
+                        window.PersistentMusicSystem.duckVolume();
+                    }
                     const audio = new Audio(src);
                     audio.play().catch(e => console.warn("Reprodução de áudio bloqueada pelo navegador."));
+                    audio.onended = () => {
+                        if (window.PersistentMusicSystem) {
+                            window.PersistentMusicSystem.restoreVolume();
+                        }
+                    };
                 } catch (e) {
                     console.error("Erro ao tentar tocar o som:", src, e);
                 }
@@ -250,58 +930,117 @@
         // --- COMPONENTES REACT ---
 
         const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
-            <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
+            <div className={`min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 flex items-center justify-center p-4 relative overflow-hidden`}>
                 <MusicPlayer />
-                <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full transform transition-all duration-500 hover:scale-105">
-                    <div className="text-center mb-8">
-                        <div className="text-6xl mb-4">{activityConfig.emoji}</div>
-                        <h1 className="text-3xl font-bold text-gray-800 mb-2">{activityConfig.title}</h1>
-                        <p className="text-gray-600">🚀 Uma nova aventura de aprendizado! 🎯</p>
-                    </div>
-                    <div className="space-y-6">
-                        <div>
-                            <label className="block text-lg font-bold text-gray-700 mb-2">👤 Qual é o seu nome?</label>
-                            <input
-                                type="text"
-                                className="w-full px-4 py-3 border-2 border-purple-300 rounded-xl text-lg text-center focus:outline-none focus:border-purple-500 transition-colors duration-300"
-                                placeholder="Digite seu nome aqui"
-                                value={studentName}
-                                onChange={(e) => setStudentName(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && onStart(studentName)}
-                            />
+
+                {/* Partículas de fundo animadas */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute top-20 left-20 text-6xl opacity-20 animate-bounce">⭐</div>
+                    <div className="absolute top-40 right-20 text-4xl opacity-30 animate-pulse">🌟</div>
+                    <div className="absolute bottom-40 left-40 text-5xl opacity-15 animate-bounce" style={{animationDelay: '1s'}}>✨</div>
+                    <div className="absolute bottom-20 right-40 text-3xl opacity-25 animate-pulse" style={{animationDelay: '2s'}}>🚀</div>
+                    <div className="absolute top-1/2 left-1/4 text-4xl opacity-20 animate-bounce" style={{animationDelay: '0.5s'}}>🔺</div>
+                    <div className="absolute top-1/3 right-1/3 text-3xl opacity-25 animate-pulse" style={{animationDelay: '1.5s'}}>⭕</div>
+                </div>
+
+                <div className="bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow-2xl p-10 max-w-lg w-full transform transition-all duration-500 hover:scale-105 border-4 border-purple-200 relative z-10">
+                    {/* Header épico */}
+                    <div className="text-center mb-10">
+                        <div className="relative mb-6">
+                            <div className="bg-gradient-to-br from-yellow-300 via-orange-400 to-red-500 rounded-full p-6 shadow-2xl inline-block">
+                                <div className="text-7xl animate-pulse">{activityConfig.emoji}</div>
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 rounded-full opacity-30 animate-ping"></div>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-700">🔤 Fonte para dislexia:</span>
+                        <h1 className="text-4xl font-black text-gray-800 mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 bg-clip-text text-transparent">
+                            {activityConfig.title}
+                        </h1>
+                        <div className="bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-2xl p-4 border-2 border-purple-200">
+                            <p className="text-xl font-bold text-purple-800">🎯 Bem-vindo ao Mundo das Formas! 🌟</p>
+                            <p className="text-lg text-gray-700 mt-2">🎮 Explore geometria em jogos, espaço e esportes! 🏆</p>
+                        </div>
+                    </div>
+
+                    <div className="space-y-8">
+                        {/* Input do nome com estilo épico */}
+                        <div className="relative">
+                            <label className="block text-xl font-black text-gray-800 mb-4 text-center">
+                                <span className="text-3xl mr-2">👨‍🚀</span>
+                                Qual é o nome do nosso explorador espacial?
+                                <span className="text-3xl ml-2">👩‍🚀</span>
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    className="w-full px-6 py-4 border-4 border-purple-300 rounded-2xl text-xl text-center focus:outline-none focus:border-purple-500 transition-all duration-300 font-bold bg-gradient-to-r from-blue-50 to-purple-50"
+                                    placeholder="✨ Digite seu nome de astronauta ✨"
+                                    value={studentName}
+                                    onChange={(e) => setStudentName(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && studentName.trim() && onStart(studentName)}
+                                />
+                                {studentName.trim() && (
+                                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl animate-bounce">🚀</div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Configuração de fonte */}
+                        <div className="bg-gradient-to-r from-gray-100 to-blue-100 rounded-2xl p-6 border-2 border-gray-300">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl">🔤</span>
+                                    <span className="text-lg font-bold text-gray-800">Fonte para Dislexia:</span>
+                                </div>
+                                <button
+                                    onClick={() => {
+                                        const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS';
+                                        setFont(newFont);
+                                        localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal');
+                                    }}
+                                    className={`px-6 py-3 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${font === 'OpenDyslexic' ? 'bg-green-500 text-white shadow-lg' : 'bg-gray-300 text-gray-700'}`}
+                                >
+                                    {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Botões épicos */}
+                        <div className="space-y-4">
                             <button
-                                onClick={() => {
-                                    const newFont = font === 'Comic Sans MS' ? 'OpenDyslexic' : 'Comic Sans MS';
-                                    setFont(newFont);
-                                    localStorage.setItem('selectedFont', newFont === 'OpenDyslexic' ? 'dyslexic' : 'normal');
-                                }}
-                                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${font === 'OpenDyslexic' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                onClick={() => onStart(studentName)}
+                                disabled={!studentName.trim()}
+                                className={`w-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white font-black py-5 rounded-2xl text-2xl transition-all duration-300 hover:shadow-2xl transform hover:scale-105 border-2 border-white/30 relative overflow-hidden group ${!studentName.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                                {font === 'OpenDyslexic' ? '✅ Ativada' : '⚪ Desativada'}
+                                <span className="relative z-10 flex items-center justify-center gap-3">
+                                    <span className="text-3xl animate-pulse">🎮</span>
+                                    INICIAR AVENTURA GEOMÉTRICA
+                                    <span className="text-3xl animate-bounce">🌟</span>
+                                </span>
+                                {studentName.trim() && (
+                                    <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all animate-pulse"></div>
+                                )}
+                            </button>
+
+                            <button
+                                onClick={() => window.location.href = '../index.html'}
+                                className="w-full bg-gradient-to-r from-gray-500 via-gray-600 to-gray-700 text-white font-black py-4 rounded-2xl text-lg transition-all duration-300 hover:shadow-2xl transform hover:scale-105 border-2 border-white/30 relative overflow-hidden group"
+                            >
+                                <span className="relative z-10 flex items-center justify-center gap-3">
+                                    <span className="text-2xl animate-pulse">🏠</span>
+                                    VOLTAR AO PORTAL PRINCIPAL
+                                    <span className="text-2xl animate-bounce">🌌</span>
+                                </span>
+                                <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all"></div>
                             </button>
                         </div>
-                        <button
-                            onClick={() => onStart(studentName)}
-                            className={`w-full bg-gradient-to-r from-${activityConfig.primaryColor}-500 to-pink-500 text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:from-${activityConfig.primaryColor}-600 hover:to-pink-600 hover:shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed`}
-                            disabled={!studentName.trim()}
-                        >
-                            🎯 COMEÇAR AVENTURA! 🚀
-                        </button>
-                        <button
-                            onClick={() => window.location.href = '../index.html'}
-                            className="w-full bg-gray-300 text-gray-700 font-bold py-3 rounded-xl transition-all duration-300 hover:bg-gray-400 hover:shadow-lg"
-                        >
-                            🏠 Voltar ao Portal
-                        </button>
                     </div>
                 </div>
             </div>
         );
 
         const BlockSelectionScreen = ({ studentName, onSelectBlock, onFinishSession }) => {
+            const [hoveredBlock, setHoveredBlock] = useState(null);
+
             const groupedLevels = {};
             activityBlocks.forEach(block => {
                 if (!groupedLevels[block.difficulty]) groupedLevels[block.difficulty] = [];
@@ -311,38 +1050,113 @@
             return (
                 <div className={`min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4`}>
                     <MusicPlayer />
-                    <div className="max-w-7xl mx-auto">
-                        <div className="text-center mb-8">
-                            <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}! 🚀</h1>
-                            <p className="text-2xl text-white opacity-90">Escolha sua próxima aventura!</p>
+
+                    {/* Header com animação de partículas */}
+                    <div className="max-w-7xl mx-auto relative">
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div className="absolute top-10 left-10 text-6xl opacity-30 animate-bounce">⭐</div>
+                            <div className="absolute top-20 right-20 text-4xl opacity-40 animate-pulse">🌟</div>
+                            <div className="absolute bottom-20 left-20 text-5xl opacity-20 animate-bounce" style={{animationDelay: '1s'}}>✨</div>
+                            <div className="absolute top-40 right-40 text-3xl opacity-30 animate-pulse" style={{animationDelay: '2s'}}>🚀</div>
+                        </div>
+
+                        <div className="text-center mb-12 relative z-10">
+                            <div className="inline-block mb-6">
+                                <div className="bg-gradient-to-br from-yellow-300 via-orange-400 to-red-500 rounded-full p-8 shadow-2xl transform animate-pulse">
+                                    <div className="text-8xl">🌌</div>
+                                </div>
+                            </div>
+                            <h1 className="text-6xl font-bold text-white mb-4 drop-shadow-2xl">🎉 Olá, {studentName}! 🎉</h1>
+                            <p className="text-3xl text-yellow-200 font-bold mb-2">Bem-vindo ao Mundo das Formas Geométricas!</p>
+                            <p className="text-xl text-white opacity-90">✨ Explore formas em jogos, no espaço e nos esportes! ✨</p>
                         </div>
                         
                         {Object.entries(groupedLevels).map(([levelName, blocksInLevel]) => (
-                            <div key={levelName} className="mb-12">
-                                <h2 className="text-4xl font-bold text-center text-white mb-8">
-                                    {levelName === 'Iniciante' && '🌱'} 
-                                    {levelName === 'Intermediário' && '⚡'} 
-                                    {levelName === 'Avançado' && '🔥'} 
-                                    {' ' + levelName}
-                                </h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                                    {blocksInLevel.map((block) => (
-                                        <div 
+                            <div key={levelName} className="mb-16 relative">
+                                {/* Header da seção com efeito neon */}
+                                <div className="bg-black/30 backdrop-blur-sm rounded-3xl p-8 mb-10 border-4 border-white/20 shadow-2xl">
+                                    <h2 className="text-5xl font-bold text-center text-white mb-4 drop-shadow-2xl">
+                                        <span className="inline-block mr-4 animate-bounce">
+                                            {levelName === 'Iniciante' && '🌱'}
+                                            {levelName === 'Intermediário' && '⚡'}
+                                            {levelName === 'Avançado' && '🔥'}
+                                        </span>
+                                        <span className="bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 bg-clip-text text-transparent">
+                                            {levelName === 'Iniciante' && 'AVENTUREIRO DAS FORMAS'}
+                                            {levelName === 'Intermediário' && 'MESTRE DA GEOMETRIA'}
+                                            {levelName === 'Avançado' && 'LENDA GEOMÉTRICA'}
+                                        </span>
+                                    </h2>
+                                    <p className="text-center text-xl text-cyan-200 font-bold">
+                                        {levelName === 'Iniciante' && '🎮 Explore formas em jogos, espaço e esportes!'}
+                                        {levelName === 'Intermediário' && '🏆 Domine desafios em múltiplos universos!'}
+                                        {levelName === 'Avançado' && '👑 Conquiste todos os mundos geométricos!'}
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {blocksInLevel.map((block, index) => (
+                                        <div
                                             key={block.id}
-                                            className="bg-white rounded-3xl shadow-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer group"
-                                            onClick={() => onSelectBlock(block)}
+                                            className="relative bg-gradient-to-br from-white via-gray-50 to-white rounded-3xl shadow-2xl p-8 transform transition-all duration-500 hover:scale-110 hover:shadow-3xl cursor-pointer group overflow-hidden border-4 border-transparent hover:border-yellow-300"
+                                            onClick={() => {
+                                                SoundSystem.click();
+                                                onSelectBlock(block);
+                                            }}
+                                            onMouseEnter={() => setHoveredBlock(block.id)}
+                                            onMouseLeave={() => setHoveredBlock(null)}
+                                            style={{animationDelay: `${index * 0.2}s`}}
                                         >
-                                            <div className="text-center">
-                                                <div className="text-7xl mb-4 group-hover:scale-110 transition-transform duration-300">{block.emoji}</div>
-                                                <h3 className={`text-2xl font-bold mb-2 bg-gradient-to-r ${block.color} bg-clip-text text-transparent`}>
+                                            {/* Efeito de partículas de fundo */}
+                                            <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
+                                                <div className="absolute top-2 right-2 text-2xl animate-pulse">✨</div>
+                                                <div className="absolute bottom-2 left-2 text-xl animate-bounce">⭐</div>
+                                                <div className="absolute top-1/2 right-1/4 text-lg animate-pulse" style={{animationDelay: '1s'}}>🌟</div>
+                                            </div>
+
+                                            <div className="text-center relative z-10">
+                                                {/* Emoji com efeito especial */}
+                                                <div className="relative mb-6">
+                                                    <div className={`text-8xl mb-2 transform transition-all duration-500 ${hoveredBlock === block.id ? 'scale-125 animate-bounce' : 'group-hover:scale-110'}`}>
+                                                        {block.emoji}
+                                                    </div>
+                                                    {hoveredBlock === block.id && (
+                                                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 rounded-full opacity-30 animate-ping"></div>
+                                                    )}
+                                                </div>
+
+                                                {/* Título com gradiente animado */}
+                                                <h3 className={`text-2xl font-black mb-4 bg-gradient-to-r ${block.color} bg-clip-text text-transparent transform transition-all duration-300 group-hover:scale-105`}>
                                                     {block.title}
                                                 </h3>
-                                                <p className="text-gray-600 mb-4 text-lg">{block.description}</p>
-                                                <div className="bg-gray-100 rounded-xl p-4 mb-4">
-                                                    <p className="text-sm text-gray-600">🎯 {block.challenge.targets.length} figuras para combinar</p>
+
+                                                <p className="text-gray-700 mb-6 text-lg font-semibold leading-relaxed">{block.description}</p>
+
+                                                {/* Info box com efeito neon */}
+                                                <div className="bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 rounded-2xl p-6 mb-6 border-2 border-purple-200 group-hover:border-purple-400 transition-all">
+                                                    {block.isQuizMode ? (
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <span className="text-2xl">🌌</span>
+                                                            <p className="text-lg font-bold text-purple-800">{block.questions.length} Questões Galácticas</p>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <span className="text-2xl">🎯</span>
+                                                            <p className="text-lg font-bold text-blue-800">{block.challenge.targets.length} Figuras para Dominar</p>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <button className={`w-full bg-gradient-to-r ${block.color} text-white font-bold py-4 rounded-xl text-lg transition-all duration-300 hover:shadow-lg group-hover:scale-105`}>
-                                                    🚀 COMEÇAR
+
+                                                {/* Botão com efeito especial */}
+                                                <button className={`w-full bg-gradient-to-r ${block.color} text-white font-black py-5 rounded-2xl text-xl transition-all duration-300 hover:shadow-2xl group-hover:scale-105 transform relative overflow-hidden border-2 border-white/30`}>
+                                                    <span className="relative z-10 flex items-center justify-center gap-3">
+                                                        <span className="text-2xl animate-pulse">🚀</span>
+                                                        INICIAR MISSÃO
+                                                        <span className="text-2xl animate-bounce">⭐</span>
+                                                    </span>
+                                                    {hoveredBlock === block.id && (
+                                                        <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                                                    )}
                                                 </button>
                                             </div>
                                         </div>
@@ -351,19 +1165,39 @@
                             </div>
                         ))}
 
-                        <div className="text-center bg-white/10 backdrop-blur-sm rounded-3xl p-6">
-                            <button
-                                onClick={onFinishSession}
-                                className="bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-green-600 hover:shadow-lg mr-4"
-                            >
-                                💾 Finalizar Sessão & Baixar Resultados
-                            </button>
-                            <button
-                                onClick={() => window.location.href = '../index.html'}
-                                className="bg-gray-500 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:bg-gray-600 hover:shadow-lg"
-                            >
-                                🏠 Voltar ao Portal
-                            </button>
+                        {/* Footer épico */}
+                        <div className="bg-gradient-to-br from-black/40 via-purple-900/40 to-black/40 backdrop-blur-lg rounded-3xl p-10 border-4 border-white/20 shadow-2xl">
+                            <div className="text-center mb-6">
+                                <div className="text-6xl mb-4">🎯</div>
+                                <h3 className="text-3xl font-bold text-white mb-2">Centro de Controle Geométrico</h3>
+                                <p className="text-lg text-cyan-200">Gerencie sua jornada pelos mundos das figuras geométricas</p>
+                            </div>
+
+                            <div className="flex flex-col md:flex-row gap-6 justify-center">
+                                <button
+                                    onClick={onFinishSession}
+                                    className="bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white font-black py-5 px-10 rounded-2xl text-xl transition-all duration-300 hover:shadow-2xl transform hover:scale-105 border-2 border-white/30 relative overflow-hidden group"
+                                >
+                                    <span className="relative z-10 flex items-center justify-center gap-3">
+                                        <span className="text-2xl animate-pulse">💾</span>
+                                        RELATÓRIO DA MISSÃO
+                                        <span className="text-2xl animate-bounce">📊</span>
+                                    </span>
+                                    <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all"></div>
+                                </button>
+
+                                <button
+                                    onClick={() => window.location.href = '../index.html'}
+                                    className="bg-gradient-to-r from-gray-500 via-gray-600 to-gray-700 text-white font-black py-5 px-10 rounded-2xl text-xl transition-all duration-300 hover:shadow-2xl transform hover:scale-105 border-2 border-white/30 relative overflow-hidden group"
+                                >
+                                    <span className="relative z-10 flex items-center justify-center gap-3">
+                                        <span className="text-2xl animate-pulse">🚀</span>
+                                        PORTAL PRINCIPAL
+                                        <span className="text-2xl animate-bounce">🏠</span>
+                                    </span>
+                                    <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all"></div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -400,7 +1234,144 @@
             </div>
         );
 
+        // Componente para Quiz de múltipla escolha
+        const QuizScreen = ({ block, onBack, onComplete }) => {
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+            const [answers, setAnswers] = useState({})
+            const [showFeedback, setShowFeedback] = useState(false)
+            const [feedbackMessage, setFeedbackMessage] = useState('')
+            const [isCorrectAnswer, setIsCorrectAnswer] = useState(false)
+            const [startTime] = useState(Date.now())
+            const [totalCorrect, setTotalCorrect] = useState(0)
+            const [showBlockCompletePopup, setShowBlockCompletePopup] = useState(false)
+            const [blockStats, setBlockStats] = useState(null)
+            const [showSpectacularCelebration, setShowSpectacularCelebration] = useState(false)
+
+            const currentQuestion = block.questions[currentQuestionIndex]
+            const isLastQuestion = currentQuestionIndex === block.questions.length - 1
+
+            const handleAnswerSelect = (optionId) => {
+                if (showFeedback) return
+
+                const isCorrect = optionId === currentQuestion.correct
+                setIsCorrectAnswer(isCorrect)
+                setAnswers(prev => ({ ...prev, [currentQuestion.id]: { selected: optionId, correct: isCorrect } }))
+
+                if (isCorrect) {
+                    SoundSystem.success()
+                    setTotalCorrect(prev => prev + 1)
+                    setFeedbackMessage(currentQuestion.feedback.correct)
+                    setShowSpectacularCelebration(true)
+                    setTimeout(() => setShowSpectacularCelebration(false), 2000)
+                } else {
+                    SoundSystem.error()
+                    setFeedbackMessage(currentQuestion.feedback.incorrect)
+                }
+
+                setShowFeedback(true)
+
+                setTimeout(() => {
+                    if (isLastQuestion) {
+                        const timeSpent = Math.round((Date.now() - startTime) / 1000)
+                        const stats = {
+                            block,
+                            questionId: 'quiz_complete',
+                            timeSpent,
+                            acertos: totalCorrect + (isCorrect ? 1 : 0),
+                            erros: block.questions.length - (totalCorrect + (isCorrect ? 1 : 0)),
+                            score: Math.round(((totalCorrect + (isCorrect ? 1 : 0)) / block.questions.length) * 100)
+                        }
+                        onComplete(stats)
+                        setBlockStats(stats)
+                        setShowBlockCompletePopup(true)
+                    } else {
+                        setCurrentQuestionIndex(prev => prev + 1)
+                        setShowFeedback(false)
+                    }
+                }, 3000)
+            }
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4">
+                    <MusicPlayer />
+                    {showSpectacularCelebration && (
+                        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 celebration-popup">
+                            <div className="bg-gradient-to-br from-yellow-300 via-orange-400 to-red-500 rounded-3xl p-12 text-center max-w-2xl mx-4 shadow-2xl border-4 border-white transform animate-bounce">
+                                <div className="text-8xl mb-6">🎉🌟✨</div>
+                                <h2 className="text-6xl font-bold text-white mb-4 drop-shadow-lg">INCRÍVEL!</h2>
+                                <div className="text-4xl mb-4">🚀🌌⭐</div>
+                                <p className="text-2xl text-white font-bold drop-shadow">Você está dominando o universo das formas!</p>
+                            </div>
+                        </div>
+                    )}
+                    {showBlockCompletePopup && <BlockCompletePopup stats={blockStats} onContinue={onBack} />}
+
+                    <div className="max-w-4xl mx-auto">
+                        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+                            <div className="flex justify-between items-center mb-6">
+                                <div>
+                                    <h1 className="text-4xl font-bold text-gray-800 mb-2">{block.emoji} {block.title}</h1>
+                                    <p className="text-xl text-gray-600">{block.description}</p>
+                                </div>
+                                <button onClick={onBack} className="bg-gray-500 text-white px-6 py-3 rounded-xl hover:bg-gray-600 text-lg font-bold">⬅️ Voltar</button>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-6 mb-4">
+                                <div className={`bg-gradient-to-r ${block.color} h-6 rounded-full transition-all duration-500 flex items-center justify-center`} style={{ width: `${((currentQuestionIndex + 1) / block.questions.length) * 100}%` }}>
+                                    <span className="text-white font-bold text-sm">🚀</span>
+                                </div>
+                            </div>
+                            <div className="text-center font-bold text-gray-700 text-xl">
+                                🌟 Progresso Galáctico: {currentQuestionIndex + 1} de {block.questions.length} | Acertos: {totalCorrect} ⭐
+                            </div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 rounded-3xl shadow-xl p-8 mb-6 border-4 border-purple-300">
+                            <div className="text-center mb-8">
+                                <div className="text-6xl mb-4">{currentQuestion.id.includes('1') || currentQuestion.id.includes('2') ? '🛸' : currentQuestion.id.includes('3') || currentQuestion.id.includes('4') ? '💎' : currentQuestion.id.includes('5') || currentQuestion.id.includes('6') ? '🌕' : '⚡'}</div>
+                                <h2 className="text-3xl font-bold text-gray-800 mb-4">{currentQuestion.statement}</h2>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                {currentQuestion.options.map((option) => (
+                                    <button
+                                        key={option.id}
+                                        onClick={() => handleAnswerSelect(option.id)}
+                                        disabled={showFeedback}
+                                        className={`p-6 rounded-2xl border-4 text-2xl font-bold transition-all duration-300 transform hover:scale-105 ${
+                                            showFeedback
+                                                ? option.id === currentQuestion.correct
+                                                    ? 'bg-green-200 border-green-500 correct-answer-animation'
+                                                    : answers[currentQuestion.id]?.selected === option.id
+                                                    ? 'bg-red-200 border-red-500 wrong-answer-animation'
+                                                    : 'bg-gray-100 border-gray-300'
+                                                : 'bg-white border-purple-300 hover:border-purple-500 hover:bg-purple-50 cursor-pointer'
+                                        }`}
+                                    >
+                                        <div className="text-4xl mb-2">{option.text.split(' ')[0]}</div>
+                                        <div className="text-lg">{option.text.split(' ').slice(1).join(' ')}</div>
+                                    </button>
+                                ))}
+                            </div>
+
+                            {showFeedback && (
+                                <div className={`text-center p-6 rounded-2xl text-2xl font-bold ${isCorrectAnswer ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'} border-4 ${isCorrectAnswer ? 'border-green-500' : 'border-blue-500'}`}>
+                                    <div className="text-4xl mb-2">{isCorrectAnswer ? '🎉' : '💡'}</div>
+                                    {feedbackMessage}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
         const ActivityScreen = ({ block, onBack, onComplete }) => {
+            // Se o bloco tem questões (é um quiz), usar o QuizScreen
+            if (block.isQuizMode && block.questions) {
+                return <QuizScreen block={block} onBack={onBack} onComplete={onComplete} />
+            }
+
+            // Caso contrário, usar o sistema de arrastar e soltar original
             const [targets, setTargets] = useState(block.challenge.targets.map(t => ({ ...t, isCorrect: false, droppedShape: null })))
             const [figures, setFigures] = useState([...block.challenge.figures].sort(() => Math.random() - 0.5))
             const [draggedItem, setDraggedItem] = useState(null)
@@ -570,12 +1541,17 @@
             }
             
             const handleCompleteBlock = (result) => {
+                // Determinar o total de questões baseado no tipo de bloco
+                const totalQuestions = result.block.isQuizMode
+                    ? result.block.questions.length
+                    : result.block.challenge.targets.length;
+
                 const newResult = {
                     Nome: studentName,
                     Materia: activityConfig.subject,
                     Atividade: activityConfig.activity,
                     Bloco: result.block.title,
-                    Questao: `${result.acertos}_de_${result.block.challenge.targets.length}`,
+                    Questao: `${result.acertos}_de_${totalQuestions}`,
                     Tempo_Execucao: result.timeSpent + 's',
                     Acertos: result.acertos,
                     Erros: result.erros,

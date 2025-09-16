@@ -1,0 +1,162 @@
+const activityBlocks = [
+  {
+    id: 1,
+    title: "Futebol: O Campo de Batalha 🔵",
+    difficulty: "Intermediário",
+    emoji: "⚽",
+    color: "from-green-400 to-emerald-500",
+    description: "Descubra as formas escondidas no gramado!",
+    questions: [
+      {
+        id: "q1",
+        statement: "Qual figura tem 4 lados iguais e 4 ângulos retos, como o centro do campo?",
+        options: [
+          { id: "a", text: "🔺 Triângulo" },
+          { id: "b", text: "🔷 Quadrado" },
+          { id: "c", text: "▭ Retângulo" },
+          { id: "d", text: "⭕ Círculo" }
+        ],
+        correct: "b",
+        feedback: {
+          correct: "✅ PERFEITO! O centro do campo é um quadrado! Torcida vibra! 🎉👏",
+          incorrect: "🟢 Dica: pense em algo com todos os lados iguais e cantos em 90°!"
+        }
+      },
+      {
+        id: "q2",
+        statement: "O gol tem formato parecido com qual figura?",
+        options: [
+          { id: "a", text: "▭ Retângulo" },
+          { id: "b", text: "⬡ Hexágono" },
+          { id: "c", text: "🔺 Triângulo" },
+          { id: "d", text: "⭕ Círculo" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "🥅 GOLAÇO GEOMÉTRICO! O gol é um retângulo! Vibração total! 🔊",
+          incorrect: "🥅 Dica: tem dois lados longos e dois curtos… igual à trave!"
+        }
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Vôlei: No Ar com Estilo 🏐",
+    difficulty: "Intermediário",
+    emoji: "🏐",
+    color: "from-orange-400 to-red-500",
+    description: "Ataque, bloqueio… e muita geometria no saque!",
+    questions: [
+      {
+        id: "q3",
+        statement: "A rede de vôlei é feita de pequenos losangos ou…?",
+        options: [
+          { id: "a", text: "🔷 Quadrados" },
+          { id: "b", text: "🔺 Triângulos" },
+          { id: "c", text: "🔶 Losangos" },
+          { id: "d", text: "⭕ Círculos" }
+        ],
+        correct: "c",
+        feedback: {
+          correct: "🏐 ACE! Isso mesmo, são losangos! Rede perfeita! 🌟",
+          incorrect: "🕸️ Dica: forma de ‘diamante’ nas malhas da rede!"
+        }
+      },
+      {
+        id: "q4",
+        statement: "Quando o jogador levanta a bola, ela descreve um arco. Qual figura representa esse movimento?",
+        options: [
+          { id: "a", text: "🔺 Triângulo" },
+          { id: "b", text: "▭ Retângulo" },
+          { id: "c", text: "⭕ Círculo" },
+          { id: "d", text: "◡ Semicírculo" }
+        ],
+        correct: "d",
+        feedback: {
+          correct: "🌀 LINDO LEVANTAMENTO! O arco é um semicírculo! 🤩",
+          incorrect: "👆 Dica: metade de um círculo… como um sorriso no céu!"
+        }
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Capoeira: Dança com Simetria 🥋",
+    difficulty: "Avançado",
+    emoji: "🦵",
+    color: "from-yellow-400 to-orange-500",
+    description: "Ginga, martelo… e figuras no corpo em movimento!",
+    questions: [
+      {
+        id: "q5",
+        statement: "Na posição de 'bananeira', o corpo forma qual figura?",
+        options: [
+          { id: "a", text: "🔺 Triângulo" },
+          { id: "b", text: "🔷 Quadrado" },
+          { id: "c", text: "▭ Retângulo" },
+          { id: "d", text: "⭕ Círculo" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "🕺 INCREDÍVEL! O corpo em V forma um triângulo! Capoeira geométrica! 🎶",
+          incorrect: "🧘 Dica: três pontos: duas mãos e os pés no ar!"
+        }
+      },
+      {
+        id: "q6",
+        statement: "O roda de capoeira é montada em formato circular. Quantos lados tem um círculo?",
+        options: [
+          { id: "a", text: "0" },
+          { id: "b", text: "1" },
+          { id: "c", text: "2" },
+          { id: "d", text: "Infinitos" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "🌀 MESTRE DO CÍRCULO! Círculo não tem lados nem vértices! Berimbau toca! 🪘",
+          incorrect: "🎶 Dica: rola, rola… mas nunca tem pontas!"
+        }
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: "Pipa: No Céu com Estilo 🪁",
+    difficulty: "Avançado",
+    emoji: "🪁",
+    color: "from-purple-400 to-pink-500",
+    description: "Altura, vento… e figuras voando!",
+    questions: [
+      {
+        id: "q7",
+        statement: "A pipa tradicional tem formato de qual figura?",
+        options: [
+          { id: "a", text: "🔺 Triângulo" },
+          { id: "b", text: "🔷 Quadrado" },
+          { id: "c", text: "🔸 Losango" },
+          { id: "d", text: "⭕ Círculo" }
+        ],
+        correct: "c",
+        feedback: {
+          correct: "🪁 VOANDO ALTO! A pipa é um losango! Brilha no céu! ✨",
+          incorrect: "🧵 Dica: quatro lados iguais, mas não é um quadrado… é mais ‘pontudo’!"
+        }
+      },
+      {
+        id: "q8",
+        statement: "Se cortarmos uma pipa ao meio pela diagonal, obtemos duas figuras. Quais?",
+        options: [
+          { id: "a", text: "2 triângulos" },
+          { id: "b", text: "2 quadrados" },
+          { id: "c", text: "2 retângulos" },
+          { id: "d", text: "2 círculos" }
+        ],
+        correct: "a",
+        feedback: {
+          correct: "✂️ GENIAL! Um losango cortado vira dois triângulos! 🎯",
+          incorrect: "📐 Dica: toda divisão de losango por diagonal gera triângulos!"
+        }
+      }
+    ]
+  }
+];

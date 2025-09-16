@@ -122,59 +122,42 @@
         const { useState, useEffect, useRef } = React;
 
         const MusicPlayer = () => {
-            const audioRef = useRef(null);
-            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
-            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [, forceUpdate] = useState({});
 
-            const setPlayerVolume = (volume) => {
-                if (audioRef.current) {
-                    audioRef.current.volume = volume;
+            useEffect(() => {
+                // Força atualização do estado baseado no sistema persistente
+                const updateState = () => {
+                    if (window.PersistentMusicSystem) {
+                        setIsPlaying(window.PersistentMusicSystem.isPlaying);
+                    }
+                };
+
+                // Atualizar estado inicial
+                updateState();
+
+                // Atualizar periodicamente para manter sincronizado
+                const interval = setInterval(updateState, 1000);
+
+                return () => clearInterval(interval);
+            }, []);
+
+            const handleTogglePlay = () => {
+                if (window.PersistentMusicSystem) {
+                    window.PersistentMusicSystem.toggle();
+                    setIsPlaying(window.PersistentMusicSystem.isPlaying);
                 }
             };
-
-            useEffect(() => {
-                // Expose setPlayerVolume globally for other scripts to use
-                window.musicPlayerSetVolume = setPlayerVolume;
-
-                localStorage.setItem('musicIsPlaying', isPlaying);
-                if (isPlaying) {
-                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
-                } else {
-                    audioRef.current.pause();
-                }
-            }, [isPlaying]);
-
-            useEffect(() => {
-                localStorage.setItem('musicTrackIndex', currentTrackIndex);
-                if (audioRef.current) {
-                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
-                    if (isPlaying) {
-                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
-                    }
-                }
-            }, [currentTrackIndex]);
 
             const handleNextTrack = () => {
-                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
+                if (window.PersistentMusicSystem) {
+                    window.PersistentMusicSystem.nextTrack();
+                }
             };
-
-            const handleAudioEnded = () => {
-                handleNextTrack();
-            };
-
-            useEffect(() => {
-                const audio = audioRef.current;
-                audio.volume = 0.5; // Initial volume
-                audio.addEventListener('ended', handleAudioEnded);
-                return () => {
-                    audio.removeEventListener('ended', handleAudioEnded);
-                };
-            }, []);
 
             return (
                 <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
-                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
-                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
+                    <button onClick={handleTogglePlay} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
                         {isPlaying ? '❚❚' : '▶'}
                     </button>
                     <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
@@ -286,17 +269,6 @@
               category: 'Matemática',
               difficulty: 'Variado',
               estimatedTime: '15-25 min'
-            },
-            {
-              id: 'figuras-planas-galacticas',
-              title: 'Figuras Planas Galácticas',
-              description: 'Viaje pela galáxia aprendendo sobre triângulos, quadrados, e mais!',
-              icon: '🌌',
-              color: 'from-blue-500 to-purple-600',
-              link: 'pages/figuras_planas_galacticas.html',
-              category: 'Matemática',
-              difficulty: 'Variado',
-              estimatedTime: '10-15 min'
             },
           ];
 
