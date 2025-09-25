@@ -1,0 +1,20 @@
+# Desenvolvimento
+./dev-start.sh                          # Inicia servidor local
+
+# Validação
+./quick-validate.sh pages/atividade.html # Valida uma atividade
+
+# Formatação
+prettier --write pages/*.html            # Formata código
+
+# Acessibilidade  
+pa11y pages/atividade.html --threshold 5 # Testa acessibilidade
+
+# Otimização
+imagemin media/**/*.png --out-dir=optimized/ # Otimiza imagens
+
+# Deploy
+./quick-deploy.sh                        # Deploy rápido
+
+# Servidor local
+live-server pages/ --port=3000           # Servidor para testes

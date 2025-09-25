@@ -1,260 +1,1693 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🧮 Calculadora Digital Expert</title>
-    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="../js/playlist.js"></script>
     <style>
-        body { font-family: 'Comic Sans MS', cursive, sans-serif; }
-        .font-dyslexic { font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      .font-dyslexic {
+        font-family: "OpenDyslexic", "Comic Sans MS", cursive, sans-serif;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin: 20px 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .start-screen {
+        text-align: center;
+        max-width: 500px;
+        margin: 100px auto;
+      }
+
+      .emoji-large {
+        font-size: 80px;
+        margin-bottom: 20px;
+      }
+
+      .title {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 30px;
+        font-weight: bold;
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 15px;
+        border: 3px solid #ddd;
+        border-radius: 15px;
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 20px;
+        transition: border-color 0.3s;
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .level-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .level-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+      }
+
+      .level-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .level-emoji {
+        font-size: 3rem;
+        margin-bottom: 15px;
+      }
+
+      .calculator {
+        background: #2c3e50;
+        border-radius: 20px;
+        padding: 25px;
+        margin: 20px 0;
+        max-width: 350px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .calculator-display {
+        background: #34495e;
+        color: #2ecc71;
+        font-family: "Courier New", monospace;
+        font-size: 28px;
+        font-weight: bold;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: right;
+        margin-bottom: 20px;
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        border: 2px solid #3498db;
+      }
+
+      .calculator-buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+
+      .calc-btn {
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        min-height: 60px;
+      }
+
+      .calc-btn:hover {
+        background: #2980b9;
+        transform: scale(1.05);
+      }
+
+      .calc-btn:active {
+        transform: scale(0.95);
+      }
+
+      .calc-btn.operator {
+        background: #e74c3c;
+      }
+
+      .calc-btn.operator:hover {
+        background: #c0392b;
+      }
+
+      .calc-btn.equals {
+        background: #27ae60;
+        grid-column: span 2;
+      }
+
+      .calc-btn.equals:hover {
+        background: #229954;
+      }
+
+      .calc-btn.clear {
+        background: #f39c12;
+      }
+
+      .calc-btn.clear:hover {
+        background: #e67e22;
+      }
+
+      .question-area {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        border: 3px solid #ff9f43;
+      }
+
+      .question-text {
+        font-size: 22px;
+        font-weight: bold;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .answer-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .answer-input {
+        width: 200px;
+        padding: 15px;
+        border: 3px solid #ddd;
+        border-radius: 10px;
+        font-size: 18px;
+        text-align: center;
+        margin: 10px;
+      }
+
+      .feedback {
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .feedback.correct {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #27ae60;
+        border: 3px solid #27ae60;
+      }
+
+      .feedback.incorrect {
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        color: #e74c3c;
+        border: 3px solid #e74c3c;
+      }
+
+      .progress-bar {
+        background: #ecf0f1;
+        border-radius: 10px;
+        height: 20px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        height: 100%;
+        transition: width 0.3s;
+        border-radius: 10px;
+      }
+
+      .audio-controls {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 2px solid #dee2e6;
+      }
+
+      .audio-label {
+        font-weight: bold;
+        color: #495057;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      .audio-element {
+        width: 100%;
+        margin-bottom: 15px;
+      }
+
+      .audio-error {
+        color: #6c757d;
+        font-style: italic;
+        font-size: 14px;
+      }
+
+      .music-player {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 15px;
+        border-radius: 50px;
+        display: flex;
+        gap: 10px;
+        z-index: 1000;
+      }
+
+      .music-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        border: none;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .music-btn:hover {
+        background: rgba(255, 255, 255, 0.5);
+        transform: scale(1.1);
+      }
+
+      .results-screen {
+        text-align: center;
+        padding: 40px;
+      }
+
+      .score-display {
+        font-size: 3rem;
+        color: #27ae60;
+        margin: 20px 0;
+      }
+
+      .export-section {
+        background: #e8f5e8;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        border: 2px solid #27ae60;
+      }
+
+      .block-navigation {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .block-btn {
+        padding: 10px 15px;
+        border: 2px solid #667eea;
+        border-radius: 10px;
+        background: white;
+        color: #667eea;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: bold;
+      }
+
+      .block-btn.active {
+        background: #667eea;
+        color: white;
+      }
+
+      .block-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        .title {
+          font-size: 2rem;
+        }
+
+        .calculator {
+          max-width: 300px;
+        }
+
+        .calc-btn {
+          padding: 15px;
+          font-size: 16px;
+        }
+
+        .question-text {
+          font-size: 18px;
+        }
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
     </style>
-</head>
-<body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+  </head>
+  <body>
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+      <button class="music-btn" id="playPauseBtn" onclick="toggleMusic()">
+        ▶
+      </button>
+      <button class="music-btn" id="nextBtn" onclick="nextTrack()">⏭</button>
+    </div>
 
-        const MusicPlayer = () => {
-            const [isPlaying, setIsPlaying] = useState(false);
+    <div class="container">
+      <!-- Start Screen -->
+      <div id="startScreen" class="start-screen card">
+        <div class="emoji-large">🧮</div>
+        <h1 class="title">Calculadora Digital Expert</h1>
+        <p style="font-size: 18px; color: #666; margin-bottom: 30px">
+          Aprenda matemática de forma divertida com nossa calculadora
+          interativa!
+        </p>
 
-            useEffect(() => {
-                const updateState = () => {
-                    if (window.PersistentMusicSystem) {
-                        setIsPlaying(window.PersistentMusicSystem.isPlaying);
-                    }
-                };
+        <label
+          for="fontSelect"
+          style="display: block; margin-bottom: 10px; font-weight: bold"
+          >Escolha sua fonte:</label
+        >
+        <select
+          id="fontSelect"
+          class="input-field"
+          onchange="changeFont(this.value)"
+        >
+          <option value="Comic Sans MS">Comic Sans MS</option>
+          <option value="OpenDyslexic">OpenDyslexic</option>
+        </select>
 
-                updateState();
-                const interval = setInterval(updateState, 1000);
-                return () => clearInterval(interval);
-            }, []);
+        <label for="studentName" class="sr-only">Digite seu nome completo</label>
+        <input
+          type="text"
+          id="studentName"
+          class="input-field"
+          placeholder="Digite seu nome aqui"
+          aria-label="Digite seu nome completo"
+          onkeypress="if(event.key==='Enter') startActivity()"
+        />
+        <br />
+        <button
+          class="btn btn-primary"
+          onclick="startActivity()"
+          id="startBtn"
+          disabled
+        >
+          🎯 COMEÇAR AVENTURA
+        </button>
+      </div>
 
-            const handleTogglePlay = () => {
-                if (window.PersistentMusicSystem) {
-                    window.PersistentMusicSystem.toggle();
-                    setIsPlaying(window.PersistentMusicSystem.isPlaying);
-                }
-            };
+      <!-- Level Selection Screen -->
+      <div id="levelScreen" class="card hidden">
+        <h2 class="title" style="text-align: center">🌟 Escolha seu Desafio</h2>
+        <p
+          style="
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+          "
+        >
+          Olá, <span id="welcomeName"></span>! Selecione um bloco para começar:
+        </p>
 
-            const handleNextTrack = () => {
-                if (window.PersistentMusicSystem) {
-                    window.PersistentMusicSystem.nextTrack();
-                }
-            };
+        <div class="level-grid" id="levelGrid">
+          <!-- Levels will be populated by JavaScript -->
+        </div>
 
-            return (
-                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
-                    <button onClick={handleTogglePlay} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
-                        {isPlaying ? '❚❚' : '▶'}
-                    </button>
-                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
-                        {'⏭'}
-                    </button>
-                </div>
-            );
-        };
+        <div style="text-align: center; margin-top: 30px">
+          <button class="btn btn-primary" onclick="showStartScreen()">
+            ← Voltar ao Início
+          </button>
+        </div>
+      </div>
 
-        const activityConfig = {
-            title: "Calculadora Digital Expert",
-            subject: "matematica",
-            activity: "calculadora_digital",
-            emoji: "🧮",
-        };
+      <!-- Game Screen -->
+      <div id="gameScreen" class="hidden">
+        <!-- Header -->
+        <div class="card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              flex-wrap: wrap;
+            "
+          >
+            <div>
+              <h2 id="currentLevelTitle" style="margin: 0" aria-live="polite">Carregando...</h2>
+              <p id="currentLevelDesc" style="margin: 5px 0; color: #666"></p>
+            </div>
+            <div style="text-align: right">
+              <div
+                id="questionCounter"
+                style="font-size: 18px; font-weight: bold"
+              ></div>
+              <div
+                id="scoreDisplay"
+                style="color: #27ae60; font-weight: bold"
+              ></div>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
 
-        const MediaManager = {
-            basePath: '../media',
-            getQuestionMedia: function(blockNum, questionNum) {
-                const blockPath = `${this.basePath}/${activityConfig.subject}/${activityConfig.activity}/bloco_${blockNum}`;
-                return {
-                    audio: {
-                        enunciado: `${blockPath}/bloco_${blockNum}_questao_${questionNum}_enunciado.mp3`,
-                        explicacao: `${blockPath}/bloco_${blockNum}_questao_${questionNum}_explicacao.mp3`
-                    }
-                };
-            }
-        };
+        <!-- Question Area -->
+        <div class="question-area fade-in">
+          <div class="question-text" id="questionText"></div>
 
-        const SoundSystem = {
-            play: (src) => {
-                try {
-                    if (window.PersistentMusicSystem) {
-                        window.PersistentMusicSystem.duckVolume(); // Reduce background music volume
-                    }
-                    const audio = new Audio(src);
-                    audio.play().catch(e => {});
-                    audio.onended = () => {
-                        if (window.PersistentMusicSystem) {
-                            window.PersistentMusicSystem.restoreVolume(); // Restore background music volume
-                        }
-                    };
-                } catch (e) {}
+          <!-- Audio Controls -->
+          <div class="audio-controls">
+            <label class="audio-label">🔊 Ouvir Enunciado:</label>
+            <audio controls class="audio-element" id="audioEnunciado">
+              <span class="audio-error">Áudio do enunciado indisponível.</span>
+            </audio>
+
+            <label class="audio-label">💡 Ouvir Explicação:</label>
+            <audio
+              controls
+              class="audio-element"
+              id="audioExplicacao"
+              style="display: none"
+            >
+              <span class="audio-error">Áudio da explicação indisponível.</span>
+            </audio>
+            <div id="audioExplicacaoPlaceholder" class="audio-error">
+              Responda para liberar a explicação.
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculator -->
+        <div class="calculator">
+          <div class="calculator-display" id="calculatorDisplay">0</div>
+          <div class="calculator-buttons">
+            <button class="calc-btn clear" onclick="clearCalculator()">
+              C
+            </button>
+            <button class="calc-btn clear" onclick="clearEntry()">CE</button>
+            <button
+              class="calc-btn operator"
+              onclick="addToCalculator('/')"
+              aria-label="Dividir"
+            >
+              ÷
+            </button>
+            <button
+              class="calc-btn operator"
+              onclick="addToCalculator('*')"
+              aria-label="Multiplicar"
+            >
+              ×
+            </button>
+
+            <button class="calc-btn" onclick="addToCalculator('7')">7</button>
+            <button class="calc-btn" onclick="addToCalculator('8')">8</button>
+            <button class="calc-btn" onclick="addToCalculator('9')">9</button>
+            <button
+              class="calc-btn operator"
+              onclick="addToCalculator('-')"
+              aria-label="Subtrair"
+            >
+              -
+            </button>
+
+            <button class="calc-btn" onclick="addToCalculator('4')">4</button>
+            <button class="calc-btn" onclick="addToCalculator('5')">5</button>
+            <button class="calc-btn" onclick="addToCalculator('6')">6</button>
+            <button
+              class="calc-btn operator"
+              onclick="addToCalculator('+')"
+              aria-label="Somar"
+            >
+              +
+            </button>
+
+            <button class="calc-btn" onclick="addToCalculator('1')">1</button>
+            <button class="calc-btn" onclick="addToCalculator('2')">2</button>
+            <button class="calc-btn" onclick="addToCalculator('3')">3</button>
+            <button
+              class="calc-btn equals"
+              onclick="calculateResult()"
+              rowspan="2"
+              aria-label="Igual"
+            >
+              =
+            </button>
+
+            <button
+              class="calc-btn"
+              onclick="addToCalculator('0')"
+              style="grid-column: span 2"
+            >
+              0
+            </button>
+            <button class="calc-btn" onclick="addToCalculator('.')">.</button>
+          </div>
+        </div>
+
+        <!-- Answer Section -->
+        <div class="answer-section">
+          <p style="font-size: 18px; font-weight: bold; margin-bottom: 15px">
+            Digite sua resposta:
+          </p>
+          <label for="userAnswer" class="sr-only">Digite o resultado do cálculo</label>
+          <input
+            type="number"
+            id="userAnswer"
+            class="answer-input"
+            placeholder="Sua resposta"
+            aria-label="Digite o resultado do cálculo"
+            onkeypress="if(event.key==='Enter') submitAnswer()"
+          />
+          <br /><br />
+          <button class="btn btn-primary" onclick="submitAnswer()">
+            ✅ CONFIRMAR RESPOSTA
+          </button>
+          <button
+            class="btn"
+            onclick="useCalculatorResult()"
+            style="background: #f39c12; color: white; margin-left: 10px"
+          >
+            🧮 USAR RESULTADO DA CALCULADORA
+          </button>
+        </div>
+
+        <!-- Feedback -->
+        <div id="feedback" class="feedback hidden"></div>
+
+        <!-- Navigation -->
+        <div style="text-align: center; margin-top: 30px">
+          <button
+            class="btn"
+            onclick="showLevelScreen()"
+            style="background: #95a5a6; color: white"
+          >
+            ← Voltar aos Blocos
+          </button>
+          <button
+            class="btn btn-primary"
+            onclick="nextQuestion()"
+            id="nextQuestionBtn"
+            style="display: none"
+          >
+            Próxima Questão →
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div id="resultsScreen" class="card hidden">
+        <div class="results-screen">
+          <div class="emoji-large">🏆</div>
+          <h2 class="title">Parabéns!</h2>
+          <p style="font-size: 20px; margin-bottom: 20px">
+            Você completou o <span id="completedLevel"></span>!
+          </p>
+
+          <div class="score-display" id="finalScore"></div>
+          <div
+            id="performanceMessage"
+            style="font-size: 18px; color: #666; margin-bottom: 30px"
+          ></div>
+
+          <!-- Export Section -->
+          <div class="export-section">
+            <h3 style="color: #27ae60; margin-bottom: 15px">
+              📊 Exportar Resultados
+            </h3>
+            <p style="margin-bottom: 15px">
+              Baixe seus resultados em formato CSV:
+            </p>
+            <button class="btn btn-primary" onclick="exportToCSV()">
+              📥 BAIXAR CSV
+            </button>
+          </div>
+
+          <!-- Block Navigation -->
+          <div class="block-navigation" id="blockNavigation">
+            <!-- Will be populated by JavaScript -->
+          </div>
+
+          <div style="margin-top: 30px">
+            <button class="btn btn-primary" onclick="showLevelScreen()">
+              🔄 ESCOLHER OUTRO BLOCO
+            </button>
+            <button
+              class="btn"
+              onclick="restartCurrentLevel()"
+              style="background: #f39c12; color: white; margin-left: 10px"
+            >
+              ↻ REPETIR ESTE BLOCO
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Global Variables
+      let currentStudent = "";
+      let currentLevel = "";
+      let currentQuestion = 0;
+      let currentQuestionData = null;
+      let sessionResults = [];
+      let startTime = null;
+      let attempts = 0;
+      let totalScore = 0;
+      let calculatorDisplay = "0";
+      let currentExpression = "";
+      let lastAnswer = null;
+      let isPlaying = false;
+
+      // Educational Content - 9 Blocks with Progressive Difficulty
+      const levels = {
+        bloco_1: {
+          name: "🌟 Estrela Cadente",
+          emoji: "🌟",
+          description: "Primeiros passos com adição",
+          color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          level: "Básico",
+          questions: [
+            {
+              context: "🎮 João comprou {a} V-Bucks e ganhou {b} de presente!",
+              range: [5, 20],
             },
-            success: () => SoundSystem.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`),
-            error: () => SoundSystem.play(`../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`),
-            click: () => SoundSystem.play('../media/sons/feedback/click.mp3')
+            {
+              context: "🍕 A pizzaria vendeu {a} pizzas de manhã e {b} à tarde",
+              range: [8, 25],
+            },
+            {
+              context: "⚽ O time fez {a} gols no 1º jogo e {b} no 2º",
+              range: [1, 10],
+            },
+            {
+              context: "📚 Ana leu {a} páginas ontem e {b} hoje",
+              range: [10, 30],
+            },
+            {
+              context: "🎵 O playlist tem {a} músicas pop e {b} rock",
+              range: [5, 15],
+            },
+          ],
+        },
+        bloco_2: {
+          name: "🚀 Foguete Espacial",
+          emoji: "🚀",
+          description: "Explorando somas maiores",
+          color: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+          level: "Básico",
+          questions: [
+            {
+              context:
+                "🏗️ Maria precisa de {a} blocos vermelhos e {b} azuis para sua construção",
+              range: [15, 40],
+            },
+            {
+              context: "🎪 O circo vendeu {a} ingressos de manhã e {b} à noite",
+              range: [20, 50],
+            },
+            {
+              context: "🛒 Papai comprou {a} frutas e {b} verduras no mercado",
+              range: [12, 35],
+            },
+            {
+              context: "🎨 O artista usou {a} tintas vermelhas e {b} azuis",
+              range: [8, 25],
+            },
+            {
+              context: "🐾 No parque, vi {a} cachorros e {b} gatos brincando",
+              range: [10, 30],
+            },
+          ],
+        },
+        bloco_3: {
+          name: "⭐ Constelação Brilhante",
+          emoji: "⭐",
+          description: "Dominando operações básicas",
+          color: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+          level: "Básico",
+          questions: [
+            {
+              context:
+                "🎯 O arcade deu {a} tickets no basquete e {b} nos dardos",
+              range: [25, 60],
+            },
+            {
+              context: "📱 O app teve {a} downloads de manhã e {b} à tarde",
+              range: [30, 80],
+            },
+            {
+              context:
+                "🍔 A lanchonete fez {a} hambúrgueres e {b} batatas fritas",
+              range: [20, 55],
+            },
+            {
+              context:
+                "👾 No servidor, entraram {a} jogadores novos e {b} antigos",
+              range: [40, 100],
+            },
+            {
+              context:
+                "🎬 O cinema vendeu {a} ingressos de ação e {b} de comédia",
+              range: [35, 85],
+            },
+          ],
+        },
+        bloco_4: {
+          name: "🌙 Lua Crescente",
+          emoji: "🌙",
+          description: "Problemas do mundo real com adição e subtração",
+          color: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+          level: "Intermediário",
+          questions: [
+            {
+              context:
+                "💰 Carlos tinha {a} reais, gastou {b} reais em lanche. Quanto sobrou?",
+              range: [50, 150],
+              operation: "subtract",
+            },
+            {
+              context:
+                "🚗 Na viagem, rodamos {a} km no primeiro dia e {b} km no segundo",
+              range: [100, 300],
+            },
+            {
+              context:
+                "📖 A biblioteca tem {a} livros de ficção e {b} de ciência. Total de livros?",
+              range: [80, 200],
+            },
+            {
+              context:
+                "🎈 Tinha {a} balões na festa, {b} estouraram. Quantos restaram?",
+              range: [60, 120],
+              operation: "subtract",
+            },
+            {
+              context:
+                "🍎 A cesta tinha {a} maçãs, compramos mais {b}. Quantas no total?",
+              range: [40, 100],
+            },
+          ],
+        },
+        bloco_5: {
+          name: "☀️ Sol Radiante",
+          emoji: "☀️",
+          description: "Multiplicação simples e problemas contextualizados",
+          color: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+          level: "Intermediário",
+          questions: [
+            {
+              context:
+                "🍕 Cada pizza tem {a} fatias. Compramos {b} pizzas. Quantas fatias?",
+              range: [4, 8],
+              operation: "multiply",
+            },
+            {
+              context:
+                "💼 Trabalho {a} horas por dia durante {b} dias. Total de horas?",
+              range: [6, 12],
+              operation: "multiply",
+            },
+            {
+              context:
+                "🚌 Cada ônibus leva {a} passageiros. Há {b} ônibus. Total de passageiros?",
+              range: [15, 25],
+              operation: "multiply",
+            },
+            {
+              context:
+                "📦 Cada caixa tem {a} itens. Temos {b} caixas. Quantos itens no total?",
+              range: [10, 20],
+              operation: "multiply",
+            },
+            {
+              context:
+                "🎯 Cada acerto vale {a} pontos. Acertei {b} vezes. Quantos pontos?",
+              range: [5, 15],
+              operation: "multiply",
+            },
+          ],
+        },
+        bloco_6: {
+          name: "🌈 Arco-íris Mágico",
+          emoji: "🌈",
+          description: "Operações mistas e divisão simples",
+          color: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+          level: "Intermediário",
+          questions: [
+            {
+              context:
+                "🍫 Tenho {a} chocolates para dividir entre {b} amigos. Quantos para cada um?",
+              range: [12, 48],
+              operation: "divide",
+            },
+            {
+              context: "💵 Ganhei {a} reais, gastei {b} reais. Quanto sobrou?",
+              range: [100, 500],
+              operation: "subtract",
+            },
+            {
+              context:
+                "📚 Li {a} páginas por dia durante {b} dias. Total de páginas lidas?",
+              range: [20, 50],
+              operation: "multiply",
+            },
+            {
+              context:
+                "🎮 Cada jogo custa {a} reais. Comprei {b} jogos. Quanto gastei?",
+              range: [25, 80],
+              operation: "multiply",
+            },
+            {
+              context:
+                "🏀 Marcamos {a} pontos no total. Cada cesta vale {b} pontos. Quantas cestas?",
+              range: [24, 72],
+              operation: "divide",
+            },
+          ],
+        },
+        bloco_7: {
+          name: "⚡ Raio Poderoso",
+          emoji: "⚡",
+          description:
+            "Cálculos avançados com números maiores e operações complexas",
+          color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          level: "Avançado",
+          questions: [
+            {
+              context:
+                "🏢 O prédio tem {a} andares, cada andar tem {b} apartamentos. Total de apartamentos?",
+              range: [15, 25],
+              operation: "multiply",
+            },
+            {
+              context:
+                "📊 A empresa vendeu {a} produtos em janeiro e {b} produtos em fevereiro. Quantos produtos vendidos nos dois meses?",
+              range: [250, 800],
+            },
+            {
+              context:
+                "🚗 O carro percorre {a} km com 1 litro. Com {b} litros, quantos km percorre?",
+              range: [8, 15],
+              operation: "multiply",
+            },
+            {
+              context:
+                "💰 Investiu {a} reais e obteve lucro de {b} reais. Qual o valor total agora?",
+              range: [1000, 5000],
+            },
+            {
+              context:
+                "📱 A fábrica produz {a} celulares por hora. Em {b} horas, quantos celulares produz?",
+              range: [50, 150],
+              operation: "multiply",
+            },
+          ],
+        },
+        bloco_8: {
+          name: "🔥 Chama Eterna",
+          emoji: "🔥",
+          description: "Problemas complexos com múltiplas operações",
+          color: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+          level: "Avançado",
+          questions: [
+            {
+              context:
+                "🏪 A loja vendeu {a} produtos pela manhã, {b} à tarde e devolveu {c} produtos defeituosos. Quantos produtos foram vendidos efetivamente?",
+              range: [100, 300],
+              operation: "complex_subtract",
+            },
+            {
+              context:
+                "🎪 O circo tem {a} fileiras com {b} cadeiras cada. Venderam {c} ingressos. Quantas cadeiras ficaram vazias?",
+              range: [20, 40],
+              operation: "complex_multiply_subtract",
+            },
+            {
+              context:
+                "💼 O salário mensal é {a} reais. Em {b} meses, quanto recebe? Se gastar {c} reais, quanto sobra?",
+              range: [2000, 5000],
+              operation: "complex_multiply_subtract",
+            },
+            {
+              context:
+                "🍕 Cada pizza custa {a} reais. Compramos {b} pizzas e temos um desconto de {c} reais. Quanto pagamos?",
+              range: [25, 45],
+              operation: "complex_multiply_subtract",
+            },
+            {
+              context:
+                "📚 A biblioteca comprou {a} livros por {b} reais cada. Recebeu doação de {c} livros. Quantos livros tem agora?",
+              range: [50, 100],
+              operation: "complex_multiply_add",
+            },
+          ],
+        },
+        bloco_9: {
+          name: "👑 Coroa Imperial",
+          emoji: "👑",
+          description: "Desafios matemáticos supremos com cálculos elaborados",
+          color: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+          level: "Avançado",
+          questions: [
+            {
+              context:
+                "🏭 A fábrica produz {a} produtos por hora, trabalha {b} horas por dia durante {c} dias. Quantos produtos produz no total?",
+              range: [25, 75],
+              operation: "triple_multiply",
+            },
+            {
+              context:
+                "🎯 Em um torneio, cada vitória vale {a} pontos, cada empate {b} pontos. Tive {c} vitórias e {d} empates. Quantos pontos fiz?",
+              range: [3, 10],
+              operation: "complex_scoring",
+            },
+            {
+              context:
+                "🏪 A empresa tem {a} funcionários, cada um ganha {b} reais por dia. Trabalham {c} dias por mês. Qual o gasto total mensal com salários?",
+              range: [20, 50],
+              operation: "triple_multiply",
+            },
+            {
+              context:
+                "📱 Cada smartphone custa {a} reais. A loja vendeu {b} pela manhã e {c} à tarde. Se teve desconto de {d} reais no total, quanto arrecadou?",
+              range: [300, 800],
+              operation: "super_complex",
+            },
+            {
+              context:
+                "🚗 O carro consome {a} litros por 100km. Viajei {b} km e o combustível custa {c} reais o litro. Quanto gastei em combustível?",
+              range: [8, 15],
+              operation: "fuel_calculation",
+            },
+          ],
+        },
+      };
+
+      // Initialize the application
+      function initializeApp() {
+        updateMusicPlayer();
+        document
+          .getElementById("studentName")
+          .addEventListener("input", function () {
+            const startBtn = document.getElementById("startBtn");
+            startBtn.disabled = this.value.trim() === "";
+          });
+      }
+
+      // Start the activity
+      function startActivity() {
+        const name = document.getElementById("studentName").value.trim();
+        if (!name) return;
+
+        currentStudent = name;
+        document.getElementById("welcomeName").textContent = name;
+        showLevelScreen();
+        playSound("click");
+      }
+
+      // Show different screens
+      function showStartScreen() {
+        hideAllScreens();
+        document.getElementById("startScreen").classList.remove("hidden");
+      }
+
+      function showLevelScreen() {
+        hideAllScreens();
+        document.getElementById("levelScreen").classList.remove("hidden");
+        populateLevelGrid();
+      }
+
+      function showGameScreen() {
+        hideAllScreens();
+        document.getElementById("gameScreen").classList.remove("hidden");
+      }
+
+      function showResultsScreen() {
+        hideAllScreens();
+        document.getElementById("resultsScreen").classList.remove("hidden");
+        displayResults();
+      }
+
+      function hideAllScreens() {
+        const screens = [
+          "startScreen",
+          "levelScreen",
+          "gameScreen",
+          "resultsScreen",
+        ];
+        screens.forEach((screen) => {
+          document.getElementById(screen).classList.add("hidden");
+        });
+      }
+
+      // Populate level selection grid
+      function populateLevelGrid() {
+        const grid = document.getElementById("levelGrid");
+        grid.innerHTML = "";
+
+        Object.keys(levels).forEach((levelKey) => {
+          const level = levels[levelKey];
+          const card = document.createElement("div");
+          card.className = "level-card";
+          card.style.background = level.color;
+          card.onclick = () => startLevel(levelKey);
+
+          card.innerHTML = `
+                    <div class="level-emoji">${level.emoji}</div>
+                    <h3 style="margin: 10px 0;">${level.name}</h3>
+                    <p style="margin: 5px 0; opacity: 0.9;">${level.description}</p>
+                    <div style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; display: inline-block; margin-top: 10px;">
+                        ${level.level}
+                    </div>
+                `;
+
+          grid.appendChild(card);
+        });
+      }
+
+      // Start a specific level
+      function startLevel(levelKey) {
+        currentLevel = levelKey;
+        currentQuestion = 0;
+        totalScore = 0;
+        sessionResults = [];
+
+        playSound("click");
+        showGameScreen();
+        updateGameHeader();
+        generateQuestion();
+      }
+
+      // Generate a question
+      function generateQuestion() {
+        const level = levels[currentLevel];
+        const questionTemplate = level.questions[currentQuestion];
+
+        let a, b, c, d, result;
+        const [min, max] = questionTemplate.range;
+
+        // Generate numbers based on operation type
+        switch (questionTemplate.operation) {
+          case "subtract":
+            a = Math.floor(Math.random() * (max - min)) + min;
+            b = Math.floor(Math.random() * (a - 10)) + 10; // Ensure positive result
+            result = a - b;
+            break;
+          case "multiply":
+            a =
+              Math.floor(Math.random() * questionTemplate.range[0]) +
+              questionTemplate.range[0];
+            b = Math.floor(Math.random() * 10) + 2;
+            result = a * b;
+            break;
+          case "divide":
+            b = Math.floor(Math.random() * 8) + 2;
+            result = Math.floor(Math.random() * 15) + 3;
+            a = b * result;
+            break;
+          case "complex_subtract":
+            a = Math.floor(Math.random() * (max - min)) + min;
+            b = Math.floor(Math.random() * (max - min)) + min;
+            c = Math.floor(Math.random() * 50) + 20;
+            result = a + b - c;
+            break;
+          case "complex_multiply_subtract":
+            a = Math.floor(Math.random() * 20) + 20;
+            b = Math.floor(Math.random() * 20) + 20;
+            c = Math.floor(Math.random() * (a * b - 50)) + 50;
+            result = a * b - c;
+            break;
+          case "complex_multiply_add":
+            a = Math.floor(Math.random() * 50) + 50;
+            b = Math.floor(Math.random() * 30) + 20;
+            c = Math.floor(Math.random() * 100) + 50;
+            result = a * b + c;
+            break;
+          case "triple_multiply":
+            a = Math.floor(Math.random() * (max - min)) + min;
+            b = Math.floor(Math.random() * 8) + 8;
+            c = Math.floor(Math.random() * 20) + 10;
+            result = a * b * c;
+            break;
+          case "complex_scoring":
+            a = Math.floor(Math.random() * 5) + 3;
+            b = Math.floor(Math.random() * 3) + 1;
+            c = Math.floor(Math.random() * 8) + 2;
+            d = Math.floor(Math.random() * 5) + 1;
+            result = a * c + b * d;
+            break;
+          case "super_complex":
+            a = Math.floor(Math.random() * (max - min)) + min;
+            b = Math.floor(Math.random() * 10) + 5;
+            c = Math.floor(Math.random() * 8) + 3;
+            d = Math.floor(Math.random() * 200) + 100;
+            result = a * (b + c) - d;
+            break;
+          case "fuel_calculation":
+            a = Math.floor(Math.random() * 8) + 8;
+            b = Math.floor(Math.random() * 400) + 200;
+            c = Math.floor(Math.random() * 3) + 4;
+            result = Math.round((a / 100) * b * c * 100) / 100;
+            break;
+          default:
+            a = Math.floor(Math.random() * (max - min)) + min;
+            b = Math.floor(Math.random() * (max - min)) + min;
+            result = a + b;
+        }
+
+        // Create question text
+        let questionText = questionTemplate.context
+          .replace("{a}", a.toLocaleString())
+          .replace("{b}", b.toLocaleString())
+          .replace("{c}", c ? c.toLocaleString() : "")
+          .replace("{d}", d ? d.toLocaleString() : "");
+
+        currentQuestionData = {
+          a,
+          b,
+          c,
+          d,
+          result,
+          questionText,
+          level: currentLevel,
+          questionIndex: currentQuestion,
         };
 
-        const CalculadoraDigitalIntegrada = () => {
-            const [studentName, setStudentName] = useState('');
-            const [hasStarted, setHasStarted] = useState(false);
-            const [font, setFont] = useState('Comic Sans MS');
-            const [currentScreen, setCurrentScreen] = useState('start');
-            const [currentLevel, setCurrentLevel] = useState('bloco_1');
-            const [currentMode, setCurrentMode] = useState('montador');
-            const [questionModes, setQuestionModes] = useState([]);
-            const [currentQuestion, setCurrentQuestion] = useState(0);
-            const [sessionResults, setSessionResults] = useState([]);
-            const [startTime, setStartTime] = useState(null);
-            const [currentQuestionData, setCurrentQuestionData] = useState(null);
-            const [calculatorDisplay, setCalculatorDisplay] = useState('0');
-            const [currentExpression, setCurrentExpression] = useState('');
-            const [userAnswer, setUserAnswer] = useState(null);
-            const [attempts, setAttempts] = useState(0);
-            const [totalScore, setTotalScore] = useState(0);
-            const [isCorrect, setIsCorrect] = useState(false);
-            const [feedbackMessage, setFeedbackMessage] = useState('');
-            const [showFeedback, setShowFeedback] = useState(false);
-            const [audioError, setAudioError] = useState({});
+        // Update UI
+        document.getElementById("questionText").textContent = questionText;
+        updateAudioElements();
+        clearCalculator();
+        clearAnswerInput();
+        hideFeedback();
 
-            const levels = {
-                bloco_1: { name: "🌟 Estrela Cadente", emoji: "🌟", description: "Primeiros passos", color: "from-blue-400 to-cyan-500", level: "Iniciante", questions: [ { context: "🎮 João comprou {a} V-Bucks e ganhou {b} de presente! Total? 💰", range: [10, 50] }, { context: "🍕 A pizzaria vendeu {a} pizzas de manhã e {b} à tarde. Total? 🍕", range: [15, 45] }, { context: "⚽ O time fez {a} gols no 1º jogo e {b} no 2º. Total? ⚽", range: [2, 8] }, { context: "📚 Ana leu {a} páginas ontem e {b} hoje. Total? 📖", range: [20, 60] }, { context: "🎵 O playlist tem {a} músicas pop e {b} rock. Total? 🎶", range: [12, 35] } ] },
-                bloco_2: { name: "🚀 Foguete Espacial", emoji: "🚀", description: "Decolando nos números", color: "from-green-400 to-teal-500", level: "Iniciante", questions: [ { context: "🏗️ Maria precisa de {a} blocos vermelhos e {b} azuis. Total? 🧱", range: [25, 75] }, { context: "🎪 O circo vendeu {a} ingressos de manhã e {b} à noite. Total? 🎭", range: [30, 80] }, { context: "🛒 Papai comprou {a} frutas e {b} verduras. Total? 🥕", range: [15, 55] }, { context: "🎨 O artista usou {a} tintas vermelhas e {b} azuis. Total? 🖌️", range: [8, 25] }, { context: "🐾 No parque, vi {a} cachorros e {b} gatos. Total? 🐕", range: [12, 40] } ] },
-                bloco_3: { name: "⭐ Constelação Brilhante", emoji: "⭐", description: "Conectando estrelas", color: "from-purple-400 to-pink-500", level: "Iniciante", questions: [ { context: "🎯 O arcade deu {a} tickets no basquete e {b} nos dardos. Total? 🏆", range: [40, 120] }, { context: "📱 O app teve {a} downloads de manhã e {b} à tarde. Total? 📈", range: [50, 150] }, { context: "🍔 A lanchonete fez {a} hambúrgueres e {b} batatas fritas. Total? 🍟", range: [35, 95] }, { context: "👾 No servidor, entraram {a} jogadores novos e {b} antigos. Total?", range: [60, 180] }, { context: "🎬 O cinema vendeu {a} ingressos de ação e {b} de comédia. Total? 🍿", range: [45, 135] } ] },
-            };
+        startTime = Date.now();
+        attempts = 0;
 
-            Object.keys(levels).forEach(blockKey => {
-                const blockNum = parseInt(blockKey.split('_')[1]);
-                levels[blockKey].questions.forEach((question, index) => {
-                    question.media = MediaManager.getQuestionMedia(blockNum, index + 1);
-                });
-            });
+        updateProgress();
+      }
 
-            const handleStart = (name) => {
-                if (name.trim()) {
-                    setStudentName(name);
-                    setHasStarted(true);
-                    setCurrentScreen('selection');
-                }
-            };
+      // Update audio elements
+      function updateAudioElements() {
+        const blockNum = parseInt(currentLevel.split("_")[1]);
+        const questionNum = currentQuestion + 1;
+        const basePath = `../media/matematica/calculadora_digital/bloco_${blockNum}`;
 
-            const handleLevelSelect = (level) => {
-                setCurrentLevel(level);
-                setCurrentQuestion(0);
-                setCurrentScreen('game');
-                setStartTime(Date.now());
-                const modes = ['montador', 'detector', 'montador', 'detector', 'montador'];
-                setQuestionModes(modes.sort(() => Math.random() - 0.5));
-                generateQuestion(level, 0);
-            };
+        const audioEnunciado = document.getElementById("audioEnunciado");
+        const audioExplicacao = document.getElementById("audioExplicacao");
 
-            const generateQuestion = (level = currentLevel, questionIndex = currentQuestion) => {
-                const levelData = levels[level];
-                const qTemplate = levelData.questions[questionIndex];
-                const [min, max] = qTemplate.range;
-                const a = Math.floor(Math.random() * (max - min)) + min;
-                const b = Math.floor(Math.random() * (max - min)) + min;
-                setCurrentQuestionData({ a, b, result: a + b, context: qTemplate.context.replace('{a}', a).replace('{b}', b), level, questionIndex, media: qTemplate.media });
-                setCalculatorDisplay('0');
-                setCurrentExpression('');
-                setUserAnswer(null);
-                setAttempts(0);
-                setShowFeedback(false);
-                setAudioError({});
-            };
+        audioEnunciado.src = `${basePath}/bloco_${blockNum}_questao_${questionNum}_enunciado.mp3`;
+        audioExplicacao.src = `${basePath}/bloco_${blockNum}_questao_${questionNum}_explicacao.mp3`;
 
-            const checkAnswer = (answer) => {
-                const isAnswerCorrect = answer === currentQuestionData.result;
-                setAttempts(attempts + 1);
-                setIsCorrect(isAnswerCorrect);
+        // Reset audio states
+        audioExplicacao.style.display = "none";
+        document.getElementById("audioExplicacaoPlaceholder").style.display =
+          "block";
+      }
 
-                if(isAnswerCorrect) {
-                    SoundSystem.success();
-                    setFeedbackMessage('🎉 INCRÍVEL! Você é um MESTRE da matemática! ⭐');
-                } else {
-                    SoundSystem.error();
-                    if (attempts === 0) {
-                        setFeedbackMessage('🎯 Quase lá! Tente mais uma vez! 💪');
-                    } else {
-                        setFeedbackMessage(`📚 Resposta correta: ${currentQuestionData.result.toLocaleString()}`);
-                    }
-                }
-                setShowFeedback(true);
+      // Calculator functions
+      function addToCalculator(value) {
+        playSound("click");
 
-                if (isAnswerCorrect || attempts >= 1) {
-                     setTimeout(() => nextQuestion(), isAnswerCorrect ? 2500 : 4000);
-                }
-            };
-            
-            const nextQuestion = () => {
-                setShowFeedback(false);
-                if (currentQuestion >= 4) { // 5 questions per block (0-4)
-                    setCurrentScreen('result');
-                    return;
-                }
-                const newQuestionIndex = currentQuestion + 1;
-                setCurrentQuestion(newQuestionIndex);
-                setCurrentMode(questionModes[newQuestionIndex]);
-                setStartTime(Date.now());
-                generateQuestion(currentLevel, newQuestionIndex);
-            };
+        if (calculatorDisplay === "0" || calculatorDisplay === "Error") {
+          if (["+", "-", "*", "/"].includes(value)) {
+            currentExpression = "0" + value;
+            calculatorDisplay = "0" + value;
+          } else {
+            currentExpression = value;
+            calculatorDisplay = value;
+          }
+        } else {
+          currentExpression += value;
+          calculatorDisplay += value;
+        }
 
-            const handleAudioError = (type) => setAudioError(prev => ({...prev, [type]: true}));
+        updateCalculatorDisplay();
+      }
 
-            if (!hasStarted) {
-                return <div className={`min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
-                    <MusicPlayer />
-                    <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
-                        <div className="text-center mb-8"><div className="text-6xl mb-4">🧮</div><h1 className="text-3xl font-bold">Calculadora Digital Expert</h1></div>
-                        <div className="space-y-6">
-                            <input type="text" placeholder="Digite seu nome aqui" value={studentName} onChange={(e) => setStudentName(e.target.value)} className="w-full px-4 py-3 border-2 rounded-xl text-lg text-center" />
-                            <button onClick={() => handleStart(studentName)} disabled={!studentName.trim()} className="w-full bg-purple-500 text-white font-bold py-4 rounded-xl text-lg disabled:opacity-50">🎯 COMEÇAR</button>
-                        </div>
-                    </div>
-                </div>;
-            }
+      function clearCalculator() {
+        calculatorDisplay = "0";
+        currentExpression = "";
+        updateCalculatorDisplay();
+        playSound("click");
+      }
 
-            if (currentScreen === 'game') {
-                return <div className={`min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 ${font === 'OpenDyslexic' ? 'font-dyslexic' : ''}`}>
-                    <MusicPlayer />
-                    <div className="max-w-4xl mx-auto">
-                        <div className="bg-white rounded-2xl p-6 mb-6">
-                            <h1 className="text-2xl font-bold">{levels[currentLevel].name}</h1>
-                            <div className="text-center font-bold text-gray-700">Questão {currentQuestion + 1} de 5</div>
-                        </div>
-                        {currentQuestionData && (
-                            <>
-                                <div className="bg-yellow-100 border-4 border-yellow-300 rounded-2xl p-6 mb-6 text-center">
-                                    <div className="text-xl font-bold text-gray-800">{currentQuestionData.context}</div>
-                                </div>
-                                <div className="media-controls mb-6 bg-gray-50 p-4 rounded-lg border">
-                                    <label className="block text-sm font-semibold text-blue-700 mb-2">🔊 Ouvir Enunciado:</label>
-                                    {!audioError.enunciado ? (
-                                        <audio controls className="w-full" onError={() => handleAudioError('enunciado')} src={currentQuestionData.media.audio.enunciado} />
-                                    ) : <div className="text-gray-500 italic text-sm">Áudio do enunciado indisponível.</div>}
-                                    
-                                    <label className="block text-sm font-semibold text-green-700 mb-2 mt-4">💡 Ouvir Explicação (após responder):</label>
-                                    {!audioError.explicacao && userAnswer !== null ? (
-                                        <audio controls className="w-full" onError={() => handleAudioError('explicacao')} src={currentQuestionData.media.audio.explicacao} />
-                                    ) : <div className="text-gray-500 italic text-sm">{userAnswer !== null ? "Áudio da explicação indisponível." : "Responda para liberar a explicação."}</div>}
-                                </div>
-                                {/* Rest of the game UI */}
-                            </>
-                        )}
-                    </div>
-                </div>;
-            }
-            
-            return <div>Carregando...</div>; // Fallback
+      function clearEntry() {
+        if (calculatorDisplay.length > 1) {
+          calculatorDisplay = calculatorDisplay.slice(0, -1);
+          currentExpression = currentExpression.slice(0, -1);
+        } else {
+          calculatorDisplay = "0";
+          currentExpression = "";
+        }
+        updateCalculatorDisplay();
+        playSound("click");
+      }
+
+      function calculateResult() {
+        try {
+          // Replace display symbols with actual operators
+          let expression = currentExpression
+            .replace(/×/g, "*")
+            .replace(/÷/g, "/");
+
+          const result = Function(
+            '"use strict"; return (' + expression + ")",
+          )();
+
+          if (isFinite(result)) {
+            lastAnswer = Math.round(result * 100) / 100;
+            calculatorDisplay = lastAnswer.toString();
+            currentExpression = lastAnswer.toString();
+          } else {
+            calculatorDisplay = "Error";
+            currentExpression = "";
+          }
+        } catch (error) {
+          calculatorDisplay = "Error";
+          currentExpression = "";
+        }
+
+        updateCalculatorDisplay();
+        playSound("click");
+      }
+
+      function updateCalculatorDisplay() {
+        const display = document.getElementById("calculatorDisplay");
+        display.textContent = calculatorDisplay
+          .replace(/\*/g, "×")
+          .replace(/\//g, "÷");
+      }
+
+      // Answer handling
+      function useCalculatorResult() {
+        if (lastAnswer !== null && isFinite(lastAnswer)) {
+          document.getElementById("userAnswer").value = lastAnswer;
+          playSound("click");
+        }
+      }
+
+      function submitAnswer() {
+        const userInput = document.getElementById("userAnswer").value;
+        if (userInput === "") return;
+
+        const userAnswer = parseFloat(userInput);
+        checkAnswer(userAnswer);
+      }
+
+      function checkAnswer(userAnswer) {
+        attempts++;
+        const isCorrect =
+          Math.abs(userAnswer - currentQuestionData.result) < 0.01;
+
+        const endTime = Date.now();
+        const executionTime = Math.round((endTime - startTime) / 1000);
+
+        // Record result
+        const questionResult = {
+          name: currentStudent,
+          subject: "matematica",
+          activity: "calculadora_digital",
+          block: currentLevel,
+          question: currentQuestion + 1,
+          executionTime: executionTime,
+          correct: isCorrect ? 1 : 0,
+          errors: attempts - (isCorrect ? 1 : 0),
+          score: isCorrect ? Math.max(10 - attempts + 1, 1) : 0,
         };
 
-        ReactDOM.render(<CalculadoraDigitalIntegrada />, document.getElementById('root'));
+        sessionResults.push(questionResult);
+
+        if (isCorrect) {
+          totalScore += questionResult.score;
+          showFeedback(true, "🎉 INCRÍVEL! Você é um MESTRE da matemática! ⭐");
+          playSound("success");
+
+          // Show explanation audio
+          document.getElementById("audioExplicacao").style.display = "block";
+          document.getElementById("audioExplicacaoPlaceholder").style.display =
+            "none";
+
+          setTimeout(() => {
+            if (currentQuestion >= 4) {
+              showResultsScreen();
+            } else {
+              nextQuestion();
+            }
+          }, 2500);
+        } else {
+          playSound("error");
+          if (attempts === 1) {
+            showFeedback(false, "🎯 Quase lá! Tente mais uma vez! 💪");
+          } else {
+            showFeedback(
+              false,
+              `📚 Resposta correta: ${currentQuestionData.result.toLocaleString()}`,
+            );
+
+            // Show explanation audio
+            document.getElementById("audioExplicacao").style.display = "block";
+            document.getElementById(
+              "audioExplicacaoPlaceholder",
+            ).style.display = "none";
+
+            setTimeout(() => {
+              if (currentQuestion >= 4) {
+                showResultsScreen();
+              } else {
+                nextQuestion();
+              }
+            }, 4000);
+          }
+        }
+      }
+
+      function showFeedback(isCorrect, message) {
+        const feedback = document.getElementById("feedback");
+        feedback.textContent = message;
+        feedback.className = `feedback ${isCorrect ? "correct" : "incorrect"}`;
+        feedback.classList.remove("hidden");
+      }
+
+      function hideFeedback() {
+        document.getElementById("feedback").classList.add("hidden");
+      }
+
+      function clearAnswerInput() {
+        document.getElementById("userAnswer").value = "";
+      }
+
+      // Navigation
+      function nextQuestion() {
+        if (currentQuestion >= 4) {
+          showResultsScreen();
+          return;
+        }
+
+        currentQuestion++;
+        generateQuestion();
+      }
+
+      function restartCurrentLevel() {
+        startLevel(currentLevel);
+      }
+
+      // Update UI elements
+      function updateGameHeader() {
+        const level = levels[currentLevel];
+        document.getElementById("currentLevelTitle").textContent = level.name;
+        document.getElementById("currentLevelDesc").textContent =
+          level.description;
+        updateProgress();
+        updateScoreDisplay();
+      }
+
+      function updateProgress() {
+        const progress = (currentQuestion / 5) * 100;
+        document.getElementById("progressFill").style.width = progress + "%";
+        document.getElementById("questionCounter").textContent =
+          `Questão ${currentQuestion + 1} de 5`;
+      }
+
+      function updateScoreDisplay() {
+        document.getElementById("scoreDisplay").textContent =
+          `Pontuação: ${totalScore}`;
+      }
+
+      // Results and Export
+      function displayResults() {
+        const level = levels[currentLevel];
+        document.getElementById("completedLevel").textContent = level.name;
+        document.getElementById("finalScore").textContent =
+          `${totalScore} pontos`;
+
+        let message = "";
+        if (totalScore >= 40) {
+          message = "🏆 EXCELENTE! Você é um verdadeiro matemático!";
+        } else if (totalScore >= 25) {
+          message = "⭐ MUITO BOM! Continue praticando!";
+        } else {
+          message = "💪 BOM TRABALHO! Pratique mais para melhorar!";
+        }
+
+        document.getElementById("performanceMessage").textContent = message;
+        populateBlockNavigation();
+      }
+
+      function populateBlockNavigation() {
+        const navigation = document.getElementById("blockNavigation");
+        navigation.innerHTML = "";
+
+        Object.keys(levels).forEach((levelKey) => {
+          const level = levels[levelKey];
+          const btn = document.createElement("button");
+          btn.className = `block-btn ${levelKey === currentLevel ? "active" : ""}`;
+          btn.textContent = `${level.emoji} ${level.name}`;
+          btn.onclick = () => startLevel(levelKey);
+          navigation.appendChild(btn);
+        });
+      }
+
+      function exportToCSV() {
+        if (sessionResults.length === 0) {
+          alert("Nenhum resultado para exportar!");
+          return;
+        }
+
+        const headers = [
+          "Nome",
+          "Materia",
+          "Atividade",
+          "Bloco",
+          "Questao",
+          "Tempo_Execucao",
+          "Acertos",
+          "Erros",
+          "Score",
+        ];
+        const csvContent = [
+          headers.join(","),
+          ...sessionResults.map((result) =>
+            [
+              result.name,
+              result.subject,
+              result.activity,
+              result.block,
+              result.question,
+              result.executionTime,
+              result.correct,
+              result.errors,
+              result.score,
+            ].join(","),
+          ),
+        ].join("\n");
+
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute(
+          "download",
+          `calculadora_digital_${currentStudent}_${new Date().toISOString().split("T")[0]}.csv`,
+        );
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        playSound("success");
+      }
+
+      // Font management
+      function changeFont(font) {
+        if (font === "OpenDyslexic") {
+          document.body.classList.add("font-dyslexic");
+        } else {
+          document.body.classList.remove("font-dyslexic");
+        }
+      }
+
+      // Sound system
+      function playSound(type) {
+        try {
+          let soundFile;
+          switch (type) {
+            case "success":
+              soundFile = `../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`;
+              break;
+            case "error":
+              soundFile = `../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`;
+              break;
+            case "click":
+              soundFile = "../media/sons/feedback/click.mp3";
+              break;
+            default:
+              return;
+          }
+
+          if (window.PersistentMusicSystem) {
+            window.PersistentMusicSystem.duckVolume();
+          }
+
+          const audio = new Audio(soundFile);
+          audio.play().catch(() => {});
+          audio.onended = () => {
+            if (window.PersistentMusicSystem) {
+              window.PersistentMusicSystem.restoreVolume();
+            }
+          };
+        } catch (error) {
+          // Silently fail if audio not available
+        }
+      }
+
+      // Music player functions
+      function toggleMusic() {
+        if (window.PersistentMusicSystem) {
+          window.PersistentMusicSystem.toggle();
+          updateMusicPlayer();
+        }
+      }
+
+      function nextTrack() {
+        if (window.PersistentMusicSystem) {
+          window.PersistentMusicSystem.nextTrack();
+        }
+      }
+
+      function updateMusicPlayer() {
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        if (window.PersistentMusicSystem) {
+          const isPlaying = window.PersistentMusicSystem.isPlaying;
+          playPauseBtn.textContent = isPlaying ? "❚❚" : "▶";
+        }
+      }
+
+      // Keyboard support
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          const activeElement = document.activeElement;
+          if (activeElement.id === "userAnswer") {
+            submitAnswer();
+          }
+        }
+      });
+
+      // Initialize when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeApp();
+
+        // Update music player state periodically
+        setInterval(updateMusicPlayer, 1000);
+      });
     </script>
-</body>
+  </body>
 </html>

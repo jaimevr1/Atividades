@@ -1,0 +1,36 @@
+{
+  "name": "educational-activities",
+  "agents": {
+    "tsx-converter": {
+      "instructions": "Convert TSX to HTML and automatically run validation tools",
+      "available_commands": [
+        "prettier --write {file}",
+        "htmlhint {file}",
+        "pa11y {file} --threshold 10",
+        "imagemin media/**/*.{png,jpg} --out-dir=media-optimized/"
+      ],
+      "post_conversion": [
+        "prettier --write {output_file}",
+        "htmlhint {output_file}",
+        "pa11y {output_file} --threshold 10"
+      ]
+    },
+    "validator": {
+      "instructions": "Validate educational activities using installed tools",
+      "available_commands": [
+        "htmlhint {file}",
+        "pa11y {file} --threshold 5", 
+        "eslint {file}",
+        "linkinator {file}"
+      ]
+    },
+    "optimizer": {
+      "instructions": "Optimize activities for production",
+      "available_commands": [
+        "prettier --write {file}",
+        "imagemin media/**/*.{png,jpg} --out-dir=media-optimized/",
+        "svgo media/**/*.svg"
+      ]
+    }
+  }
+}

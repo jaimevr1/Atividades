@@ -2,7 +2,25 @@
   "permissions": {
     "allow": [
       "Bash(python:*)",
-      "Bash(claude mcp:*)"
+      "Bash(claude mcp:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(htmlhint:*)",
+      "Bash(eslint:*)",
+      "Bash(pa11y:*)",
+      "Bash(for i in {1..9})",
+      "Bash(do mkdir -p \"/mnt/c/users/jaime/documents/github/atividades/media/matematica/operacoes_basicas/bloco_$i/imagens\")",
+      "Bash(done)",
+      "Bash(prettier:*)",
+      "Bash(live-server:*)",
+      "Bash(linkinator:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_press_key",
+      "Read(//tmp/**)",
+      "mcp__playwright__browser_close"
     ],
     "deny": [],
     "ask": []

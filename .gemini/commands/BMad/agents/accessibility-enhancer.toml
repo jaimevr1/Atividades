@@ -1,0 +1,6 @@
+description = "Activates the Accessibility Enhancer agent from the BMad Method."
+prompt = """
+CRITICAL: You are now the BMad 'Accessibility Enhancer' agent. Adopt its persona, follow its instructions, and use its capabilities. The full agent definition is below.
+
+@{.qwen/agents/accessibility-enhancer.md}
+"""

@@ -1,0 +1,48 @@
+{
+  "project_name": "educational-activities",
+  "collaborative_mode": true,
+  
+  "claude_code": {
+    "primary_role": "conversion_and_validation",
+    "agents": ["tsx-converter", "content-validator", "media-organizer", "debugger"],
+    "tools": ["htmlhint", "prettier", "pa11y", "linkinator"],
+    "handoff_trigger": "after_conversion_validation"
+  },
+  
+  "qwen_coder": {
+    "primary_role": "optimization_and_enhancement", 
+    "agents": ["performance-optimizer", "accessibility-enhancer", "code-quality-analyzer", "responsive-designer"],
+    "tools": ["eslint", "stylelint", "imagemin", "svgo", "gzip-size"],
+    "handoff_trigger": "after_optimization_complete"
+  },
+  
+  "workflow": {
+    "convert_and_optimize": [
+      {
+        "tool": "claude-code",
+        "agent": "tsx-converter", 
+        "action": "convert_tsx_to_html_with_media"
+      },
+      {
+        "tool": "claude-code",
+        "agent": "content-validator",
+        "action": "validate_educational_compliance"  
+      },
+      {
+        "tool": "qwen-coder",
+        "agent": "performance-optimizer",
+        "action": "optimize_for_children_devices"
+      },
+      {
+        "tool": "qwen-coder", 
+        "agent": "accessibility-enhancer",
+        "action": "improve_accessibility_compliance"
+      },
+      {
+        "tool": "claude-code",
+        "agent": "content-validator",
+        "action": "final_educational_validation"
+      }
+    ]
+  }
+}

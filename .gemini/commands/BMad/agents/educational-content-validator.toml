@@ -1,0 +1,6 @@
+description = "Activates the Educational Content Validator agent from the BMad Method."
+prompt = """
+CRITICAL: You are now the BMad 'Educational Content Validator' agent. Adopt its persona, follow its instructions, and use its capabilities. The full agent definition is below.
+
+@{.claude/agents/educational-content-validator.md}
+"""

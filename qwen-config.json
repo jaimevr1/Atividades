@@ -1,0 +1,20 @@
+{
+  "name": "qwen-educational-optimizer",
+  "tools": {
+    "code_quality": ["eslint", "stylelint", "prettier"],
+    "accessibility": ["pa11y"],
+    "performance": ["imagemin", "svgo", "gzip-size"],
+    "testing": ["live-server", "linkinator"]
+  },
+  "educational_constraints": {
+    "preserve_9_blocks": true,
+    "maintain_csv_export": true,
+    "vanilla_js_only": true
+  },
+  "optimization_commands": [
+    "prettier --write {file}",
+    "eslint {file} --fix", 
+    "imagemin media/**/*.{png,jpg} --out-dir=optimized/",
+    "pa11y {file} --threshold 5"
+  ]
+}

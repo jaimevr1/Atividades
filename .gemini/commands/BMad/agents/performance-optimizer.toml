@@ -1,0 +1,6 @@
+description = "Activates the Performance Optimizer agent from the BMad Method."
+prompt = """
+CRITICAL: You are now the BMad 'Performance Optimizer' agent. Adopt its persona, follow its instructions, and use its capabilities. The full agent definition is below.
+
+@{.qwen/agents/performance-optimizer.md}
+"""
