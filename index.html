@@ -281,122 +281,203 @@
           return (
             <div className="min-h-screen gradient-bg" style={{fontFamily: "'Comic Sans MS', cursive"}}>
               <MusicPlayer />
-              {/* Header */}
-              <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-black opacity-20"></div>
-                <div className="relative z-10 text-white text-center py-20">
-                  <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                    🎯 Portal de Atividades Educativas
-                  </h1>
-                  <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto px-4">
-                    Aprenda brincando com atividades interativas personalizadas para diferentes necessidades
-                  </p>
-                  
-                  <div className="max-w-5xl mx-auto px-4">
-                    {/* How to Use Instructions */}
-                    <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                      <h3 className="text-lg font-semibold mb-4">
-                        📋 Como Usar:
-                      </h3>
-                      <div className="grid grid-cols-3 gap-3 text-sm">
-                        <div className="bg-white/20 rounded-lg p-3 text-center">
-                          <div className="font-medium">1. Filtre por matéria</div>
-                        </div>
-                        <div className="bg-white/20 rounded-lg p-3 text-center">
-                          <div className="font-medium">2. Selecione uma atividade</div>
-                        </div>
-                        <div className="bg-white/20 rounded-lg p-3 text-center">
-                          <div className="font-medium">3. Divirta-se aprendendo!</div>
+              <div className="flex">
+                {/* Main Content */}
+                <div className="flex-1 relative z-10 px-4 pb-20 -mt-10">
+                  <div className="max-w-6xl mx-auto">
+                    
+                    {/* Header */}
+                    <div className="relative overflow-hidden">
+                      <div className="absolute inset-0 bg-black opacity-20"></div>
+                      <div className="relative z-10 text-white text-center py-20">
+                        <h1 className="text-5xl md:text-6xl font-bold mb-4">
+                          🎯 Portal de Atividades Educativas
+                        </h1>
+                        <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto px-4">
+                          Aprenda brincando com atividades interativas personalizadas para diferentes necessidades
+                        </p>
+                        
+                        <div className="max-w-5xl mx-auto px-4">
+                          {/* How to Use Instructions */}
+                          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                            <h3 className="text-lg font-semibold mb-4">
+                              📋 Como Usar:
+                            </h3>
+                            <div className="grid grid-cols-3 gap-3 text-sm">
+                              <div className="bg-white/20 rounded-lg p-3 text-center">
+                                <div className="font-medium">1. Filtre por matéria</div>
+                              </div>
+                              <div className="bg-white/20 rounded-lg p-3 text-center">
+                                <div className="font-medium">2. Selecione uma atividade</div>
+                              </div>
+                              <div className="bg-white/20 rounded-lg p-3 text-center">
+                                <div className="font-medium">3. Divirta-se aprendendo!</div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Category Filters */}
+                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8">
+                      <h3 className="text-xl font-bold text-center text-gray-800 mb-4">
+                        📚 Filtrar por Matéria:
+                      </h3>
+                      <div className="flex flex-wrap justify-center gap-3">
+                        {categories.map((category) => (
+                          <button
+                            key={category}
+                            onClick={() => setSelectedCategory(category)}
+                            className={`filter-button px-6 py-3 rounded-full font-semibold transition-all ${
+                              selectedCategory === category
+                                ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white active'
+                                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
+                            }`}
+                          >
+                            {category === 'Todas' && '🌍'}
+                            {category === 'Matemática' && '🔢'}
+                            {category === 'História' && '📜'}
+                            <span className="ml-2">{category}</span>
+                          </button>
+                        ))}
+                      </div>
+                      <div className="text-center mt-3 text-sm text-gray-600">
+                        Mostrando {filteredActivities.length} atividade{filteredActivities.length !== 1 ? 's' : ''}
+                      </div>
+                    </div>
+                    
+                    {/* Activities Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                      {filteredActivities.map((activity) => (
+                        <div key={activity.id} className="activity-card card-hover">
+                          {/* Icon Placeholder */}
+                          <div className="icon-placeholder">
+                            {activity.icon}
+                          </div>
+
+                          {/* Content */}
+                          <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                            {activity.title}
+                          </h3>
+                          
+                          <p className="text-gray-600 mb-4 leading-relaxed">
+                            {activity.description}
+                          </p>
+
+                          {/* Stats */}
+                          <div className="mb-6">
+                            <div className="flex justify-center items-center gap-2 mb-3 text-sm text-gray-500">
+                              <div className="flex items-center gap-1">
+                                <span>⏱️</span>
+                                <span>{activity.estimatedTime}</span>
+                              </div>
+                            </div>
+                            <div className="flex justify-center items-center gap-4 text-xs">
+                              <span className="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full">
+                                {activity.category}
+                              </span>
+                              <span className={`font-bold px-3 py-1 rounded-full ${
+                                activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
+                                activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
+                                activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {activity.difficulty}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Action Button */}
+                          <a
+                            href={activity.link}
+                            className={`inline-flex items-center justify-center w-full px-8 py-4 bg-gradient-to-r ${activity.color} text-white font-bold text-lg rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300`}
+                          >
+                            <span className="mr-2">🚀</span>
+                            Começar Atividade
+                          </a>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Main Content */}
-              <div className="relative z-10 px-4 pb-20 -mt-10">
-                <div className="max-w-6xl mx-auto">
-                  
-                  {/* Category Filters */}
-                  <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8">
-                    <h3 className="text-xl font-bold text-center text-gray-800 mb-4">
-                      📚 Filtrar por Matéria:
-                    </h3>
-                    <div className="flex flex-wrap justify-center gap-3">
-                      {categories.map((category) => (
-                        <button
-                          key={category}
-                          onClick={() => setSelectedCategory(category)}
-                          className={`filter-button px-6 py-3 rounded-full font-semibold transition-all ${
-                            selectedCategory === category
-                              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white active'
-                              : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
-                          }`}
-                        >
-                          {category === 'Todas' && '🌍'}
-                          {category === 'Matemática' && '🔢'}
-                          {category === 'História' && '📜'}
-                          <span className="ml-2">{category}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="text-center mt-3 text-sm text-gray-600">
-                      Mostrando {filteredActivities.length} atividade{filteredActivities.length !== 1 ? 's' : ''}
-                    </div>
+                {/* Sidebar */}
+                <div className="hidden lg:block w-80 bg-white/80 backdrop-blur-sm rounded-xl p-6 h-fit sticky top-4 self-start">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <span className="mr-2">🔗</span> Links Interessantes
+                  </h3>
+                  <div className="space-y-4">
+                    <a href="https://brasil.educacao.uol.com.br/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors text-blue-700 font-medium">
+                      Educação UOL
+                    </a>
+                    <a href="https://www.escolakids.uol.com.br/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors text-green-700 font-medium">
+                      Escola Kids
+                    </a>
+                    <a href="https://www.tvescola.org.br/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors text-purple-700 font-medium">
+                      TV Escola
+                    </a>
+                    <a href="https://www.bibliotecavirtual.seduc.ce.gov.br/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors text-yellow-700 font-medium">
+                      Biblioteca Virtual
+                    </a>
+                    <a href="https://www.youtube.com/user/CanalEducacao" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors text-red-700 font-medium">
+                      Canal Educação
+                    </a>
+                    <a href="https://novo.enem.inep.gov.br/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors text-indigo-700 font-medium">
+                      ENEM
+                    </a>
+                    <a href="https://www.brasilescola.uol.com.br/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors text-pink-700 font-medium">
+                      Brasil Escola
+                    </a>
+                    <a href="https://www.khanacademy.org/" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="block p-3 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors text-teal-700 font-medium">
+                      Khan Academy
+                    </a>
                   </div>
                   
-                  {/* Activities Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    {filteredActivities.map((activity) => (
-                      <div key={activity.id} className="activity-card card-hover">
-                        {/* Icon Placeholder */}
-                        <div className="icon-placeholder">
-                          {activity.icon}
-                        </div>
-
-                        {/* Content */}
-                        <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                          {activity.title}
-                        </h3>
-                        
-                        <p className="text-gray-600 mb-4 leading-relaxed">
-                          {activity.description}
-                        </p>
-
-                        {/* Stats */}
-                        <div className="mb-6">
-                          <div className="flex justify-center items-center gap-2 mb-3 text-sm text-gray-500">
-                            <div className="flex items-center gap-1">
-                              <span>⏱️</span>
-                              <span>{activity.estimatedTime}</span>
-                            </div>
-                          </div>
-                          <div className="flex justify-center items-center gap-4 text-xs">
-                            <span className="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full">
-                              {activity.category}
-                            </span>
-                            <span className={`font-bold px-3 py-1 rounded-full ${
-                              activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
-                              activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
-                              activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {activity.difficulty}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Action Button */}
-                        <a
-                          href={activity.link}
-                          className={`inline-flex items-center justify-center w-full px-8 py-4 bg-gradient-to-r ${activity.color} text-white font-bold text-lg rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300`}
-                        >
-                          <span className="mr-2">🚀</span>
-                          Começar Atividade
-                        </a>
-                      </div>
-                    ))}
+                  <div className="mt-6 pt-4 border-t border-gray-300">
+                    <h4 className="font-bold text-gray-700 mb-2">Dicas de Estudo</h4>
+                    <ul className="text-sm text-gray-600 space-y-2">
+                      <li className="flex items-start">
+                        <span className="text-yellow-500 mr-2">🔸</span>
+                        <span>Crie um cronograma de estudos</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-yellow-500 mr-2">🔸</span>
+                        <span>Estude em ambientes silenciosos</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-yellow-500 mr-2">🔸</span>
+                        <span>Faça pausas regulares</span>
+                      </li>
+                      <li className="flex items-start">
+                        <span className="text-yellow-500 mr-2">🔸</span>
+                        <span>Pratique com exercícios</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
