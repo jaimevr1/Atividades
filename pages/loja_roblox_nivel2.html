@@ -7,11 +7,12 @@
     
     <!-- Dependências Padrão (React, TailwindCSS, Fontes) -->
     <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../VariableProximity.css">
+    <script src="../variable-proximity-effect.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../js/playlist.js"></script>
 
     <style>
         /* Definição da fonte local OpenDyslexic */
@@ -71,75 +72,35 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        const backgroundMusicPlaylist = [
-            '../media/musicas/theme_1.mp3',
-            '../media/musicas/theme_2.mp3',
-            '../media/musicas/theme_3.mp3'
-        ];
-
-        const MusicPlayer = ({ basePath = '../media' }) => {
-            const audioRef = useRef(null);
-            const [isPlaying, setIsPlaying] = useState(() => safeLocalStorage.getItem('musicIsPlaying', false));
-            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => 
-                safeLocalStorage.getItem('musicTrackIndex', 0)
-            );
-
-            // Playlist de músicas de fundo
-            const backgroundMusicPlaylist = [
-                `${basePath}/musicas/theme_1.mp3`,
-                `${basePath}/musicas/theme_2.mp3`,
-                `${basePath}/musicas/theme_3.mp3`
-            ];
-
-            useEffect(() => {
-                safeLocalStorage.setItem('musicIsPlaying', isPlaying);
-                if (isPlaying) {
-                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
-                } else {
-                    audioRef.current.pause();
+        // Helper function to safely access localStorage
+        const safeLocalStorage = {
+            getItem: (key, defaultValue = null) => {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : defaultValue;
+                } catch (e) {
+                    console.warn(`Erro ao acessar localStorage[${key}]:`, e);
+                    return defaultValue;
                 }
-            }, [isPlaying]);
-
-            useEffect(() => {
-                safeLocalStorage.setItem('musicTrackIndex', currentTrackIndex);
-                if (audioRef.current) {
-                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
-                    if (isPlaying) {
-                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
-                    }
+            },
+            setItem: (key, value) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                    return true;
+                } catch (e) {
+                    console.warn(`Erro ao salvar em localStorage[${key}]:`, e);
+                    return false;
                 }
-            }, [currentTrackIndex]);
-
-            const handleNextTrack = () => {
-                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
-            };
-
-            const handleAudioEnded = () => {
-                handleNextTrack();
-            };
-
-            useEffect(() => {
-                const audio = audioRef.current;
-                if (audio) {
-                    audio.volume = 0.5;
-                    audio.addEventListener('ended', handleAudioEnded);
-                    return () => {
-                        audio.removeEventListener('ended', handleAudioEnded);
-                    };
+            },
+            removeItem: (key) => {
+                try {
+                    localStorage.removeItem(key);
+                    return true;
+                } catch (e) {
+                    console.warn(`Erro ao remover localStorage[${key}]:`, e);
+                    return false;
                 }
-            }, []);
-
-            return (
-                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
-                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
-                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center" aria-label={isPlaying ? "Pausar música" : "Tocar música"}>
-                        {isPlaying ? '❚❚' : '▶'}
-                    </button>
-                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center" aria-label="Próxima música">
-                        {'⏭'}
-                    </button>
-                </div>
-            );
+            }
         };
 
         // Componente para exibir uma pergunta e suas opções
@@ -662,25 +623,9 @@
             },
             
             play: (src) => {
-                try {
-                    if (!src) {
-                        console.warn("Nenhuma fonte de áudio fornecida");
-                        return;
-                    }
-                    
-                    if (window.musicPlayerSetVolume) {
-                        window.musicPlayerSetVolume(0.2); // Reduce background music volume
-                    }
-                    const audio = new Audio(src);
-                    audio.play().catch(e => console.warn("Reprodução de áudio bloqueada pelo navegador."));
-                    audio.onended = () => {
-                        if (window.musicPlayerSetVolume) {
-                            window.musicPlayerSetVolume(0.5); // Restore background music volume
-                        }
-                    };
-                } catch (e) {
-                    console.error("Erro ao tentar tocar o som:", src, e);
-                }
+                const audio = new Audio(src);
+                    audio.play().catch(e => {});
+                    audio.onended = () => {};
             },
             success: () => {
                 const soundId = Math.floor(Math.random() * 3) + 1;
@@ -947,7 +892,6 @@
             if (currentPhase === 'inicio') {
                 return (
                     <div style={getFontStyle()}>
-                        <MusicPlayer basePath="../media" />
                         <StartScreen 
                             studentName={studentName}
                             setStudentName={setStudentName}
@@ -960,7 +904,6 @@
             if (currentPhase === 'selecao') {
                 return (
                     <div style={getFontStyle()}>
-                        <MusicPlayer basePath="../media" />
                         <BlockSelectionScreen 
                             studentName={studentName}
                             blocos={blocos}
@@ -976,7 +919,6 @@
             if (quizCompleted) {
                 return (
                     <div style={getFontStyle()}>
-                        <MusicPlayer basePath="../media" />
                         <ResultsScreen 
                             studentName={studentName}
                             score={score}
@@ -997,7 +939,6 @@
 
                 return (
                     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-600 to-red-600 p-4 flex items-center justify-center" style={getFontStyle()}>
-                        <MusicPlayer basePath="../media" />
                         <div className="w-full max-w-4xl mx-auto">
                             <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-6 mb-6">
                                 <div className="flex justify-between items-center">

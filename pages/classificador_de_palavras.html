@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificador de Palavras</title>
+    <link rel="stylesheet" href="../VariableProximity.css">
+    <script src="../variable-proximity-effect.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&family=OpenDyslexic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../activity-gradient.css">
+    <style> body { font-family: 'Comic Sans MS', cursive; background: linear-gradient(90deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 50%, hsla(207, 41%, 27%, 1) 100%); } </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Trophy = () => <span>🏆</span>;
+        const Star = () => <span>⭐</span>;
+        const Zap = () => <span>⚡</span>;
+        const Volume2 = () => <span>🔊</span>;
+        const VolumeX = () => <span>🔇</span>;
+
+        const Button = ({ onClick, className, children, ...props }) => (
+            <button onClick={onClick} className={`px-4 py-2 rounded-lg font-semibold transition-all ${className}`} {...props}>{children}</button>
+        );
+        const Card = ({ className, children }) => <div className={`bg-white rounded-2xl shadow-lg ${className}`}>{children}</div>;
+        const Badge = ({ className, children }) => <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${className}`}>{children}</div>;
+
+        const words = [
+          { id: 1, text: 'creeper', category: 'substantivo' }, { id: 2, text: 'diamante', category: 'substantivo' },
+          { id: 3, text: 'espada', category: 'substantivo' }, { id: 4, text: 'youtuber', category: 'substantivo' },
+          { id: 5, text: 'robux', category: 'substantivo' }, { id: 6, text: 'avatar', category: 'substantivo' },
+          { id: 19, text: 'picareta', category: 'substantivo' }, { id: 20, text: 'live', category: 'substantivo' },
+          { id: 21, text: 'mapa', category: 'substantivo' }, { id: 22, text: 'zumbi', category: 'substantivo' }, { id: 23, text: 'inscrito', category: 'substantivo' },
+          { id: 7, text: 'construir', category: 'verbo' }, { id: 8, text: 'minerar', category: 'verbo' },
+          { id: 9, text: 'jogar', category: 'verbo' }, { id: 10, text: 'gravar', category: 'verbo' },
+          { id: 11, text: 'explorar', category: 'verbo' }, { id: 12, text: 'criar', category: 'verbo' },
+          { id: 24, text: 'assistir', category: 'verbo' }, { id: 25, text: 'sobreviver', category: 'verbo' },
+          { id: 26, text: 'comprar', category: 'verbo' }, { id: 27, text: 'curtir', category: 'verbo' }, { id: 28, text: 'lutar', category: 'verbo' },
+          { id: 13, text: 'rápido', category: 'adjetivo' }, { id: 14, text: 'forte', category: 'adjetivo' },
+          { id: 15, text: 'brilhante', category: 'adjetivo' }, { id: 16, text: 'divertido', category: 'adjetivo' },
+          { id: 17, text: 'colorido', category: 'adjetivo' }, { id: 18, text: 'famoso', category: 'adjetivo' },
+          { id: 29, text: 'quadrado', category: 'adjetivo' }, { id: 30, text: 'raro', category: 'adjetivo' },
+          { id: 31, text: 'viral', category: 'adjetivo' }, { id: 32, text: 'perigoso', category: 'adjetivo' }, { id: 33, text: 'criativo', category: 'adjetivo' },
+        ];
+
+        const categories = [
+          { id: 'substantivo', name: 'SUBSTANTIVOS', description: 'Nomes', color: 'from-green-400 to-emerald-500', icon: '🎮' },
+          { id: 'verbo', name: 'VERBOS', description: 'Ações', color: 'from-blue-400 to-cyan-500', icon: '⚡' },
+          { id: 'adjetivo', name: 'ADJETIVOS', description: 'Características', color: 'from-purple-400 to-pink-500', icon: '✨' },
+        ];
+
+        function App() {
+            const [phase, setPhase] = useState('start'); // start, game
+            const [studentName, setStudentName] = useState('');
+            const [sessionResults, setSessionResults] = useState([]);
+            const [font, setFont] = useState('Comic Sans MS');
+
+            useEffect(() => {
+                document.body.style.fontFamily = font;
+            }, [font]);
+
+            const handleStart = (name, selectedFont) => {
+                setStudentName(name);
+                setFont(selectedFont);
+                setPhase('game');
+            };
+
+            const handleEndLevel = (result) => {
+                setSessionResults(prev => [...prev, result]);
+            };
+
+            const downloadCSV = () => {
+                if (sessionResults.length === 0) {
+                    alert("Nenhum dado para exportar!");
+                    return;
+                }
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = sessionResults.map(r =>
+                    `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`
+                ).join('\n');
+                const blob = new Blob(["\uFEFF" + header + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                link.download = `resultados_classificador_palavras_${studentName}_${timestamp}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            };
+
+            if (phase === 'start') {
+                return <StartScreen onStart={handleStart} />;
+            }
+
+            return <AtividadeGramatica studentName={studentName} onEndLevel={handleEndLevel} downloadCSV={downloadCSV} />;
+        }
+
+        function StartScreen({ onStart }) {
+            const [name, setName] = useState('');
+            const [selectedFont, setSelectedFont] = useState('Comic Sans MS');
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-pink-900 flex items-center justify-center p-6">
+                    <Card className="max-w-lg w-full p-8 text-center">
+                        <h1 className="text-4xl font-black text-gray-800 mb-4">Classificador de Palavras</h1>
+                        <input 
+                            type="text" 
+                            placeholder="Digite seu nome aqui"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full p-3 border-2 border-gray-300 rounded-lg mb-4 text-center text-xl"
+                        />
+                        <div className="mb-6">
+                            <p className="text-gray-700 mb-2">Escolha sua fonte:</p>
+                            <div className="flex justify-center gap-4">
+                                <button onClick={() => setSelectedFont('Comic Sans MS')} className={`px-4 py-2 rounded-lg ${selectedFont === 'Comic Sans MS' ? 'bg-purple-600 text-white' : 'bg-gray-200'}`}>Comic Sans</button>
+                                <button onClick={() => setSelectedFont('OpenDyslexic')} className={`px-4 py-2 rounded-lg ${selectedFont === 'OpenDyslexic' ? 'bg-purple-600 text-white' : 'bg-gray-200'}`}>OpenDyslexic</button>
+                            </div>
+                        </div>
+                        <Button onClick={() => onStart(name, selectedFont)} disabled={!name.trim()} className="w-full h-14 text-lg font-bold bg-green-500 text-white disabled:opacity-50">Começar</Button>
+                    </Card>
+                </div>
+            );
+        }
+
+        function AtividadeGramatica({ studentName, onEndLevel, downloadCSV }) {
+          const [availableWords, setAvailableWords] = useState([]);
+          const [droppedWords, setDroppedWords] = useState({ substantivo: [], verbo: [], adjetivo: [] });
+          const [score, setScore] = useState(0);
+          const [errors, setErrors] = useState(0);
+          const [feedback, setFeedback] = useState(null);
+          const [level, setLevel] = useState(1);
+          const [startTime, setStartTime] = useState(null);
+          const [draggedItem, setDraggedItem] = useState(null);
+
+          useEffect(() => {
+            loadLevel(level);
+          }, [level]);
+
+          const loadLevel = (lvl) => {
+            const wordsPerLevel = 11;
+            const shuffled = [...words].sort(() => Math.random() - 0.5);
+            const levelWords = shuffled.slice((lvl - 1) * wordsPerLevel, lvl * wordsPerLevel);
+            const finalWords = levelWords.length > 0 ? levelWords : shuffled.slice(0, wordsPerLevel);
+            // Embaralhar novamente para misturar as categorias
+            const reshuffled = [...finalWords].sort(() => Math.random() - 0.5);
+            setAvailableWords(reshuffled);
+            setDroppedWords({ substantivo: [], verbo: [], adjetivo: [] });
+            setScore(0);
+            setErrors(0);
+            setStartTime(Date.now());
+          };
+
+          const handleDrop = (e, categoryId) => {
+            e.preventDefault();
+            if (!draggedItem) return;
+
+            if (draggedItem.category === categoryId) {
+              setDroppedWords(prev => ({ ...prev, [categoryId]: [...prev[categoryId], draggedItem] }));
+              setAvailableWords(prev => prev.filter(w => w.id !== draggedItem.id));
+              setScore(prev => prev + 1);
+              setFeedback({ type: 'success', message: '🎉 Certo! +10 pontos' });
+            } else {
+              setErrors(prev => prev + 1);
+              setFeedback({ type: 'error', message: '❌ Tente novamente!' });
+            }
+            const currentItem = draggedItem;
+            setDraggedItem(null);
+
+            setTimeout(() => {
+              setFeedback(null);
+            }, 2000);
+          };
+          
+          useEffect(() => {
+            if (availableWords.length === 0 && gameStarted()) {
+                const time = Math.round((Date.now() - startTime) / 1000);
+                onEndLevel({
+                    Nome: studentName,
+                    Materia: 'Português',
+                    Atividade: 'Classificador de Palavras',
+                    Bloco: `Nível ${level}`,
+                    Questao: `${words.length}_palavras`,
+                    Tempo_Execucao: `${time}s`,
+                    Acertos: score,
+                    Erros: errors,
+                    Score: `${Math.round((score / (score + errors)) * 100)}%`
+                });
+                setTimeout(() => {
+                    setLevel(prev => prev + 1);
+                }, 2000);
+            }
+          }, [availableWords]);
+
+          const gameStarted = () => startTime !== null;
+
+          const finishAndDownload = () => {
+              downloadCSV();
+              window.parent.postMessage('close-activity', '*');
+          }
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 p-4 md:p-8 text-white">
+              <div className="max-w-7xl mx-auto">
+                <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 mb-6 flex justify-between items-center">
+                    <div>
+                        <Badge className="bg-yellow-400 text-black">Nível {level}</Badge>
+                        <Badge className="bg-green-400 text-black ml-2">Acertos: {score}</Badge>
+                        <Badge className="bg-red-400 text-black ml-2">Erros: {errors}</Badge>
+                    </div>
+                    <div>
+                        <Button onClick={finishAndDownload} className="bg-red-500 text-white">Finalizar e Baixar CSV</Button>
+                    </div>
+                </div>
+
+                {feedback && <div className={`mb-6 p-4 rounded-xl text-center font-bold text-xl animate-bounce ${feedback.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>{feedback.message}</div>}
+
+                <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 mb-6 min-h-[100px]">
+                  <h2 className="font-bold text-xl mb-4"><Zap /> Arraste as palavras:</h2>
+                  <div className="flex flex-wrap gap-3">
+                    {availableWords.map(word => (
+                      <div key={word.id} draggable onDragStart={(e) => setDraggedItem(word)} className="bg-white px-6 py-3 rounded-xl font-bold text-gray-800 cursor-move hover:scale-110 transition-transform">
+                        {word.text}
+                      </div>
+                    ))}
+                    {availableWords.length === 0 && <p className="text-white/70 w-full text-center py-4">🎉 Nível Concluído! Carregando próximo...</p>}
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
+                  {categories.map(category => (
+                    <div key={category.id} onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDrop(e, category.id)} className={`bg-gradient-to-br ${category.color} rounded-2xl p-6 min-h-[300px] transition-all border-4 border-dashed hover:scale-105 hover:shadow-2xl ${draggedItem ? 'border-white' : 'border-white/30'}`}>
+                      <div className="text-center mb-4">
+                        <div className="text-5xl mb-2">{category.icon}</div>
+                        <h3 className="font-black text-xl mb-1">{category.name}</h3>
+                        <p className="text-white/90 text-sm">{category.description}</p>
+                      </div>
+                      <div className="space-y-2">
+                        {droppedWords[category.id].map(word => (
+                          <div key={word.id} className="bg-white/95 px-4 py-2 rounded-lg font-bold text-gray-800 text-center">✓ {word.text}</div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

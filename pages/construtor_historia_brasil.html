@@ -6,11 +6,13 @@
     <title>Construtor de História do Brasil</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../VariableProximity.css">
+    <script src="../variable-proximity-effect.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../js/playlist.js"></script>
+    <link rel="stylesheet" href="../activity-gradient.css">
 
     <style>
         @font-face {
@@ -23,7 +25,10 @@
           src: url('../media/fonts/OpenDyslexic-Bold.otf') format('opentype');
           font-weight: bold; font-style: normal;
         }
-        body { font-family: 'Comic Sans MS', cursive, sans-serif; }
+        body { 
+          font-family: 'Comic Sans MS', cursive, sans-serif; 
+          background: linear-gradient(90deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 50%, hsla(207, 41%, 27%, 1) 100%);
+        }
         .font-dyslexic { font-family: 'OpenDyslexic', 'Comic Sans MS', cursive, sans-serif; }
         .drag-element { cursor: grab; transition: all 0.2s ease-in-out; }
         .drag-element:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -40,59 +45,7 @@
 
         
 
-        const MusicPlayer = () => {
-            const audioRef = useRef(null);
-            const [isPlaying, setIsPlaying] = useState(() => localStorage.getItem('musicIsPlaying') === 'true');
-            const [currentTrackIndex, setCurrentTrackIndex] = useState(() => parseInt(localStorage.getItem('musicTrackIndex'), 10) || 0);
-
-            useEffect(() => {
-                localStorage.setItem('musicIsPlaying', isPlaying);
-                if (isPlaying) {
-                    audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
-                } else {
-                    audioRef.current.pause();
-                }
-            }, [isPlaying]);
-
-            useEffect(() => {
-                localStorage.setItem('musicTrackIndex', currentTrackIndex);
-                if (audioRef.current) {
-                    audioRef.current.src = backgroundMusicPlaylist[currentTrackIndex];
-                    if (isPlaying) {
-                        audioRef.current.play().catch(e => console.error("Erro ao tocar música:", e));
-                    }
-                }
-            }, [currentTrackIndex]);
-
-            const handleNextTrack = () => {
-                setCurrentTrackIndex(prevIndex => (prevIndex + 1) % backgroundMusicPlaylist.length);
-            };
-
-            const handleAudioEnded = () => {
-                handleNextTrack();
-            };
-
-            useEffect(() => {
-                const audio = audioRef.current;
-                audio.volume = 0.5;
-                audio.addEventListener('ended', handleAudioEnded);
-                return () => {
-                    audio.removeEventListener('ended', handleAudioEnded);
-                };
-            }, []);
-
-            return (
-                <div className="fixed bottom-4 right-4 bg-white/20 backdrop-blur-md text-white p-3 rounded-full shadow-lg flex items-center gap-3 z-50">
-                    <audio ref={audioRef} src={backgroundMusicPlaylist[currentTrackIndex]} />
-                    <button onClick={() => setIsPlaying(!isPlaying)} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
-                        {isPlaying ? '❚❚' : '▶'}
-                    </button>
-                    <button onClick={handleNextTrack} className="w-12 h-12 rounded-full bg-white/30 hover:bg-white/50 transition-all flex items-center justify-center">
-                        {'⏭'}
-                    </button>
-                </div>
-            );
-        };
+        
 
         const activityConfig = {
             title: "Construtor de História do Brasil",
@@ -211,16 +164,9 @@
         const SimpleSound = {
             play: (src) => {
                 try {
-                    if (window.musicPlayerSetVolume) {
-                        window.musicPlayerSetVolume(0.2); // Reduce background music volume
-                    }
                     const audio = new Audio(src);
                     audio.play().catch(e => {});
-                    audio.onended = () => {
-                        if (window.musicPlayerSetVolume) {
-                            window.musicPlayerSetVolume(0.5); // Restore background music volume
-                        }
-                    };
+                    audio.onended = () => {};
                 } catch (e) {}
             },
             success: () => SimpleSound.play(`../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`),
@@ -230,7 +176,6 @@
 
         const InitialScreen = ({ onStart, studentName, setStudentName, font, setFont }) => (
             <div className={`min-h-screen bg-gradient-to-br from-${activityConfig.primaryColor}-500 via-purple-500 to-pink-500 flex items-center justify-center p-4`}>
-                <MusicPlayer />
                 <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full transform transition-all hover:scale-105">
                     <div className="text-center mb-8">
                         <div className="text-6xl mb-4">{activityConfig.emoji}</div>
@@ -266,7 +211,6 @@
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-4">
-                    <MusicPlayer />
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-8">
                             <h1 className="text-5xl font-bold text-white mb-2">🚀 Olá, {studentName}!</h1>
@@ -307,7 +251,6 @@
         
         const SummaryScreen = ({ result, onRestart, onBackToSelection }) => (
             <div className="min-h-screen bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center p-4">
-                <MusicPlayer />
                 <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center">
                     <h2 className="text-4xl font-bold mb-4 text-gray-800">🎊 Linha do Tempo Concluída! 🎊</h2>
                     <p className="text-2xl mb-8 text-gray-700">Você organizou os eventos do bloco <strong>{result.Bloco}</strong>!</p>
@@ -397,7 +340,6 @@
 
             return (
                 <div className={`min-h-screen bg-gradient-to-br from-amber-100 via-orange-100 to-red-100 p-4`}>
-                    <MusicPlayer />
                     <div className="max-w-6xl mx-auto">
                         <div className="bg-white rounded-2xl shadow-xl p-4 mb-6">
                             <div className="flex justify-between items-center mb-2">
@@ -500,16 +442,17 @@
                 }
                 const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
                 const csvContent = sessionResults.map(r => Object.values(r).join(',')).join('\n');
-                const blob = new Blob([header + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const blob = new Blob(["\uFEFF" + header + csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.href = url;
-                const dateStr = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-') ;
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
                 const studentNameForFile = studentName.replace(/[^a-zA-Z0-9]/g, '_');
-                link.download = `${activityConfig.activity}_${studentNameForFile}_${dateStr}.csv`;
+                link.download = `${activityConfig.activity}_${studentNameForFile}_${timestamp}.csv`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
+                URL.revokeObjectURL(url);
                 alert("🎉 Dados exportados com sucesso!");
             };
 

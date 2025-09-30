@@ -4,15 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🧮 Calculadora Digital Expert</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="../js/playlist.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../VariableProximity.css">
     <style>
       * {
         margin: 0;
@@ -32,15 +26,15 @@
       }
 
       .container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 15px;
       }
 
       .card {
         background: white;
         border-radius: 20px;
-        padding: 30px;
+        padding: 15px;
         margin: 20px 0;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(10px);
@@ -58,9 +52,9 @@
       }
 
       .title {
-        font-size: 2.5rem;
+        font-size: 2rem;
         color: #333;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
         font-weight: bold;
       }
 
@@ -112,15 +106,15 @@
 
       .level-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
         margin-top: 30px;
       }
 
       .level-card {
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         color: white;
-        padding: 25px;
+        padding: 15px;
         border-radius: 20px;
         cursor: pointer;
         transition: all 0.3s;
@@ -140,7 +134,7 @@
       .calculator {
         background: #2c3e50;
         border-radius: 20px;
-        padding: 25px;
+        padding: 15px;
         margin: 20px 0;
         max-width: 350px;
         margin-left: auto;
@@ -153,7 +147,7 @@
         font-family: "Courier New", monospace;
         font-size: 28px;
         font-weight: bold;
-        padding: 20px;
+        padding: 15px;
         border-radius: 10px;
         text-align: right;
         margin-bottom: 20px;
@@ -175,7 +169,7 @@
         color: white;
         border: none;
         border-radius: 10px;
-        padding: 20px;
+        padding: 15px;
         font-size: 20px;
         font-weight: bold;
         cursor: pointer;
@@ -220,7 +214,7 @@
       .question-area {
         background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
         border-radius: 15px;
-        padding: 25px;
+        padding: 15px;
         margin: 20px 0;
         border: 3px solid #ff9f43;
       }
@@ -236,7 +230,7 @@
       .answer-section {
         background: #f8f9fa;
         border-radius: 15px;
-        padding: 20px;
+        padding: 15px;
         margin: 20px 0;
         text-align: center;
       }
@@ -252,7 +246,7 @@
       }
 
       .feedback {
-        padding: 20px;
+        padding: 15px;
         border-radius: 15px;
         margin: 20px 0;
         font-size: 18px;
@@ -290,7 +284,7 @@
       .audio-controls {
         background: #f8f9fa;
         border-radius: 15px;
-        padding: 20px;
+        padding: 15px;
         margin: 20px 0;
         border: 2px solid #dee2e6;
       }
@@ -313,36 +307,7 @@
         font-size: 14px;
       }
 
-      .music-player {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        color: white;
-        padding: 15px;
-        border-radius: 50px;
-        display: flex;
-        gap: 10px;
-        z-index: 1000;
-      }
-
-      .music-btn {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        border: none;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-
-      .music-btn:hover {
-        background: rgba(255, 255, 255, 0.5);
-        transform: scale(1.1);
-      }
+      
 
       .results-screen {
         text-align: center;
@@ -358,7 +323,7 @@
       .export-section {
         background: #e8f5e8;
         border-radius: 15px;
-        padding: 20px;
+        padding: 15px;
         margin: 20px 0;
         border: 2px solid #27ae60;
       }
@@ -446,22 +411,16 @@
         }
       }
     </style>
+    <script src="../variable-proximity-effect.js"></script>
   </head>
   <body>
-    <!-- Music Player -->
-    <div class="music-player" id="musicPlayer">
-      <button class="music-btn" id="playPauseBtn" onclick="toggleMusic()">
-        ▶
-      </button>
-      <button class="music-btn" id="nextBtn" onclick="nextTrack()">⏭</button>
-    </div>
 
     <div class="container">
       <!-- Start Screen -->
       <div id="startScreen" class="start-screen card">
         <div class="emoji-large">🧮</div>
-        <h1 class="title">Calculadora Digital Expert</h1>
-        <p style="font-size: 18px; color: #666; margin-bottom: 30px">
+        <h1 class="title" data-proximity data-radius="150" data-from-font-variation-settings="'wght' 300, 'opsz' 9" data-to-font-variation-settings="'wght' 900, 'opsz' 50" data-falloff="exponential">Calculadora Digital Expert</h1>
+        <p style="font-size: 18px; color: #666; margin-bottom: 15px">
           Aprenda matemática de forma divertida com nossa calculadora
           interativa!
         </p>
@@ -502,13 +461,13 @@
 
       <!-- Level Selection Screen -->
       <div id="levelScreen" class="card hidden">
-        <h2 class="title" style="text-align: center">🌟 Escolha seu Desafio</h2>
+        <h2 class="title" style="text-align: center" data-proximity data-radius="150" data-from-font-variation-settings="'wght' 300, 'opsz' 9" data-to-font-variation-settings="'wght' 900, 'opsz' 50" data-falloff="exponential">🌟 Escolha seu Desafio</h2>
         <p
           style="
             text-align: center;
             font-size: 18px;
             color: #666;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
           "
         >
           Olá, <span id="welcomeName"></span>! Selecione um bloco para começar:
@@ -705,7 +664,7 @@
       <div id="resultsScreen" class="card hidden">
         <div class="results-screen">
           <div class="emoji-large">🏆</div>
-          <h2 class="title">Parabéns!</h2>
+          <h2 class="title" data-proximity data-radius="150" data-from-font-variation-settings="'wght' 300, 'opsz' 9" data-to-font-variation-settings="'wght' 900, 'opsz' 50" data-falloff="exponential">Parabéns!</h2>
           <p style="font-size: 20px; margin-bottom: 20px">
             Você completou o <span id="completedLevel"></span>!
           </p>
@@ -713,7 +672,7 @@
           <div class="score-display" id="finalScore"></div>
           <div
             id="performanceMessage"
-            style="font-size: 18px; color: #666; margin-bottom: 30px"
+            style="font-size: 18px; color: #666; margin-bottom: 15px"
           ></div>
 
           <!-- Export Section -->
@@ -1092,7 +1051,6 @@
 
       // Initialize the application
       function initializeApp() {
-        updateMusicPlayer();
         document
           .getElementById("studentName")
           .addEventListener("input", function () {
@@ -1617,59 +1575,12 @@
 
       // Sound system
       function playSound(type) {
-        try {
-          let soundFile;
-          switch (type) {
-            case "success":
-              soundFile = `../media/sons/feedback/acertos/acerto_${Math.ceil(Math.random() * 4)}.mp3`;
-              break;
-            case "error":
-              soundFile = `../media/sons/feedback/erros/erro_${Math.ceil(Math.random() * 4)}.mp3`;
-              break;
-            case "click":
-              soundFile = "../media/sons/feedback/click.mp3";
-              break;
-            default:
-              return;
-          }
-
-          if (window.PersistentMusicSystem) {
-            window.PersistentMusicSystem.duckVolume();
-          }
-
-          const audio = new Audio(soundFile);
+        const audio = new Audio(soundFile);
           audio.play().catch(() => {});
-          audio.onended = () => {
-            if (window.PersistentMusicSystem) {
-              window.PersistentMusicSystem.restoreVolume();
-            }
-          };
-        } catch (error) {
-          // Silently fail if audio not available
-        }
+          audio.onended = () => {};
       }
 
-      // Music player functions
-      function toggleMusic() {
-        if (window.PersistentMusicSystem) {
-          window.PersistentMusicSystem.toggle();
-          updateMusicPlayer();
-        }
-      }
-
-      function nextTrack() {
-        if (window.PersistentMusicSystem) {
-          window.PersistentMusicSystem.nextTrack();
-        }
-      }
-
-      function updateMusicPlayer() {
-        const playPauseBtn = document.getElementById("playPauseBtn");
-        if (window.PersistentMusicSystem) {
-          const isPlaying = window.PersistentMusicSystem.isPlaying;
-          playPauseBtn.textContent = isPlaying ? "❚❚" : "▶";
-        }
-      }
+      
 
       // Keyboard support
       document.addEventListener("keydown", function (event) {
@@ -1684,9 +1595,6 @@
       // Initialize when page loads
       document.addEventListener("DOMContentLoaded", function () {
         initializeApp();
-
-        // Update music player state periodically
-        setInterval(updateMusicPlayer, 1000);
       });
     </script>
   </body>

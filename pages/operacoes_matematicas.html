@@ -12,6 +12,8 @@
       href="https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="../activity-gradient.css">
+    <link rel="stylesheet" href="../VariableProximity.css">
     <style>
       :root {
         --primary-color: #667eea;
@@ -33,19 +35,15 @@
         margin: 0;
         padding: 0;
         font-family: "Comic Neue", "Comic Sans MS", cursive, sans-serif;
-        background: linear-gradient(
-          135deg,
-          var(--primary-color) 0%,
-          var(--secondary-color) 100%
-        );
+        background: linear-gradient(90deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 50%, hsla(207, 41%, 27%, 1) 100%);
         min-height: 100vh;
         line-height: 1.6;
       }
 
       .container {
-        max-width: 800px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 20px;
+        padding: 15px;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
@@ -54,11 +52,11 @@
       .header {
         text-align: center;
         color: white;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
       }
 
       .header h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
         margin: 0 0 10px 0;
         font-weight: 700;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
@@ -68,7 +66,7 @@
         background: rgba(255, 255, 255, 0.2);
         border-radius: 25px;
         height: 15px;
-        margin: 20px 0;
+        margin: 12px 0;
         overflow: hidden;
       }
 
@@ -90,7 +88,7 @@
       .quiz-card {
         background: white;
         border-radius: 20px;
-        padding: 30px;
+        padding: 15px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         flex: 1;
         display: flex;
@@ -99,9 +97,9 @@
 
       .block-selector {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-        margin-bottom: 30px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+        margin-bottom: 15px;
       }
 
       .block-button {
@@ -112,9 +110,9 @@
         );
         color: white;
         border: none;
-        padding: 20px;
+        padding: 15px;
         border-radius: 15px;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -148,7 +146,7 @@
       }
 
       .question-container {
-        margin-bottom: 30px;
+        margin-bottom: 15px;
       }
 
       .question-header {
@@ -188,23 +186,23 @@
         font-size: 1.2rem;
         color: var(--text-primary);
         background: var(--bg-light);
-        padding: 20px;
+        padding: 15px;
         border-radius: 12px;
         border-left: 4px solid var(--primary-color);
-        margin-bottom: 25px;
+        margin-bottom: 12px;
       }
 
       .options-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 15px;
-        margin-bottom: 25px;
+        gap: 10px;
+        margin-bottom: 12px;
       }
 
       .option-button {
         background: white;
         border: 2px solid var(--border-color);
-        padding: 20px;
+        padding: 15px;
         border-radius: 12px;
         cursor: pointer;
         transition: all 0.3s ease;
@@ -234,8 +232,8 @@
       .feedback-container {
         background: var(--bg-light);
         border-radius: 12px;
-        padding: 25px;
-        margin-bottom: 25px;
+        padding: 15px;
+        margin-bottom: 12px;
       }
 
       .feedback-header {
@@ -245,7 +243,7 @@
       }
 
       .feedback-icon {
-        font-size: 2.5rem;
+        font-size: 2rem;
         margin-right: 15px;
       }
 
@@ -275,7 +273,7 @@
       .action-buttons {
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
         margin-top: auto;
       }
 
@@ -338,13 +336,13 @@
       .stats-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 15px;
+        gap: 10px;
         margin: 25px 0;
       }
 
       .stat-card {
         background: var(--bg-light);
-        padding: 20px;
+        padding: 15px;
         border-radius: 12px;
         text-align: center;
       }
@@ -368,7 +366,7 @@
         transform: translate(-50%, -50%);
         background: linear-gradient(135deg, var(--success-color), #059669);
         color: white;
-        padding: 30px;
+        padding: 15px;
         border-radius: 20px;
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         z-index: 1000;
@@ -434,7 +432,7 @@
         }
 
         .quiz-card {
-          padding: 20px;
+          padding: 15px;
         }
 
         .block-selector {
@@ -452,7 +450,7 @@
         }
 
         .stats-grid {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(3, 1fr);
         }
       }
 
@@ -471,7 +469,7 @@
         }
 
         .score-display {
-          font-size: 2.5rem;
+          font-size: 2rem;
         }
       }
 
@@ -519,6 +517,8 @@
         }
       }
     </style>
+    <script src="../text-type-effect.js"></script>
+    <script src="../variable-proximity-effect.js"></script>
   </head>
   <body>
     <div id="app">
@@ -529,7 +529,7 @@
 
       <div class="container hidden" id="main-container">
         <header class="header">
-          <h1>Quiz de Operações Matemáticas</h1>
+          <h1 data-proximity data-radius="150" data-from-font-variation-settings="'wght' 300, 'opsz' 9" data-to-font-variation-settings="'wght' 900, 'opsz' 50" data-falloff="exponential">Quiz de Operações Matemáticas</h1>
           <div class="progress-bar">
             <div class="progress-fill" id="progress-fill"></div>
           </div>
@@ -548,7 +548,7 @@
           <section id="question-screen" class="hidden">
             <div class="question-container">
               <div class="question-header">
-                <h2 class="question-title" id="question-title">Questão 1</h2>
+                <h2 class="question-title" id="question-title" data-proximity data-radius="150" data-from-font-variation-settings="'wght' 300, 'opsz' 9" data-to-font-variation-settings="'wght' 900, 'opsz' 50" data-falloff="exponential">Questão 1</h2>
                 <button
                   class="audio-button"
                   id="audio-btn"
@@ -558,8 +558,8 @@
                 </button>
               </div>
 
-              <div class="problem-text" id="problem-text">
-                <!-- Problem text will be inserted here -->
+              <div class="problem-text">
+                <div id="problem-text" data-text-type data-typing-speed="40" data-show-cursor="false"></div>
               </div>
 
               <div id="options-container" class="options-grid">
@@ -1031,11 +1031,33 @@
         currentState.questionStartTime = new Date();
 
         // Update question title
-        document.getElementById("question-title").textContent =
-          `Questão ${currentState.currentQuestion + 1} de ${block.questions.length}`;
+        const questionTitle = document.getElementById("question-title");
+        questionTitle.textContent = `Questão ${currentState.currentQuestion + 1} de ${block.questions.length}`;
 
-        // Update problem text
-        document.getElementById("problem-text").textContent = question.text;
+        // Reinitialize VariableProximity effect for question title
+        if (questionTitle.proximityEffect) {
+          questionTitle.proximityEffect.destroy();
+        }
+        questionTitle.proximityEffect = new VariableProximityEffect(questionTitle);
+
+        // Update problem text for typing effect
+        document.getElementById("problem-text").setAttribute('data-text', question.text);
+        // Reinitialize the typing effect
+        const problemTextElement = document.getElementById("problem-text");
+        if (window.TextTypeEffect) {
+          // If TextTypeEffect instance already exists, destroy it first
+          if (problemTextElement.textTypeInstance) {
+            problemTextElement.textTypeInstance.destroy();
+          }
+          // Create new instance
+          problemTextElement.textTypeInstance = new window.TextTypeEffect(problemTextElement, {
+            typingSpeed: 40,
+            showCursor: false
+          });
+        } else {
+          // Fallback to regular text if TextTypeEffect is not loaded
+          problemTextElement.textContent = question.text;
+        }
 
         // Generate options
         generateOptions();

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Construindo Frases com o Steve</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a936f, #114b5f);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #f6e58d;
+            margin-bottom: 30px;
+        }
+        .frase-container {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+        .lacuna {
+            display: inline-block;
+            width: 120px;
+            height: 40px;
+            border: 2px dashed #f6e58d;
+            border-radius: 5px;
+            margin: 0 10px;
+            vertical-align: middle;
+            position: relative;
+            background: rgba(255,255,255,0.1);
+        }
+        .conjuncoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .conjuncao {
+            background: #f6e58d;
+            color: #2c3e50;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: move;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .conjuncao:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .conjuncao.arrastando {
+            opacity: 0.5;
+            transform: scale(0.9);
+        }
+        .lacuna.preenchida {
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.2);
+        }
+        .feedback {
+            text-align: center;
+            font-size: 1.1em;
+            margin-top: 20px;
+            min-height: 30px;
+        }
+        .botoes {
+            text-align: center;
+            margin-top: 30px;
+        }
+        button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #c0392b;
+        }
+        .personagem {
+            float: right;
+            margin-left: 20px;
+            border-radius: 10px;
+        }
+        .minecraft-block {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #8b6914;
+            margin: 0 5px;
+            vertical-align: middle;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔨 Construindo Frases com o Steve (Minecraft) 🔨</h1>
+        
+        <div class="frase-container">
+            <img src="https://via.placeholder.com/150" alt="Steve" class="personagem">
+            <p>O Steve coletou madeira <span class="lacuna" data-resposta="mas"></span> não encontrou carvão.</p>
+            <p>Ela quer construir uma casa <span class="lacuna" data-resposta="porque"></span> precisa de abrigo.</p>
+            <p>O zumbi apareceu à noite <span class="lacuna" data-resposta="então"></span> Steve correu.</p>
+            <p>Eles mineraram diamantes <span class="lacuna" data-resposta="e"></span> fizeram espadas.</p>
+        </div>
+
+        <h3>Arraste as conjunções para os espaços vazios:</h3>
+        <div class="conjuncoes">
+            <div class="conjuncao" draggable="true">mas</div>
+            <div class="conjuncao" draggable="true">porque</div>
+            <div class="conjuncao" draggable="true">então</div>
+            <div class="conjuncao" draggable="true">e</div>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        
+        <div class="botoes">
+            <button onclick="verificarRespostas()">Verificar Respostas</button>
+            <button onclick="resetarAtividade()">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let conjuncaoArrastada = null;
+        const lacunas = document.querySelectorAll('.lacuna');
+        const conjuncoes = document.querySelectorAll('.conjuncao');
+        const feedbackDiv = document.getElementById('feedback');
+
+        // Eventos de drag and drop
+        conjuncoes.forEach(conjuncao => {
+            conjuncao.addEventListener('dragstart', (e) => {
+                conjuncaoArrastada = e.target;
+                e.target.classList.add('arrastando');
+            });
+            
+            conjuncao.addEventListener('dragend', (e) => {
+                e.target.classList.remove('arrastando');
+            });
+        });
+
+        lacunas.forEach(lacuna => {
+            lacuna.addEventListener('dragover', (e) => {
+                e.preventDefault(); // Permite o drop
+            });
+            
+            lacuna.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (conjuncaoArrastada) {
+                    // Remove conjunção anterior se houver
+                    const filhoExistente = lacuna.querySelector('.conjuncao-colocada');
+                    if (filhoExistente) filhoExistente.remove();
+                    
+                    // Adiciona nova conjunção
+                    const novaConjuncao = conjuncaoArrastada.cloneNode(true);
+                    novaConjuncao.classList.add('conjuncao-colocada');
+                    novaConjuncao.draggable = false;
+                    lacuna.appendChild(novaConjuncao);
+                    lacuna.classList.add('preenchida');
+                }
+            });
+        });
+
+        // Verificação de respostas
+        function verificarRespostas() {
+            let acertos = 0;
+            lacunas.forEach(lacuna => {
+                const respostaCorreta = lacuna.getAttribute('data-resposta');
+                const conjuncaoColocada = lacuna.querySelector('.conjuncao-colocada');
+                
+                if (conjuncaoColocada && conjuncaoColocada.textContent === respostaCorreta) {
+                    lacuna.style.backgroundColor = 'rgba(46, 204, 113, 0.4)';
+                    acertos++;
+                } else {
+                    lacuna.style.backgroundColor = 'rgba(231, 76, 60, 0.4)';
+                }
+            });
+            
+            // Feedback
+            if (acertos === lacunas.length) {
+                feedbackDiv.innerHTML = `🎉 Parabéns! Você completou todas as frases como um verdadeiro mineiro! <span class="minecraft-block"></span>`;
+                feedbackDiv.style.color = '#2ecc71';
+            } else {
+                feedbackDiv.innerHTML = `⛏️ Você acertou ${acertos} de ${lacunas.length} frases. Tente novamente!`;
+                feedbackDiv.style.color = '#e74c3c';
+            }
+        }
+
+        // Resetar atividade
+        function resetarAtividade() {
+            lacunas.forEach(lacuna => {
+                lacuna.innerHTML = '';
+                lacuna.classList.remove('preenchida');
+                lacuna.style.backgroundColor = '';
+            });
+            feedbackDiv.innerHTML = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construindo Frases com o Steve</title>
+    <link rel="stylesheet" href="../VariableProximity.css">
+    <script src="../variable-proximity-effect.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&family=OpenDyslexic&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Comic Sans MS', cursive; }
+        .lacuna.preenchida { border-color: #2ecc71; background-color: rgba(46, 204, 113, 0.2); }
+        .conjuncao.arrastando { opacity: 0.5; transform: scale(0.9); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white p-4 md:p-8">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const levels = [
+            { title: "Bloco 1: Conjunções Básicas", sentences: [ { text: "O Steve coletou madeira __ não encontrou carvão.", answer: "mas" }, { text: "Ela quer construir uma casa __ precisa de abrigo.", answer: "porque" }, { text: "O zumbi apareceu à noite __ Steve correu.", answer: "então" }, { text: "Eles mineraram diamantes __ fizeram espadas.", answer: "e" }, ], options: ["mas", "porque", "então", "e"] },
+            { title: "Bloco 2: Adicionando Alternativas", sentences: [ { text: "Você pode lutar com a espada __ usar o arco e flecha.", answer: "ou" }, { text: "O creeper sibilou, __ ele explodiu.", answer: "e" }, { text: "Não havia ferro, __ ele usou pedra.", answer: "portanto" }, { text: "__ chova, a plantação vai crescer.", answer: "Se" }, ], options: ["ou", "e", "portanto", "Se"] },
+            { title: "Bloco 3: Causa e Consequência", sentences: [ { text: "A noite chegou, __ os monstros apareceram.", answer: "logo" }, { text: "Ele ficou feliz __ encontrou diamantes.", answer: "pois" }, { text: "A ponte quebrou, __ eles não puderam cruzar.", answer: "assim" }, { text: "__ ele seja forte, não pode quebrar obsidiana.", answer: "Embora" }, ], options: ["logo", "pois", "assim", "Embora"] },
+            { title: "Bloco 4: Frases Complexas", sentences: [ { text: "Ele vai para o Nether __ buscar quartzo.", answer: "para" }, { text: "__ o tempo melhore, eles explorarão o pântano.", answer: "Quando" }, { text: "Ele comeu a maçã dourada __ ficar mais forte.", answer: "a fim de" }, { text: "Construa o portal __ as instruções indicam.", answer: "conforme" }, ], options: ["para", "Quando", "a fim de", "conforme"] },
+            { title: "Bloco 5: Desafio Final", sentences: [ { text: "Ele não só minerou, __ também construiu.", answer: "mas" }, { text: "__ ele cavou fundo, mais recursos encontrou.", answer: "Quanto mais" }, { text: "A aventura será perigosa, __ vale a pena.", answer: "contudo" }, { text: "Ele treinou muito, __ se tornou o melhor.", answer: "de modo que" }, ], options: ["mas", "Quanto mais", "contudo", "de modo que"] }
+        ];
+
+        function App() {
+            const [phase, setPhase] = useState('start'); // start, selection, game
+            const [studentName, setStudentName] = useState('');
+            const [sessionResults, setSessionResults] = useState([]);
+            const [currentLevelIndex, setCurrentLevelIndex] = useState(null);
+            const [font, setFont] = useState('Comic Sans MS');
+
+            useEffect(() => {
+                document.body.style.fontFamily = font;
+            }, [font]);
+
+            const handleStart = (name, selectedFont) => {
+                setStudentName(name);
+                setFont(selectedFont);
+                setPhase('selection');
+            };
+
+            const handleLevelSelect = (index) => {
+                setCurrentLevelIndex(index);
+                setPhase('game');
+            };
+
+            const handleEndLevel = (result) => {
+                setSessionResults(prev => [...prev, result]);
+                setPhase('selection');
+                setCurrentLevelIndex(null);
+            };
+            
+            const downloadCSV = () => {
+                if (sessionResults.length === 0) {
+                    alert("Nenhum dado para exportar!");
+                    return;
+                }
+                const header = 'Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score\n';
+                const csvContent = sessionResults.map(r =>
+                    `${r.Nome},${r.Materia},${r.Atividade},${r.Bloco},${r.Questao},${r.Tempo_Execucao},${r.Acertos},${r.Erros},${r.Score}`
+                ).join('\n');
+                const blob = new Blob(["\uFEFF" + header + csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+                link.download = `resultados_frases_minecraft_${studentName}_${timestamp}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            };
+
+            if (phase === 'start') return <StartScreen onStart={handleStart} />;
+            if (phase === 'selection') return <LevelSelectionScreen onSelect={handleLevelSelect} studentName={studentName} downloadCSV={downloadCSV} />;
+            if (phase === 'game') return <GameScreen level={levels[currentLevelIndex]} studentName={studentName} onEndLevel={handleEndLevel} backToMenu={() => setPhase('selection')} />;
+        }
+
+        function StartScreen({ onStart }) {
+            const [name, setName] = useState('');
+            const [selectedFont, setSelectedFont] = useState('Comic Sans MS');
+            return (
+                <div className="max-w-lg mx-auto text-center p-8 bg-white/10 rounded-2xl">
+                    <h1 className="text-3xl font-bold text-yellow-300 mb-6">Construindo Frases com o Steve</h1>
+                    <input type="text" placeholder="Digite seu nome" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-3 border-2 border-gray-400 rounded-lg mb-4 text-center text-xl text-black" />
+                    <div className="mb-6">
+                        <p className="text-white mb-2">Escolha sua fonte:</p>
+                        <div className="flex justify-center gap-4">
+                            <button onClick={() => setSelectedFont('Comic Sans MS')} className={`px-4 py-2 rounded-lg ${selectedFont === 'Comic Sans MS' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-black'}`}>Comic Sans</button>
+                            <button onClick={() => setSelectedFont('OpenDyslexic')} className={`px-4 py-2 rounded-lg ${selectedFont === 'OpenDyslexic' ? 'bg-purple-600 text-white' : 'bg-gray-200 text-black'}`}>OpenDyslexic</button>
+                        </div>
+                    </div>
+                    <button onClick={() => onStart(name, selectedFont)} disabled={!name.trim()} className="w-full py-3 bg-green-600 text-white font-bold rounded-lg disabled:opacity-50">Começar</button>
+                </div>
+            );
+        }
+
+        function LevelSelectionScreen({ onSelect, studentName, downloadCSV }) {
+            const finishAndDownload = () => {
+                downloadCSV();
+                window.parent.postMessage('close-activity', '*');
+            }
+            return (
+                <div className="max-w-4xl mx-auto text-center">
+                    <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-2xl font-bold">Olá, {studentName}!</h2>
+                        <button onClick={finishAndDownload} className="px-4 py-2 bg-red-600 text-white rounded-lg">Finalizar e Baixar CSV</button>
+                    </div>
+                    <h1 className="text-3xl md:text-4xl font-bold text-yellow-300 mb-8">🔨 Escolha um Bloco de Desafio 🔨</h1>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {levels.map((level, index) => (
+                            <div key={index} onClick={() => onSelect(index)} className="bg-white/10 backdrop-blur-xl rounded-xl p-6 shadow-lg border border-white/20 hover:bg-yellow-700/30 cursor-pointer transition-all transform hover:scale-105">
+                                <h2 className="text-2xl font-bold text-yellow-200 mb-2">{`Bloco ${index + 1}`}</h2>
+                                <p className="text-gray-300">{level.title}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function GameScreen({ level, studentName, onEndLevel, backToMenu }) {
+            const [feedback, setFeedback] = useState('');
+            const [startTime, setStartTime] = useState(null);
+
+            useEffect(() => { 
+                setStartTime(Date.now());
+                setFeedback('');
+            }, [level]);
+
+            const verifyAnswers = () => {
+                let correctCount = 0;
+                const lacunas = document.querySelectorAll('.lacuna');
+                lacunas.forEach(l => {
+                    const correctAnswer = l.dataset.resposta;
+                    const droppedConjunction = l.querySelector('.conjuncao');
+                    if (droppedConjunction && droppedConjunction.textContent === correctAnswer) {
+                        l.style.borderColor = '#2ecc71';
+                        l.style.backgroundColor = 'rgba(46, 204, 113, 0.3)';
+                        correctCount++;
+                    } else {
+                        l.style.borderColor = '#e74c3c';
+                        l.style.backgroundColor = 'rgba(231, 76, 60, 0.3)';
+                    }
+                });
+                const totalErrors = lacunas.length - correctCount;
+
+                if (totalErrors === 0) {
+                    const time = Math.round((Date.now() - startTime) / 1000);
+                    setFeedback(`🎉 Parabéns! Você completou o ${level.title}!`);
+                    onEndLevel({
+                        Nome: studentName,
+                        Materia: 'Português',
+                        Atividade: 'Construindo Frases Minecraft',
+                        Bloco: level.title,
+                        Questao: `${level.sentences.length}_frases`,
+                        Tempo_Execucao: `${time}s`,
+                        Acertos: level.sentences.length,
+                        Erros: 0,
+                        Score: '100%'
+                    });
+                    setTimeout(() => backToMenu(), 2000);
+                } else {
+                    setFeedback(`Você cometeu ${totalErrors} erro(s). Tente novamente!`)
+                }
+            };
+
+            useEffect(() => {
+                let draggedItem = null;
+                const conjuncoes = Array.from(document.querySelectorAll('.conjuncao'));
+                const lacunas = Array.from(document.querySelectorAll('.lacuna'));
+                
+                const handleDragStart = (e) => { draggedItem = e.target; e.target.classList.add('arrastando'); };
+                const handleDragEnd = (e) => e.target.classList.remove('arrastando');
+                const handleDragOver = (e) => e.preventDefault();
+                const handleDrop = (e) => {
+                    e.preventDefault();
+                    if (draggedItem) {
+                        if (e.currentTarget.querySelector('.conjuncao')) {
+                            document.getElementById('conjuncoes-container').appendChild(e.currentTarget.querySelector('.conjuncao'));
+                        }
+                        e.currentTarget.innerHTML = '';
+                        e.currentTarget.appendChild(draggedItem);
+                        draggedItem = null;
+                    }
+                };
+
+                conjuncoes.forEach(c => { c.addEventListener('dragstart', handleDragStart); c.addEventListener('dragend', handleDragEnd); });
+                lacunas.forEach(l => { l.addEventListener('dragover', handleDragOver); l.addEventListener('drop', handleDrop); });
+
+                return () => {
+                    conjuncoes.forEach(c => { c.removeEventListener('dragstart', handleDragStart); c.removeEventListener('dragend', handleDragEnd); });
+                    lacunas.forEach(l => { l.removeEventListener('dragover', handleDragOver); l.removeEventListener('drop', handleDrop); });
+                }
+            }, [level]);
+
+            return (
+                <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl">
+                    <h1 className="text-3xl font-bold text-center text-yellow-300 mb-6">{level.title}</h1>
+                    <div className="bg-black/20 p-6 rounded-xl mb-6">
+                        <img src="https://placehold.co/150x150/8B6914/FFFFFF?text=Steve" alt="Steve" className="float-right ml-4 rounded-lg border-4 border-yellow-700" />
+                        <div className="text-lg space-y-4">
+                            {level.sentences.map((s, i) => <p key={i} dangerouslySetInnerHTML={{ __html: s.text.replace("__", `<span class=\"lacuna\" data-resposta=\"${s.answer}\"></span>`) }}></p>)}
+                        </div>
+                    </div>
+                    <h3 className="text-xl font-bold text-center mb-4 text-yellow-200">Arraste as conjunções:</h3>
+                    <div id="conjuncoes-container" className="flex flex-wrap gap-4 justify-center mb-6 min-h-[50px]">
+                        {level.options.sort(() => Math.random() - 0.5).map(opt => <div key={opt} className="conjuncao" draggable="true">{opt}</div>)}
+                    </div>
+                    <div className="text-center text-xl font-bold min-h-[30px] mb-6 text-green-400">{feedback}</div>
+                    <div className="flex justify-center flex-wrap gap-4">
+                        <button onClick={verifyAnswers} className="px-6 py-3 bg-blue-600 rounded-lg font-bold">Verificar</button>
+                        <button onClick={backToMenu} className="px-6 py-3 bg-gray-600 rounded-lg font-bold">Voltar ao Menu</button>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+    <style>
+        .lacuna { display: inline-block; width: 120px; height: 45px; border: 2px dashed #f6e58d; border-radius: 8px; margin: 0 8px; vertical-align: middle; background: rgba(0,0,0,0.2); }
+        .conjuncao { background-color: #f6e58d; color: #3d2a0c; padding: 10px 20px; border-radius: 8px; cursor: move; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+    </style>
+</body>
+</html>

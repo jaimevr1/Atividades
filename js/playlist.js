@@ -3,7 +3,12 @@ const backgroundMusicPlaylist = [
     'media/musicas/theme_1.mp3',
     'media/musicas/theme_2.mp3',
     'media/musicas/theme_3.mp3',
-    'media/musicas/theme_4.mp3'
+    'media/musicas/theme_4.mp3',
+    'media/musicas/theme_5.mp3',
+    'media/musicas/theme_6.mp3',
+    'media/musicas/theme_7.mp3',
+    'media/musicas/theme_8.mp3',
+    'media/musicas/theme_9.mp3'
 ];
 
 // Sistema de música global persistente

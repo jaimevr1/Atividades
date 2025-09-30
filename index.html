@@ -48,7 +48,7 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(90deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 50%, hsla(207, 41%, 27%, 1) 100%);
         }
         .activity-card {
             background: white;
@@ -121,6 +121,689 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
+        // Galaxy Background Component Implementation
+        function Galaxy({ 
+          focal = [0.5, 0.5],
+          rotation = [1.0, 0.0],
+          starSpeed = 0.5,
+          density = 1,
+          hueShift = 140,
+          disableAnimation = false,
+          speed = 1.0,
+          mouseInteraction = true,
+          glowIntensity = 0.3,
+          saturation = 0.0,
+          mouseRepulsion = true,
+          repulsionStrength = 2,
+          twinkleIntensity = 0.3,
+          rotationSpeed = 0.1,
+          autoCenterRepulsion = 0,
+          transparent = true
+        }) {
+          const ctnDom = useRef(null);
+          
+          useEffect(() => {
+            async function init() {
+              const OglModule = await import('https://cdn.skypack.dev/ogl');
+              
+              if (!ctnDom.current) return;
+              const ctn = ctnDom.current;
+              const renderer = new OglModule.Renderer({
+                alpha: transparent,
+                premultipliedAlpha: false
+              });
+              const gl = renderer.gl;
+
+              if (transparent) {
+                gl.enable(gl.BLEND);
+                gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+                gl.clearColor(0, 0, 0, 0);
+              } else {
+                gl.clearColor(0, 0, 0, 1);
+              }
+
+              let program;
+
+              function resize() {
+                const scale = 1;
+                renderer.setSize(ctn.offsetWidth * scale, ctn.offsetHeight * scale);
+                if (program) {
+                  program.uniforms.uResolution.value = new OglModule.Color(
+                    gl.canvas.width,
+                    gl.canvas.height,
+                    gl.canvas.width / gl.canvas.height
+                  );
+                }
+              }
+              window.addEventListener('resize', resize, false);
+              resize();
+
+              const geometry = new OglModule.Triangle(gl);
+              
+              const vertexShader = `
+                attribute vec2 uv;
+                attribute vec2 position;
+
+                varying vec2 vUv;
+
+                void main() {
+                  vUv = uv;
+                  gl_Position = vec4(position, 0, 1);
+                }
+              `;
+
+              const fragmentShader = `
+                precision highp float;
+
+                uniform float uTime;
+                uniform vec3 uResolution;
+                uniform vec2 uFocal;
+                uniform vec2 uRotation;
+                uniform float uStarSpeed;
+                uniform float uDensity;
+                uniform float uHueShift;
+                uniform float uSpeed;
+                uniform vec2 uMouse;
+                uniform float uGlowIntensity;
+                uniform float uSaturation;
+                uniform bool uMouseRepulsion;
+                uniform float uTwinkleIntensity;
+                uniform float uRotationSpeed;
+                uniform float uRepulsionStrength;
+                uniform float uMouseActiveFactor;
+                uniform float uAutoCenterRepulsion;
+                uniform bool uTransparent;
+
+                varying vec2 vUv;
+
+                #define NUM_LAYER 4.0
+                #define STAR_COLOR_CUTOFF 0.2
+                #define MAT45 mat2(0.7071, -0.7071, 0.7071, 0.7071)
+                #define PERIOD 3.0
+
+                float Hash21(vec2 p) {
+                  p = fract(p * vec2(123.34, 456.21));
+                  p += dot(p, p + 45.32);
+                  return fract(p.x * p.y);
+                }
+
+                float tri(float x) {
+                  return abs(fract(x) * 2.0 - 1.0);
+                }
+
+                float tris(float x) {
+                  float t = fract(x);
+                  return 1.0 - smoothstep(0.0, 1.0, abs(2.0 * t - 1.0));
+                }
+
+                float trisn(float x) {
+                  float t = fract(x);
+                  return 2.0 * (1.0 - smoothstep(0.0, 1.0, abs(2.0 * t - 1.0))) - 1.0;
+                }
+
+                vec3 hsv2rgb(vec3 c) {
+                  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+                  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+                  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+                }
+
+                float Star(vec2 uv, float flare) {
+                  float d = length(uv);
+                  float m = (0.05 * uGlowIntensity) / d;
+                  float rays = smoothstep(0.0, 1.0, 1.0 - abs(uv.x * uv.y * 1000.0));
+                  m += rays * flare * uGlowIntensity;
+                  uv *= MAT45;
+                  rays = smoothstep(0.0, 1.0, 1.0 - abs(uv.x * uv.y * 1000.0));
+                  m += rays * 0.3 * flare * uGlowIntensity;
+                  m *= smoothstep(1.0, 0.2, d);
+                  return m;
+                }
+
+                vec3 StarLayer(vec2 uv) {
+                  vec3 col = vec3(0.0);
+
+                  vec2 gv = fract(uv) - 0.5; 
+                  vec2 id = floor(uv);
+
+                  for (int y = -1; y <= 1; y++) {
+                    for (int x = -1; x <= 1; x++) {
+                      vec2 offset = vec2(float(x), float(y));
+                      vec2 si = id + vec2(float(x), float(y));
+                      float seed = Hash21(si);
+                      float size = fract(seed * 345.32);
+                      float glossLocal = tri(uStarSpeed / (PERIOD * seed + 1.0));
+                      float flareSize = smoothstep(0.9, 1.0, size) * glossLocal;
+
+                      float red = smoothstep(STAR_COLOR_CUTOFF, 1.0, Hash21(si + 1.0)) + STAR_COLOR_CUTOFF;
+                      float blu = smoothstep(STAR_COLOR_CUTOFF, 1.0, Hash21(si + 3.0)) + STAR_COLOR_CUTOFF;
+                      float grn = min(red, blu) * seed;
+                      vec3 base = vec3(red, grn, blu);
+                      
+                      float hue = atan(base.g - base.r, base.b - base.r) / (2.0 * 3.14159) + 0.5;
+                      hue = fract(hue + uHueShift / 360.0);
+                      float sat = length(base - vec3(dot(base, vec3(0.299, 0.587, 0.114)))) * uSaturation;
+                      float val = max(max(base.r, base.g), base.b);
+                      base = hsv2rgb(vec3(hue, sat, val));
+
+                      vec2 pad = vec2(tris(seed * 34.0 + uTime * uSpeed / 10.0), tris(seed * 38.0 + uTime * uSpeed / 30.0)) - 0.5;
+
+                      float star = Star(gv - offset - pad, flareSize);
+                      vec3 color = base;
+
+                      float twinkle = trisn(uTime * uSpeed + seed * 6.2831) * 0.5 + 1.0;
+                      twinkle = mix(1.0, twinkle, uTwinkleIntensity);
+                      star *= twinkle;
+                      
+                      col += star * size * color;
+                    }
+                  }
+
+                  return col;
+                }
+
+                void main() {
+                  vec2 focalPx = uFocal * uResolution.xy;
+                  vec2 uv = (vUv * uResolution.xy - focalPx) / uResolution.y;
+
+                  vec2 mouseNorm = uMouse - vec2(0.5);
+                  
+                  if (uAutoCenterRepulsion > 0.0) {
+                    vec2 centerUV = vec2(0.0, 0.0);
+                    float centerDist = length(uv - centerUV);
+                    vec2 repulsion = normalize(uv - centerUV) * (uAutoCenterRepulsion / (centerDist + 0.1));
+                    uv += repulsion * 0.05;
+                  } else if (uMouseRepulsion) {
+                    vec2 mousePosUV = (uMouse * uResolution.xy - focalPx) / uResolution.y;
+                    float mouseDist = length(uv - mousePosUV);
+                    vec2 repulsion = normalize(uv - mousePosUV) * (uRepulsionStrength / (mouseDist + 0.1));
+                    uv += repulsion * 0.05 * uMouseActiveFactor;
+                  } else {
+                    vec2 mouseOffset = mouseNorm * 0.1 * uMouseActiveFactor;
+                    uv += mouseOffset;
+                  }
+
+                  float autoRotAngle = uTime * uRotationSpeed;
+                  mat2 autoRot = mat2(cos(autoRotAngle), -sin(autoRotAngle), sin(autoRotAngle), cos(autoRotAngle));
+                  uv = autoRot * uv;
+
+                  uv = mat2(uRotation.x, -uRotation.y, uRotation.y, uRotation.x) * uv;
+
+                  vec3 col = vec3(0.0);
+
+                  for (float i = 0.0; i < 1.0; i += 1.0 / NUM_LAYER) {
+                    float depth = fract(i + uStarSpeed * uSpeed);
+                    float scale = mix(20.0 * uDensity, 0.5 * uDensity, depth);
+                    float fade = depth * smoothstep(1.0, 0.9, depth);
+                    col += StarLayer(uv * scale + i * 453.32) * fade;
+                  }
+
+                  if (uTransparent) {
+                    float alpha = length(col);
+                    alpha = smoothstep(0.0, 0.3, alpha);
+                    alpha = min(alpha, 1.0);
+                    gl_FragColor = vec4(col, alpha);
+                  } else {
+                    gl_FragColor = vec4(col, 1.0);
+                  }
+                }
+              `;
+
+              program = new OglModule.Program(gl, {
+                vertex: vertexShader,
+                fragment: fragmentShader,
+                uniforms: {
+                  uTime: { value: 0 },
+                  uResolution: {
+                    value: new OglModule.Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height)
+                  },
+                  uFocal: { value: new Float32Array(focal) },
+                  uRotation: { value: new Float32Array(rotation) },
+                  uStarSpeed: { value: starSpeed },
+                  uDensity: { value: density },
+                  uHueShift: { value: hueShift },
+                  uSpeed: { value: speed },
+                  uMouse: {
+                    value: new Float32Array([0.5, 0.5])
+                  },
+                  uGlowIntensity: { value: glowIntensity },
+                  uSaturation: { value: saturation },
+                  uMouseRepulsion: { value: mouseRepulsion },
+                  uTwinkleIntensity: { value: twinkleIntensity },
+                  uRotationSpeed: { value: rotationSpeed },
+                  uRepulsionStrength: { value: repulsionStrength },
+                  uMouseActiveFactor: { value: 0.0 },
+                  uAutoCenterRepulsion: { value: autoCenterRepulsion },
+                  uTransparent: { value: transparent }
+                }
+              });
+
+              const mesh = new OglModule.Mesh(gl, { geometry, program });
+              let animateId;
+
+              function update(t) {
+                animateId = requestAnimationFrame(update);
+                if (!disableAnimation) {
+                  program.uniforms.uTime.value = t * 0.001;
+                  program.uniforms.uStarSpeed.value = (t * 0.001 * starSpeed) / 10.0;
+                }
+
+                renderer.render({ scene: mesh });
+              }
+              animateId = requestAnimationFrame(update);
+              ctn.appendChild(gl.canvas);
+
+              return () => {
+                cancelAnimationFrame(animateId);
+                window.removeEventListener('resize', resize);
+                ctn.removeChild(gl.canvas);
+              };
+            }
+            
+            init();
+          }, []);
+
+          return React.createElement('div', {
+            ref: ctnDom,
+            className: 'galaxy-container',
+            style: { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }
+          });
+        }
+
+        // VariableProximity component implementation
+        function useMousePositionRef(containerRef) {
+          const positionRef = React.useRef({ x: 0, y: 0 });
+
+          React.useEffect(() => {
+            const updatePosition = (x, y) => {
+              if (containerRef?.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                positionRef.current = { x: x - rect.left, y: y - rect.top };
+              } else {
+                positionRef.current = { x, y };
+              }
+            };
+
+            const handleMouseMove = ev => updatePosition(ev.clientX, ev.clientY);
+            const handleTouchMove = ev => {
+              const touch = ev.touches[0];
+              updatePosition(touch.clientX, touch.clientY);
+            };
+
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('touchmove', handleTouchMove);
+            return () => {
+              window.removeEventListener('mousemove', handleMouseMove);
+              window.removeEventListener('touchmove', handleTouchMove);
+            };
+          }, [containerRef]);
+
+          return positionRef;
+        }
+
+        const VariableProximity = React.forwardRef((props, ref) => {
+          const {
+            label,
+            fromFontVariationSettings = "'wght' 400",
+            toFontVariationSettings = "'wght' 800",
+            containerRef,
+            radius = 80,
+            falloff = 'linear',
+            className = '',
+            onClick,
+            style,
+            ...restProps
+          } = props;
+
+          const letterRefs = React.useRef([]);
+          const interpolatedSettingsRef = React.useRef([]);
+          const mousePositionRef = useMousePositionRef(containerRef);
+
+          const parsedSettings = React.useMemo(() => {
+            const parseSettings = settingsStr =>
+              new Map(
+                settingsStr
+                  .split(',')
+                  .map(s => s.trim())
+                  .map(s => {
+                    const [name, value] = s.split(' ');
+                    return [name.replace(/['\"]/g, ''), parseFloat(value)];
+                  })
+              );
+
+            const fromSettings = parseSettings(fromFontVariationSettings);
+            const toSettings = parseSettings(toFontVariationSettings);
+
+            return Array.from(fromSettings.entries()).map(([axis, fromValue]) => ({
+              axis,
+              fromValue,
+              toValue: toSettings.get(axis) ?? fromValue
+            }));
+          }, [fromFontVariationSettings, toFontVariationSettings]);
+
+          const calculateDistance = (x1, y1, x2, y2) => Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+
+          const calculateFalloff = distance => {
+            const norm = Math.min(Math.max(1 - distance / radius, 0), 1);
+            switch (falloff) {
+              case 'exponential':
+                return norm ** 2;
+              case 'gaussian':
+                return Math.exp(-((distance / (radius / 2)) ** 2) / 2);
+              case 'linear':
+              default:
+                return norm;
+            }
+          };
+
+          React.useEffect(() => {
+            if (!containerRef?.current) return;
+
+            const update = () => {
+              if (!containerRef?.current) return;
+              const containerRect = containerRef.current.getBoundingClientRect();
+
+              letterRefs.current.forEach((letterRef, index) => {
+                if (!letterRef) return;
+
+                const rect = letterRef.getBoundingClientRect();
+                const letterCenterX = rect.left + rect.width / 2 - containerRect.left;
+                const letterCenterY = rect.top + rect.height / 2 - containerRect.top;
+
+                const distance = calculateDistance(
+                  mousePositionRef.current.x,
+                  mousePositionRef.current.y,
+                  letterCenterX,
+                  letterCenterY
+                );
+
+                if (distance >= radius) {
+                  letterRef.style.fontWeight = '400';
+                  return;
+                }
+
+                const falloffValue = calculateFalloff(distance);
+                const newSettings = parsedSettings
+                  .map(({ axis, fromValue, toValue }) => {
+                    const interpolatedValue = fromValue + (toValue - fromValue) * falloffValue;
+                    if (axis === 'wght') {
+                      letterRef.style.fontWeight = Math.round(interpolatedValue);
+                    }
+                    return `'${axis}' ${interpolatedValue}`;
+                  })
+                  .join(', ');
+
+                interpolatedSettingsRef.current[index] = newSettings;
+              });
+
+              requestAnimationFrame(update);
+            };
+
+            const animationId = requestAnimationFrame(update);
+            return () => cancelAnimationFrame(animationId);
+          }, [containerRef, mousePositionRef, radius, falloff, parsedSettings]);
+
+          const words = label.split(' ');
+          let letterIndex = 0;
+
+          return React.createElement('span',
+            {
+              ref: ref,
+              className: `${className}`,
+              onClick: onClick,
+              style: { display: 'inline', ...style },
+              ...restProps
+            },
+            words.map((word, wordIndex) =>
+              React.createElement('span',
+                { key: wordIndex, style: { display: 'inline-block', whiteSpace: 'nowrap' } },
+                word.split('').map(letter => {
+                  const currentLetterIndex = letterIndex++;
+                  return React.createElement('span',
+                    {
+                      key: currentLetterIndex,
+                      ref: el => { letterRefs.current[currentLetterIndex] = el; },
+                      style: {
+                        display: 'inline-block',
+                        fontWeight: '400',
+                        transition: 'font-weight 0.1s ease'
+                      },
+                      'aria-hidden': 'true'
+                    },
+                    letter
+                  );
+                }),
+                wordIndex < words.length - 1 && React.createElement('span', { style: { display: 'inline-block' } }, '\u00A0')
+              )
+            ),
+            React.createElement('span', { className: 'sr-only' }, label)
+          );
+        });
+
+        // AnimatedList component implementation
+        const AnimatedItem = ({
+          children,
+          delay = 0,
+          index,
+          onMouseEnter,
+          onClick,
+          isVisible = true
+        }) => {
+          const ref = React.useRef(null);
+          const [inView, setInView] = React.useState(false);
+
+          React.useEffect(() => {
+            if (!ref.current) return;
+
+            const observer = new IntersectionObserver(
+              ([entry]) => {
+                if (entry.isIntersecting) {
+                  setInView(true);
+                }
+              },
+              { threshold: 0.5 }
+            );
+
+            observer.observe(ref.current);
+
+            return () => {
+              if (ref.current) {
+                observer.unobserve(ref.current);
+              }
+            };
+          }, []);
+
+          return (
+            React.createElement('div', {
+              ref: ref,
+              'data-index': index,
+              onMouseEnter: onMouseEnter,
+              onClick: onClick,
+              style: {
+                marginBottom: '1rem',
+                cursor: 'pointer',
+                transform: inView ? 'scale(1)' : 'scale(0.7)',
+                opacity: inView ? 1 : 0,
+                transition: `transform 0.2s ease ${delay}s, opacity 0.2s ease ${delay}s`,
+              }
+            }, children)
+          );
+        };
+
+        const AnimatedList = ({
+          items = [
+            { name: 'Item 1', url: '#' },
+            { name: 'Item 2', url: '#' },
+            { name: 'Item 3', url: '#' },
+            { name: 'Item 4', url: '#' },
+            { name: 'Item 5', url: '#' },
+            { name: 'Item 6', url: '#' },
+            { name: 'Item 7', url: '#' },
+            { name: 'Item 8', url: '#' },
+            { name: 'Item 9', url: '#' },
+            { name: 'Item 10', url: '#' },
+            { name: 'Item 11', url: '#' },
+            { name: 'Item 12', url: '#' },
+            { name: 'Item 13', url: '#' },
+            { name: 'Item 14', url: '#' },
+            { name: 'Item 15', url: '#' }
+          ],
+          onItemSelect,
+          showGradients = true,
+          enableArrowNavigation = true,
+          className = '',
+          itemClassName = '',
+          displayScrollbar = true,
+          initialSelectedIndex = -1
+        }) => {
+          const listRef = React.useRef(null);
+          const [selectedIndex, setSelectedIndex] = React.useState(initialSelectedIndex);
+          const [keyboardNav, setKeyboardNav] = React.useState(false);
+          const [topGradientOpacity, setTopGradientOpacity] = React.useState(0);
+          const [bottomGradientOpacity, setBottomGradientOpacity] = React.useState(1);
+
+          const handleScroll = (e) => {
+            const { scrollTop, scrollHeight, clientHeight } = e.target;
+            setTopGradientOpacity(Math.min(scrollTop / 50, 1));
+            const bottomDistance = scrollHeight - (scrollTop + clientHeight);
+            setBottomGradientOpacity(scrollHeight <= clientHeight ? 0 : Math.min(bottomDistance / 50, 1));
+          };
+
+          React.useEffect(() => {
+            if (!enableArrowNavigation) return;
+            const handleKeyDown = (e) => {
+              if (e.key === 'ArrowDown' || (e.key === 'Tab' && !e.shiftKey)) {
+                e.preventDefault();
+                setKeyboardNav(true);
+                setSelectedIndex(prev => Math.min(prev + 1, items.length - 1));
+              } else if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) {
+                e.preventDefault();
+                setKeyboardNav(true);
+                setSelectedIndex(prev => Math.max(prev - 1, 0));
+              } else if (e.key === 'Enter') {
+                if (selectedIndex >= 0 && selectedIndex < items.length) {
+                  e.preventDefault();
+                  if (onItemSelect) {
+                    onItemSelect(items[selectedIndex], selectedIndex);
+                  }
+                }
+              }
+            };
+
+            window.addEventListener('keydown', handleKeyDown);
+            return () => window.removeEventListener('keydown', handleKeyDown);
+          }, [items, selectedIndex, onItemSelect, enableArrowNavigation]);
+
+          React.useEffect(() => {
+            if (!keyboardNav || selectedIndex < 0 || !listRef.current) return;
+            const container = listRef.current;
+            const selectedItem = container.querySelector(`[data-index="${selectedIndex}"]`);
+            if (selectedItem) {
+              const extraMargin = 50;
+              const containerScrollTop = container.scrollTop;
+              const containerHeight = container.clientHeight;
+              const itemTop = selectedItem.offsetTop;
+              const itemBottom = itemTop + selectedItem.offsetHeight;
+              if (itemTop < containerScrollTop + extraMargin) {
+                container.scrollTo({ top: itemTop - extraMargin, behavior: 'smooth' });
+              } else if (itemBottom > containerScrollTop + containerHeight - extraMargin) {
+                container.scrollTo({
+                  top: itemBottom - containerHeight + extraMargin,
+                  behavior: 'smooth'
+                });
+              }
+            }
+            setKeyboardNav(false);
+          }, [selectedIndex, keyboardNav]);
+
+          return (
+            React.createElement('div', {
+              className: `scroll-list-container ${className}`,
+              style: { position: 'relative', overflow: 'hidden' }
+            },
+              React.createElement('div', 
+                {
+                  ref: listRef,
+                  className: `scroll-list ${!displayScrollbar ? 'no-scrollbar' : ''}`,
+                  onScroll: handleScroll,
+                  style: { 
+                    maxHeight: '400px', 
+                    overflowY: 'auto',
+                    padding: '10px 0',
+                    scrollbarWidth: displayScrollbar ? 'auto' : 'none'
+                  }
+                },
+                items.map((item, index) => 
+                  React.createElement(AnimatedItem, {
+                    key: index,
+                    delay: 0.1,
+                    index: index,
+                    onMouseEnter: () => setSelectedIndex(index),
+                    onClick: () => {
+                      setSelectedIndex(index);
+                      if (onItemSelect) {
+                        onItemSelect(item, index);
+                      }
+                    },
+                    isVisible: true
+                  },
+                    React.createElement('a', 
+                      {
+                        href: item.url,
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                        className: `item ${selectedIndex === index ? 'selected' : ''} ${itemClassName} block p-2 rounded-lg transition-colors text-sm cursor-target`,
+                        style: {
+                          padding: '12px',
+                          backgroundColor: selectedIndex === index ? '#e0e7ff' : '#f3f4f6',
+                          borderRadius: '8px',
+                          transition: 'background-color 0.2s',
+                          cursor: 'pointer',
+                          textDecoration: 'none',
+                          display: 'block',
+                          color: 'inherit'
+                        }
+                      },
+                      React.createElement('p', { className: 'item-text', style: { margin: 0, color: '#374151' } }, item.name)
+                    )
+                  )
+                )
+              ),
+              showGradients && React.createElement('React.Fragment', {},
+                React.createElement('div', {
+                  className: 'top-gradient',
+                  style: { 
+                    position: 'absolute', 
+                    top: 0, 
+                    left: 0, 
+                    right: 0, 
+                    height: '20px', 
+                    background: 'linear-gradient(to bottom, rgba(255,255,255,1), transparent)',
+                    opacity: topGradientOpacity,
+                    pointerEvents: 'none',
+                    zIndex: 2
+                  }
+                }),
+                React.createElement('div', {
+                  className: 'bottom-gradient',
+                  style: { 
+                    position: 'absolute', 
+                    bottom: 0, 
+                    left: 0, 
+                    right: 0, 
+                    height: '20px', 
+                    background: 'linear-gradient(to top, rgba(255,255,255,1), transparent)',
+                    opacity: bottomGradientOpacity,
+                    pointerEvents: 'none',
+                    zIndex: 2
+                  }
+                })
+              )
+            )
+          );
+        };
+
+
+
         const MusicPlayer = () => {
             const [isPlaying, setIsPlaying] = useState(false);
             const [, forceUpdate] = useState({});
@@ -169,6 +852,7 @@
         
         const PortalAtividades = () => {
           const [selectedCategory, setSelectedCategory] = useState('Todas');
+          const containerRef = React.useRef(null);
 
           const activities = [
             {
@@ -270,226 +954,232 @@
               difficulty: 'Variado',
               estimatedTime: '15-25 min'
             },
+            {
+              id: 'classificador-de-palavras',
+              title: 'Classificador de Palavras',
+              description: 'Arraste as palavras para a categoria gramatical correta.',
+              icon: '✍️',
+              color: 'from-indigo-500 to-purple-600',
+              link: 'pages/classificador_de_palavras.html',
+              category: 'Português',
+              difficulty: 'Básico',
+              estimatedTime: '10-15 min'
+            },
+            {
+              id: 'construindo-frases-minecraft',
+              title: 'Construindo Frases (Minecraft)',
+              description: 'Complete frases com tema de Minecraft usando conjunções.',
+              icon: '🧱',
+              color: 'from-green-600 to-teal-700',
+              link: 'pages/construindo_frases_minecraft.html',
+              category: 'Português',
+              difficulty: 'Básico',
+              estimatedTime: '10-15 min'
+            },
+            {
+              id: 'construtor-de-historias',
+              title: 'Construtor de Histórias',
+              description: 'Crie histórias com personagens e objetivos definidos por você.',
+              icon: '📖',
+              color: 'from-purple-500 to-pink-600',
+              link: 'pages/construtor_de_historias.html',
+              category: 'Português',
+              difficulty: 'Intermediário',
+              estimatedTime: '15-20 min'
+            },
           ];
 
-          const categories = ['Todas', 'Matemática', 'História'];
+          const categories = ['Todas', 'Matemática', 'História', 'Português'];
           
           const filteredActivities = selectedCategory === 'Todas' 
             ? activities 
             : activities.filter(activity => activity.category === selectedCategory);
 
+
           return (
-            <div className="min-h-screen gradient-bg" style={{fontFamily: "'Comic Sans MS', cursive"}}>
-              <MusicPlayer />
-              <div className="flex">
-                {/* Main Content */}
-                <div className="flex-1 relative z-10 px-4 pb-20 -mt-10">
-                  <div className="max-w-6xl mx-auto">
-                    
-                    {/* Header */}
-                    <div className="relative overflow-hidden">
-                      <div className="absolute inset-0 bg-black opacity-20"></div>
-                      <div className="relative z-10 text-white text-center py-20">
-                        <h1 className="text-5xl md:text-6xl font-bold mb-4">
-                          🎯 Portal de Atividades Educativas
-                        </h1>
-                        <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto px-4">
-                          Aprenda brincando com atividades interativas personalizadas para diferentes necessidades
-                        </p>
-                        
-                        <div className="max-w-5xl mx-auto px-4">
-                          {/* How to Use Instructions */}
-                          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-                            <h3 className="text-lg font-semibold mb-4">
-                              📋 Como Usar:
-                            </h3>
-                            <div className="grid grid-cols-3 gap-3 text-sm">
-                              <div className="bg-white/20 rounded-lg p-3 text-center">
-                                <div className="font-medium">1. Filtre por matéria</div>
-                              </div>
-                              <div className="bg-white/20 rounded-lg p-3 text-center">
-                                <div className="font-medium">2. Selecione uma atividade</div>
-                              </div>
-                              <div className="bg-white/20 rounded-lg p-3 text-center">
-                                <div className="font-medium">3. Divirta-se aprendendo!</div>
-                              </div>
-                            </div>
-                          </div>
+            <div ref={containerRef} style={{ position: 'relative', minHeight: '100vh' }}>
+              <Galaxy
+                mouseRepulsion={true}
+                mouseInteraction={true}
+                density={1.5}
+                glowIntensity={0.5}
+                saturation={0.8}
+                hueShift={240}
+              />
+
+              <div className="min-h-screen gradient-bg" style={{fontFamily: "'Comic Sans MS', cursive", position: 'relative', zIndex: 1}}>
+                <MusicPlayer />
+                <div className="flex flex-col lg:flex-row">
+                    {/* Main Content */}
+                    <div className="lg:flex-1 relative z-10 px-4 pb-20 -mt-10">
+                      
+                      {/* Header */}
+                      <div className="relative overflow-hidden">
+                        <div className="absolute inset-0 bg-black opacity-20"></div>
+                        <div className="relative z-10 text-white text-center py-20">
+                          <h1 className="text-5xl md:text-6xl font-bold mb-4">
+                            <VariableProximity
+                              label="🎯 Portal de Atividades Educativas"
+                              fromFontVariationSettings="'wght' 400"
+                              toFontVariationSettings="'wght' 900"
+                              containerRef={containerRef}
+                              radius={120}
+                              falloff="exponential"
+                            />
+                          </h1>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Category Filters */}
-                    <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8">
-                      <h3 className="text-xl font-bold text-center text-gray-800 mb-4">
-                        📚 Filtrar por Matéria:
-                      </h3>
-                      <div className="flex flex-wrap justify-center gap-3">
-                        {categories.map((category) => (
-                          <button
-                            key={category}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`filter-button px-6 py-3 rounded-full font-semibold transition-all ${
-                              selectedCategory === category
-                                ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white active'
-                                : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400'
-                            }`}
-                          >
-                            {category === 'Todas' && '🌍'}
-                            {category === 'Matemática' && '🔢'}
-                            {category === 'História' && '📜'}
-                            <span className="ml-2">{category}</span>
-                          </button>
+                      {/* Category Filters */}
+                      <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 mb-8">
+                        <h3 className="text-xl font-bold text-center text-gray-800 mb-4">
+                          <VariableProximity
+                            label="📚 Filtrar por Matéria:"
+                            fromFontVariationSettings="'wght' 400"
+                            toFontVariationSettings="'wght' 800"
+                            containerRef={containerRef}
+                            radius={100}
+                            falloff="linear"
+                          />
+                        </h3>
+                        <div className="flex flex-wrap justify-center gap-3">
+                          {categories.map((category) => (
+                            <button
+                              key={category}
+                              onClick={() => setSelectedCategory(category)}
+                              className={`filter-button px-6 py-3 rounded-full font-semibold transition-all ${
+                                selectedCategory === category
+                                  ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white active'
+                                  : 'bg-white text-gray-700 border-2 border-gray-300 hover:border-purple-400 cursor-target'
+                              }`}
+                            >
+                              {category === 'Todas' && '🌍'}
+                              {category === 'Matemática' && '🔢'}
+                              {category === 'História' && '📜'}
+                              <span className="ml-2">{category}</span>
+                            </button>
+                          ))}
+                        </div>
+                        <div className="text-center mt-3 text-sm text-gray-600">
+                          Mostrando {filteredActivities.length} atividade{filteredActivities.length !== 1 ? 's' : ''}
+                        </div>
+                      </div>
+
+                      {/* Activities Section */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        {filteredActivities.map((activity) => (
+                          <div key={activity.id} className="activity-card card-hover cursor-target" style={{minWidth: '250px', padding: '15px'}}>
+                              {/* Icon Placeholder */}
+                              <div className="icon-placeholder" style={{width: '80px', height: '80px', margin: '0 auto 10px'}}>
+                                {activity.icon}
+                              </div>
+
+                              {/* Content */}
+                              <h3 className="text-lg font-bold text-gray-800 mb-2">
+                                <VariableProximity
+                                  label={activity.title}
+                                  fromFontVariationSettings="'wght' 600"
+                                  toFontVariationSettings="'wght' 900"
+                                  containerRef={containerRef}
+                                  radius={90}
+                                  falloff="exponential"
+                                />
+                              </h3>
+
+                              {/* Stats */}
+                              <div className="mb-3">
+                                <div className="flex justify-center items-center gap-2 mb-2 text-xs text-gray-500">
+                                  <div className="flex items-center gap-1">
+                                    <span>⏱️</span>
+                                    <span>{activity.estimatedTime}</span>
+                                  </div>
+                                </div>
+                                <div className="flex justify-center items-center gap-2 text-xs">
+                                  <span className="bg-purple-100 text-purple-800 font-bold px-2 py-1 rounded-full">
+                                    {activity.category}
+                                  </span>
+                                  <span className={`font-bold px-2 py-1 rounded-full ${
+                                    activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
+                                    activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
+                                    activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
+                                    'bg-gray-100 text-gray-800'
+                                  }`}>
+                                    {activity.difficulty}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Action Button */}
+                              <a
+                                href={activity.link}
+                                className={`inline-flex items-center justify-center w-full px-4 py-2 bg-gradient-to-r ${activity.color} text-white font-bold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-300 text-sm cursor-target`}
+                              >
+                                <span className="mr-2">🚀</span>
+                                Começar Atividade
+                              </a>
+                            </div>
                         ))}
                       </div>
-                      <div className="text-center mt-3 text-sm text-gray-600">
-                        Mostrando {filteredActivities.length} atividade{filteredActivities.length !== 1 ? 's' : ''}
-                      </div>
                     </div>
-                    
-                    {/* Activities Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                      {filteredActivities.map((activity) => (
-                        <div key={activity.id} className="activity-card card-hover">
-                          {/* Icon Placeholder */}
-                          <div className="icon-placeholder">
-                            {activity.icon}
-                          </div>
 
-                          {/* Content */}
-                          <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                            {activity.title}
-                          </h3>
-                          
-                          <p className="text-gray-600 mb-4 leading-relaxed">
-                            {activity.description}
-                          </p>
-
-                          {/* Stats */}
-                          <div className="mb-6">
-                            <div className="flex justify-center items-center gap-2 mb-3 text-sm text-gray-500">
-                              <div className="flex items-center gap-1">
-                                <span>⏱️</span>
-                                <span>{activity.estimatedTime}</span>
-                              </div>
-                            </div>
-                            <div className="flex justify-center items-center gap-4 text-xs">
-                              <span className="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded-full">
-                                {activity.category}
-                              </span>
-                              <span className={`font-bold px-3 py-1 rounded-full ${
-                                activity.difficulty === 'Básico' ? 'bg-green-100 text-green-800' :
-                                activity.difficulty === 'Intermediário' ? 'bg-yellow-100 text-yellow-800' :
-                                activity.difficulty === 'Avançado' ? 'bg-red-100 text-red-800' :
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {activity.difficulty}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Action Button */}
-                          <a
-                            href={activity.link}
-                            className={`inline-flex items-center justify-center w-full px-8 py-4 bg-gradient-to-r ${activity.color} text-white font-bold text-lg rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-300`}
-                          >
-                            <span className="mr-2">🚀</span>
-                            Começar Atividade
-                          </a>
-                        </div>
-                      ))}
+                    {/* Sidebar */}
+                    <div className="hidden lg:block w-80 bg-white/80 backdrop-blur-sm rounded-xl p-6 h-[calc(100vh-120px)] sticky top-4 self-start overflow-y-auto">
+                      <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <span className="mr-2">🔗</span>
+                        <VariableProximity
+                          label="Links Interessantes"
+                          fromFontVariationSettings="'wght' 600"
+                          toFontVariationSettings="'wght' 900"
+                          containerRef={containerRef}
+                          radius={100}
+                          falloff="linear"
+                        />
+                      </h3>
+                      <AnimatedList
+                        items={[
+                          { name: "Educação UOL", url: "https://brasil.educacao.uol.com.br/" },
+                          { name: "Escola Kids", url: "https://www.escolakids.uol.com.br/" },
+                          { name: "TV Escola", url: "https://www.tvescola.org.br/" },
+                          { name: "Biblioteca Virtual", url: "https://www.bibliotecavirtual.seduc.ce.gov.br/" },
+                          { name: "Canal Educação", url: "https://www.youtube.com/user/CanalEducacao" },
+                          { name: "ENEM", url: "https://novo.enem.inep.gov.br/" },
+                          { name: "Brasil Escola", url: "https://www.brasilescola.uol.com.br/" },
+                          { name: "Khan Academy", url: "https://www.khanacademy.org/" },
+                          { name: "Slow Roads", url: "https://slowroads.io/#A1-036e9403@0" },
+                          { name: "Coddy", url: "https://coddy.tech/journeys/html/fundamentals" },
+                          { name: "Coloring Pages", url: "https://dearcoloringpages.com/pt/free-coloring-pages" },
+                          { name: "Retro TVs", url: "https://90s.myretrotvs.com/#" },
+                          { name: "Internet Janitor", url: "https://internet-janitor.itch.io/" },
+                          { name: "Musicca", url: "https://www.musicca.com/" },
+                          { name: "Cymath", url: "https://www.cymath.com/" },
+                          { name: "Animagraffs", url: "https://animagraffs.com/" }
+                        ]}
+                        onItemSelect={(item, index) => {
+                          window.open(item.url, '_blank');
+                        }}
+                        showGradients={true}
+                        enableArrowNavigation={true}
+                        displayScrollbar={true}
+                      />
                     </div>
                   </div>
+                
+                {/* Footer */}
+                <div className="bg-black/20 text-white text-center py-8">
+                  <p className="text-lg">
+                    <VariableProximity
+                      label="🌟 Desenvolvido para tornar o aprendizado acessível e divertido"
+                      fromFontVariationSettings="'wght' 400"
+                      toFontVariationSettings="'wght' 700"
+                      containerRef={containerRef}
+                      radius={110}
+                      falloff="gaussian"
+                    />
+                  </p>
+                  <p className="text-sm mt-2 opacity-80">
+                    @Copyright JAODATA - Todos os direitos reservados
+                  </p>
                 </div>
-
-                {/* Sidebar */}
-                <div className="hidden lg:block w-80 bg-white/80 backdrop-blur-sm rounded-xl p-6 h-fit sticky top-4 self-start">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                    <span className="mr-2">🔗</span> Links Interessantes
-                  </h3>
-                  <div className="space-y-4">
-                    <a href="https://brasil.educacao.uol.com.br/" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors text-blue-700 font-medium">
-                      Educação UOL
-                    </a>
-                    <a href="https://www.escolakids.uol.com.br/" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors text-green-700 font-medium">
-                      Escola Kids
-                    </a>
-                    <a href="https://www.tvescola.org.br/" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors text-purple-700 font-medium">
-                      TV Escola
-                    </a>
-                    <a href="https://www.bibliotecavirtual.seduc.ce.gov.br/" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors text-yellow-700 font-medium">
-                      Biblioteca Virtual
-                    </a>
-                    <a href="https://www.youtube.com/user/CanalEducacao" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-red-50 rounded-lg hover:bg-red-100 transition-colors text-red-700 font-medium">
-                      Canal Educação
-                    </a>
-                    <a href="https://novo.enem.inep.gov.br/" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors text-indigo-700 font-medium">
-                      ENEM
-                    </a>
-                    <a href="https://www.brasilescola.uol.com.br/" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors text-pink-700 font-medium">
-                      Brasil Escola
-                    </a>
-                    <a href="https://www.khanacademy.org/" 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="block p-3 bg-teal-50 rounded-lg hover:bg-teal-100 transition-colors text-teal-700 font-medium">
-                      Khan Academy
-                    </a>
-                  </div>
-                  
-                  <div className="mt-6 pt-4 border-t border-gray-300">
-                    <h4 className="font-bold text-gray-700 mb-2">Dicas de Estudo</h4>
-                    <ul className="text-sm text-gray-600 space-y-2">
-                      <li className="flex items-start">
-                        <span className="text-yellow-500 mr-2">🔸</span>
-                        <span>Crie um cronograma de estudos</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-yellow-500 mr-2">🔸</span>
-                        <span>Estude em ambientes silenciosos</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-yellow-500 mr-2">🔸</span>
-                        <span>Faça pausas regulares</span>
-                      </li>
-                      <li className="flex items-start">
-                        <span className="text-yellow-500 mr-2">🔸</span>
-                        <span>Pratique com exercícios</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="bg-black/20 text-white text-center py-8">
-                <p className="text-lg">
-                  🌟 Desenvolvido para tornar o aprendizado acessível e divertido
-                </p>
-                <p className="text-sm mt-2 opacity-80">
-                  Com suporte especial para necessidades educativas especiais
-                </p>
               </div>
             </div>
           );

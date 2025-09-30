@@ -20,7 +20,13 @@
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_press_key",
       "Read(//tmp/**)",
-      "mcp__playwright__browser_close"
+      "mcp__playwright__browser_close",
+      "Bash(rm:*)",
+      "Bash(for:*)",
+      "Bash(do echo \"=== Processing $file ===\")",
+      "Bash(grep:*)",
+      "mcp__gemini-cli__ask-gemini",
+      "Bash(do sed -i 's/max-width: 800px/max-width: 1400px/g; s/max-width: 1200px/max-width: 1400px/g; s/padding: 30px/padding: 20px/g; s/padding: 25px/padding: 15px/g; s/padding: 20px/padding: 15px/g; s/margin-bottom: 30px/margin-bottom: 15px/g; s/margin-bottom: 25px/margin-bottom: 12px/g; s/gap: 20px/gap: 10px/g; s/gap: 15px/gap: 10px/g; s/font-size: 2\\.5rem/font-size: 2rem/g; s/grid-template-columns: repeat(2, 1fr)/grid-template-columns: repeat(3, 1fr)/g; s/grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))/grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))/g; s/grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))/grid-template-columns: repeat(4, 1fr)/g' \"$file\")"
     ],
     "deny": [],
     "ask": []

@@ -1,7 +1,7 @@
 # Diretrizes para Atividades Educativas
 ## Portal de Atividades Educativas
 
-Este documento estabelece os padrões e práticas que todas as atividades do portal devem seguir para manter consistência, usabilidade e qualidade de dados.
+Este documento estabelece os padrões e práticas que todas as atividades do portal devem seguir para manter consistência, usabilidade e qualidade de dados. Inclui também os componentes interativos que aprimoram a experiência educacional.
 
 ## 1. Estrutura Padrão de Atividade
 
@@ -38,16 +38,55 @@ Este documento estabelece os padrões e práticas que todas as atividades do por
 - **Badges/Conquistas**: Quando aplicável
 - **Opções de continuidade**: Novo bloco ou finalizar sessão
 
-## 2. Padrão CSV - OBRIGATÓRIO
+## 2. Componentes Interativos Implementados
 
-### 2.1 Formato Unificado
+### 2.1 Background Galaxy (Portal Principal - index.html)
+- Efeito visual de fundo com estrelas animadas e interação com mouse
+- Configurações personalizadas: `mouseRepulsion=true`, `density=1.5`, `glowIntensity=0.5`, `hueShift=240`
+
+### 2.2 Gradient Background (Todas as atividades)
+- Gradiente de fundo consistente em todas as atividades educativas
+- Padrão: `linear-gradient(90deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 50%, hsla(207, 41%, 27%, 1) 100%)`
+- Arquivo: `activity-gradient.css`
+
+### 2.3 Animated List (Listas de Links - index.html)
+- Componente de lista com animação gradual de itens
+- Compatibilidade com navegação por teclado (setas e tab)
+- Gradientes de rolagem para melhor experiência de usuário
+
+### 2.3 Scroll Stack (Cards de Atividades - index.html)
+- Componente de pilha de cards com efeito de transformação durante scroll
+- Efeito de escala e profundidade proporcional à posição no scroll
+- Transições suaves entre estados dos cards
+
+### 2.4 Text Type (Enunciados dos Blocos de Exercícios)
+- Efeito de digitação para enunciados de questões
+- Velocidade de digitação ajustável
+- Cursor animado opcional
+- Compatível com múltiplas frases alternando automaticamente
+
+### 2.5 Variable Proximity (Texto Realçado)
+- Efeito de realce de texto baseado na proximidade do cursor
+- Configurações de fonte ajustáveis via font-variation-settings
+- Transições suaves entre estados normal e realçado
+- Compatível com diferentes tamanhos de raio e tipos de atenuação
+
+### 2.6 Animated List (Listas Animadas)
+- Componente de lista com animação gradual de itens
+- Compatibilidade com navegação por teclado (setas e tab)
+- Gradientes de rolagem para melhor experiência de usuário
+- Integração com links educacionais para fácil acesso
+
+## 3. Padrão CSV - OBRIGATÓRIO
+
+### 3.1 Formato Unificado
 Todas as atividades DEVEM exportar CSV com esta estrutura exata:
 
 ```csv
 Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score
 ```
 
-### 2.2 Descrição dos Campos
+### 3.2 Descrição dos Campos
 
 | Campo | Descrição | Exemplo |
 |-------|-----------|---------|
@@ -61,7 +100,7 @@ Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score
 | **Erros** | Número de respostas incorretas | `1`, `0` |
 | **Score** | Porcentagem de aproveitamento | `80%`, `100%` |
 
-### 2.3 Exemplos por Tipo de Atividade
+### 3.3 Exemplos por Tipo de Atividade
 
 #### Matemática - Quiz de Operações
 ```csv
@@ -87,41 +126,41 @@ Nome,Materia,Atividade,Bloco,Questao,Tempo_Execucao,Acertos,Erros,Score
 Carlos Lima,Historia,Detective da Historia,Caso Independencia,5_misterios,450s,5,1,90%
 ```
 
-## 3. Funcionalidades Obrigatórias
+## 4. Funcionalidades Obrigatórias
 
-### 3.1 Sistema de Navegação
+### 4.1 Sistema de Navegação
 - **Voltar ao portal**: Sempre disponível com `../index.html`
 - **Voltar à seleção**: Durante o jogo, opção de voltar aos blocos
 - **Progressão linear**: Tela inicial → Seleção → Jogo → Resultado
 
-### 3.2 Sistema de Sessão
+### 4.2 Sistema de Sessão
 - **Armazenamento local**: Dados da sessão em localStorage
 - **Acumulação de resultados**: Multiple blocos por sessão
 - **Finalização controlada**: Botão para encerrar e baixar CSV
 - **Limpeza de dados**: Reset completo após finalização
 
-### 3.3 Feedback Visual
+### 4.3 Feedback Visual
 - **Celebrações**: Mensagens positivas com animações
 - **Erros construtivos**: Feedback educativo, não punitivo
 - **Progresso visível**: Barras, contadores ou indicadores
 - **Responsividade**: Interface adaptável a diferentes telas
 
-### 3.4 Acessibilidade
+### 4.4 Acessibilidade
 - **Fontes dislexia-friendly**: OpenDyslexic como opção
 - **Contraste adequado**: Cores que facilitam leitura
 - **Tamanhos de fonte**: Adequados para diferentes idades
 - **Interface intuitiva**: Ícones e instruções claras
 
-### 3.5 Elementos Visuais Padronizados
+### 4.5 Elementos Visuais Padronizados
 - **Linhas divisórias**: `border-t border-gray-200 my-6` entre seções
 - **Espaçamentos**: Consistentes entre elementos (my-6, mb-4, etc.)
 - **Bordas arredondadas**: rounded-lg, rounded-xl para elementos
 - **Sombras sutis**: shadow-lg, shadow-xl para profundidade
 - **Transições**: hover:scale-105, transition-all duration-300
 
-## 4. Estrutura de Arquivos
+## 5. Estrutura de Arquivos
 
-### 4.1 Localização
+### 5.1 Localização
 ```
 atividades/
 ├── index.html (portal principal)
@@ -130,6 +169,19 @@ atividades/
 │   ├── construtor_historia_brasil.html
 │   ├── corrida_historia_brasil.html
 │   └── detective_historia_independencia.html
+├── Galaxy.js (componente de fundo com estrelas)
+├── Galaxy.css (estilos para Galaxy component)
+├── AnimatedList.js (componente de lista animada)
+├── AnimatedList.css (estilos para AnimatedList component)
+├── ScrollStack.js (componente de pilha de cards)
+├── ScrollStack.css (estilos para ScrollStack component)
+├── TextType.js (componente de digitação de texto)
+├── TextType.css (estilos para TextType component)
+├── VariableProximity.js (componente de proximidade de texto)
+├── VariableProximity.css (estilos para VariableProximity component)
+├── text-type-effect.js (implementação JS para páginas não-React)
+├── variable-proximity-effect.js (implementação JS para páginas não-React)
+├── activity-gradient.css (estilos de gradiente para atividades)
 └── docs/
     └── DIRETRIZES_ATIVIDADES_EDUCATIVAS.md
 ```
@@ -140,20 +192,20 @@ atividades/
 - Corrida da História do Brasil (História - Avançado)
 - Detective da História - Independência (História - Intermediário)
 
-### 4.2 Nomenclatura
+### 5.2 Nomenclatura
 - **Arquivos HTML**: lowercase com underscores
 - **Classes CSS**: kebab-case
 - **IDs**: camelCase
 - **Funções JS**: camelCase
 
-## 5. Implementação Técnica
+## 6. Implementação Técnica
 
-### 5.1 Framework e Bibliotecas
+### 6.1 Framework e Bibliotecas
 - **React**: Via CDN (react + react-dom + babel)
 - **Tailwind CSS**: Via CDN para estilização
 - **Fontes**: Google Fonts (OpenDyslexic + Comic Sans MS)
 
-### 5.2 Estrutura HTML Base
+### 6.2 Estrutura HTML Base
 ```html
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -182,9 +234,9 @@ atividades/
 </html>
 ```
 
-## 6. Validação e Testes
+## 7. Validação e Testes
 
-### 6.1 Checklist de Qualidade
+### 7.1 Checklist de Qualidade
 - [ ] CSV exportado segue o padrão exato
 - [ ] Navegação funciona corretamente
 - [ ] Tutorial está na tela de seleção
@@ -194,25 +246,28 @@ atividades/
 - [ ] Fontes carregam corretamente
 - [ ] Feedback visual funciona
 - [ ] localStorage funciona corretamente
+- [ ] Componentes interativos funcionam corretamente (Galaxy, AnimatedList, ScrollStack, TextType, VariableProximity, TargetCursor)
 
-### 6.2 Testes de Funcionalidade
+### 7.2 Testes de Funcionalidade
 1. **Fluxo completo**: Início → Seleção → Jogo → Resultado → Finalização
 2. **Navegação**: Todos os botões de voltar funcionam
 3. **Dados**: CSV contém informações corretas
 4. **Responsividade**: Interface funciona em mobile e desktop
 5. **Acessibilidade**: Fontes e contrastes adequados
+6. **Componentes interativos**: Todos os componentes visuais funcionam corretamente
 
-## 7. Manutenção e Atualizações
+## 8. Manutenção e Atualizações
 
-### 7.1 Versionamento
+### 8.1 Versionamento
 - Manter histórico de alterações
 - Testar compatibilidade com versões anteriores
 - Documentar mudanças significativas
 
-### 7.2 Performance
+### 8.2 Performance
 - Otimizar carregamento de recursos
 - Minimizar uso de localStorage
 - Garantir fluidez das animações
+- Monitorar impacto de componentes interativos no desempenho
 
 ---
 
